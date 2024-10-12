@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 
 namespace FastRide_Server
@@ -32,17 +33,17 @@ namespace FastRide_Server
         }
 
         [Function("Function1_HttpStart")]
-        public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestMessage req,
-            [DurableClient] IDurableOrchestrationClient starter,
+        public static async Task<HttpResponseData> HttpStart(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
+            [DurableClient] DurableTaskClient starter,
             ILogger log)
         {
             // Function input comes from the request content.
-            string instanceId = await starter.StartNewAsync("Function1", null);
+            string instanceId = await starter.ScheduleNewOrchestrationInstanceAsync("Function1", null);
 
             log.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
 
-            return starter.CreateCheckStatusResponse(req, instanceId);
+            return await starter.CreateCheckStatusResponseAsync(req, instanceId);
         }
     }
 }
