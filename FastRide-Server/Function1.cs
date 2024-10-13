@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
@@ -6,44 +7,51 @@ using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 
-namespace FastRide_Server
+namespace FastRide_Server;
+
+public class Function1
 {
-    public static class Function1
+    private readonly ILogger<Function1> _logger;
+
+    public Function1(ILogger<Function1> logger)
     {
-        [Function("Function1")]
-        public static async Task<List<string>> RunOrchestrator(
-            [OrchestrationTrigger] TaskOrchestrationContext context)
-        {
-            var outputs = new List<string>();
+        _logger = logger;
+    }
 
-            // Replace "hello" with the name of your Durable Activity Function.
-            outputs.Add(await context.CallActivityAsync<string>(nameof(SayHello), "Tokyo"));
-            outputs.Add(await context.CallActivityAsync<string>(nameof(SayHello), "Seattle"));
-            outputs.Add(await context.CallActivityAsync<string>(nameof(SayHello), "London"));
+    [Function("Function1")]
+    public async Task<List<string>> RunOrchestrator(
+        [OrchestrationTrigger] TaskOrchestrationContext context)
+    {
+        var outputs = new List<string>();
 
-            // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
-            return outputs;
-        }
+        outputs.Add("test");
 
-        [Function(nameof(SayHello))]
-        public static string SayHello([ActivityTrigger] string name, ILogger log)
-        {
-            log.LogInformation("Saying hello to {name}.", name);
-            return $"Hello {name}!";
-        }
+        // Replace "hello" with the name of your Durable Activity Function.
+        outputs.Add(await context.CallActivityAsync<string>(nameof(SayHello), "Tokyo"));
+        outputs.Add(await context.CallActivityAsync<string>(nameof(SayHello), "Seattle"));
+        outputs.Add(await context.CallActivityAsync<string>(nameof(SayHello), "London"));
 
-        [Function("Function1_HttpStart")]
-        public static async Task<HttpResponseData> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
-            [DurableClient] DurableTaskClient starter,
-            ILogger log)
-        {
-            // Function input comes from the request content.
-            string instanceId = await starter.ScheduleNewOrchestrationInstanceAsync("Function1", null);
+        // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
+        return outputs;
+    }
 
-            log.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
+    [Function(nameof(SayHello))]
+    public string SayHello([ActivityTrigger] string name)
+    {
+        _logger.LogInformation("Saying hello to {name}.", name);
+        return $"Hello {name}!";
+    }
 
-            return await starter.CreateCheckStatusResponseAsync(req, instanceId);
-        }
+    [Function("Function1_HttpStart")]
+    public async Task<HttpResponseData> HttpStart(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req,
+        [DurableClient] DurableTaskClient starter)
+    {
+        // Function input comes from the request content.
+        string instanceId = await starter.ScheduleNewOrchestrationInstanceAsync("Function1", null);
+
+        _logger.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
+
+        return await starter.CreateCheckStatusResponseAsync(req, instanceId);
     }
 }
