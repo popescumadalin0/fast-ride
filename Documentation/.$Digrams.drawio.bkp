@@ -1,0 +1,56 @@
+<mxfile host="Electron" modified="2024-09-07T16:53:20.082Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.0 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="iV9A3yPi9k01jRLDkSE0" version="24.4.0" type="device" pages="2">
+  <diagram name="ComunicareFE-BE" id="-WEjqGRhGccou9gLVcyB">
+    <mxGraphModel dx="1674" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="d-rR6m4FALJZKi-9W2MD-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="d-rR6m4FALJZKi-9W2MD-1" target="d-rR6m4FALJZKi-9W2MD-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d-rR6m4FALJZKi-9W2MD-4" value="Refit calls&lt;br&gt;Using function key authentication" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d-rR6m4FALJZKi-9W2MD-3">
+          <mxGeometry x="0.0909" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d-rR6m4FALJZKi-9W2MD-1" value="UI" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="315" width="210" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="d-rR6m4FALJZKi-9W2MD-2" value="Azure Orchestration Function&lt;br&gt;(BE)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="320" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="4EZIjzrmQYcTo2woEn7P-1" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="570" y="600" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4EZIjzrmQYcTo2woEn7P-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.457;entryY=0.992;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="4EZIjzrmQYcTo2woEn7P-1" target="d-rR6m4FALJZKi-9W2MD-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4EZIjzrmQYcTo2woEn7P-3" value="Microsoft login" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="4EZIjzrmQYcTo2woEn7P-2">
+          <mxGeometry x="-0.0537" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4EZIjzrmQYcTo2woEn7P-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.689;entryY=1.018;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.176;exitY=1.008;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="d-rR6m4FALJZKi-9W2MD-1" target="d-rR6m4FALJZKi-9W2MD-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="527" y="460" />
+              <mxPoint x="181" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4EZIjzrmQYcTo2woEn7P-7" value="Based on role&lt;br&gt;get function key from key vault storage" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="4EZIjzrmQYcTo2woEn7P-6">
+          <mxGeometry x="-0.1208" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="2neGOry5R1bWN9nzpVEm" name="Page-2">
+    <mxGraphModel dx="1674" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
