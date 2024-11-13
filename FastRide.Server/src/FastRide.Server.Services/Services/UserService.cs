@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Azure;
-using FastRide_Server.Services.Contracts;
-using FastRide_Server.Services.Entities;
-using FastRide_Server.Services.Enums;
-using FastRide_Server.Services.Models;
-using FastRide_Server.Services.Repositories;
+using FastRide.Server.Services.Contracts;
+using FastRide.Server.Services.Entities;
+using FastRide.Server.Services.Enums;
+using FastRide.Server.Services.Models;
 using Microsoft.Extensions.Logging;
 
-namespace FastRide_Server.Services.Services;
+namespace FastRide.Server.Services.Services;
 
 public class UserService : IUserService
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace FastRide_Client.Data;
+namespace FastRide.Client.Data;
 
 public class WeatherForecast
 {

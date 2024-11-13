@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
@@ -7,7 +6,7 @@ using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 
-namespace FastRide_Server;
+namespace FastRide.Server;
 
 public class Function1
 {

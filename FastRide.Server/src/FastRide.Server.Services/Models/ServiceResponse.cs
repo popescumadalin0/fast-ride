@@ -1,6 +1,6 @@
 using System;
 
-namespace FastRide_Server.Services.Models;
+namespace FastRide.Server.Services.Models;
 
 public class ServiceResponse
 {

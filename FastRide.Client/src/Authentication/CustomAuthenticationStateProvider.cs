@@ -1,20 +1,26 @@
 using System;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace FastRide_Client.Authentication;
+namespace FastRide.Client.Authentication;
 
-public class CustomAuthenticationStateProvider : AuthenticationStateProvider,
-    IHostEnvironmentAuthenticationStateProvider
+public class CustomAuthenticationStateProvider : AuthenticationStateProvider, IHostEnvironmentAuthenticationStateProvider
 {
     private Task<AuthenticationState> _authenticationStateTask;
-
+    
     /// <inheritdoc />
-    public void SetAuthenticationState(Task<AuthenticationState> authenticationStateTask)
+    public new void SetAuthenticationState(Task<AuthenticationState> authenticationStateTask)
     {
         _authenticationStateTask =
             authenticationStateTask ?? throw new ArgumentNullException(nameof(authenticationStateTask));
+        
         NotifyAuthenticationStateChanged(_authenticationStateTask);
     }
 

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastRide-Client", "src\FastRide-Client.csproj", "{1D165F7C-5C8B-4596-8A19-495E74C89019}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastRide.Client", "src\FastRide.Client.csproj", "{1D165F7C-5C8B-4596-8A19-495E74C89019}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Sdk", "..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj", "{EB119DC7-96CC-4531-A8D4-A0CFF707E2D8}"
 EndProject

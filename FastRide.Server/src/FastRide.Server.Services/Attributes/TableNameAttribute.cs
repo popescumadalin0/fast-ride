@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FastRide_Server.Services.Attributes;
+namespace FastRide.Server.Services.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
 public class TableNameAttribute : Attribute

@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Net.Mime;
-using FastRide_Server.Services.Models;
+using FastRide.Server.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace FastRide_Server.HttpResponse;
+namespace FastRide.Server.HttpResponse;
 
 public static class ApiServiceResult
 {

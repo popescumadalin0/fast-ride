@@ -1,4 +1,4 @@
-﻿namespace FastRide_Server.Services.Enums;
+﻿namespace FastRide.Server.Services.Enums;
 
 public enum UserType
 {

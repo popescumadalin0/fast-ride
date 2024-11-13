@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FastRide_Client.Data;
+namespace FastRide.Client.Data;
 
 public class WeatherForecastService
 {

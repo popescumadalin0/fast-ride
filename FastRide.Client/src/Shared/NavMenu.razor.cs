@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 
-namespace FastRide_Client.Shared;
+namespace FastRide.Client.Shared;
 
 public partial class NavMenu
 {

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Azure;
-using FastRide_Server.Services.Contracts;
-using FastRide_Server.Services.Entities;
-using FastRide_Server.Services.Enums;
+using FastRide.Server.Services.Contracts;
+using FastRide.Server.Services.Entities;
+using FastRide.Server.Services.Enums;
 
-namespace FastRide_Server.Services.Repositories;
+namespace FastRide.Server.Services.Repositories;
 
 public class UserRepository : IUserRepository
 {

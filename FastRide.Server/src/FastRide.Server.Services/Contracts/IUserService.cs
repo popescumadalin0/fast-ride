@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using FastRide_Server.Services.Enums;
-using FastRide_Server.Services.Models;
+using FastRide.Server.Services.Enums;
+using FastRide.Server.Services.Models;
 
-namespace FastRide_Server.Services.Contracts;
+namespace FastRide.Server.Services.Contracts;
 
 public interface IUserService
 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Azure;
 using Azure.Data.Tables;
 
-namespace FastRide_Server.Services.Contracts;
+namespace FastRide.Server.Services.Contracts;
 
 public interface ITableClient<TEntity> where TEntity : class, ITableEntity, new()
 {

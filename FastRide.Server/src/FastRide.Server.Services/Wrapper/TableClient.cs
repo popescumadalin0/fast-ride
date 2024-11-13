@@ -5,11 +5,10 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Data.Tables;
-using FastRide_Server.Services.Attributes;
-using FastRide_Server.Services.Contracts;
-using Microsoft.VisualBasic;
+using FastRide.Server.Services.Attributes;
+using FastRide.Server.Services.Contracts;
 
-namespace FastRide_Server.Services.Wrapper;
+namespace FastRide.Server.Services.Wrapper;
 
 public class TableClient<TEntity> : ITableClient<TEntity> where TEntity : class, ITableEntity, new()
 {

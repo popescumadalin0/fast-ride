@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FastRide_Client.Authentication;
+namespace FastRide.Client.Authentication;
 
 public class AuthController : Controller
 {
@@ -22,6 +24,12 @@ public class AuthController : Controller
         {
             RedirectUri = Url.Action(nameof(GoogleSigninCallBack)) + returnUrl
         }, GoogleDefaults.AuthenticationScheme);
+        
+        /*var properties = new AuthenticationProperties
+        {
+            RedirectUri = Url.Action(nameof(GoogleResponse)) +  returnUrl,
+        };
+        return Challenge(properties,  GoogleDefaults.AuthenticationScheme);*/
     }
 
     [HttpGet("login-google-callback")]
@@ -33,4 +41,16 @@ public class AuthController : Controller
 
         return LocalRedirect(redirectUri);
     }
+    
+    /*[HttpGet("google-response")]
+    [Authorize(AuthenticationSchemes = "Google")]
+    public IActionResult GoogleResponse()
+    {
+        // handle what you need from auth object
+        // e.g. create and return your own Bearer token from email
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        // ...
+        
+        return LocalRedirect("/");
+    }*/
 }

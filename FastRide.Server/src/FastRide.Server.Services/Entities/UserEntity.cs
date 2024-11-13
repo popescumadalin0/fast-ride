@@ -1,9 +1,9 @@
 ﻿using System;
 using Azure;
 using Azure.Data.Tables;
-using FastRide_Server.Services.Enums;
+using FastRide.Server.Services.Enums;
 
-namespace FastRide_Server.Services.Entities;
+namespace FastRide.Server.Services.Entities;
 
 public class UserEntity : ITableEntity
 {

@@ -1,12 +1,11 @@
-﻿using Azure.Data.Tables;
-using FastRide_Server.Services.Contracts;
-using FastRide_Server.Services.Entities;
-using FastRide_Server.Services.Repositories;
-using FastRide_Server.Services.Services;
-using FastRide_Server.Services.Wrapper;
+﻿using FastRide.Server.Services.Contracts;
+using FastRide.Server.Services.Entities;
+using FastRide.Server.Services.Repositories;
+using FastRide.Server.Services.Services;
+using FastRide.Server.Services.Wrapper;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FastRide_Server.Services;
+namespace FastRide.Server.Services;
 
 public static class DependencyInjection
 {
