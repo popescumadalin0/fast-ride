@@ -7,7 +7,7 @@ namespace FastRide.Server.Sdk.Refit;
 
 public abstract class RefitApiClient<T> where T : class
 {
-    public event OnApiCallExecuted OnApiCallExecuted = _param1 => { };
+    public event OnApiCallExecuted OnApiCallExecuted = param1 => { };
 
     public async Task<ApiResponseMessage<T>> Execute<T>(Task<T> task)
     {

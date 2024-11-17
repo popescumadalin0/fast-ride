@@ -30,7 +30,7 @@ public class UserFunction
         _logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger function processed a request.");
 
         var response = await _userService.GetUserType(nameIdentifier, email);
-        
+
         return ApiServiceResult.CreateApiResult(response);
     }
 }
