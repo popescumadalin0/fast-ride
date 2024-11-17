@@ -1,7 +1,6 @@
 ﻿using System;
-using FastRide.Server.Attributes;
+using FastRide.Server.Sdk;
 using FastRide.Server.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,29 +8,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWorkerDefaults(builder =>
-    {
-        builder.UseMiddleware<AuthenticationMiddleware>();
-        //builder.UseMiddleware<AuthorizationMiddleware>();
-    })
+    .ConfigureFunctionsWorkerDefaults()
     .ConfigureAppConfiguration((context, builder) => { builder.AddUserSecrets<Program>(); })
     .ConfigureServices((context, services) =>
     {
+        services.AddSingleton(context.Configuration);
+
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddGoogle(options =>
-            {
-                options.ClientId = Environment.GetEnvironmentVariable("Google:ClientId")!;
-                options.ClientSecret = Environment.GetEnvironmentVariable("Google:ClientSecret")!;
-                options.SaveTokens = true;
-            });
+        services.AddFastRideApiClient(new Uri(Environment.GetEnvironmentVariable("Proxy:BaseUrl")!));
 
         services.AddLogging();
 

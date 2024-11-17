@@ -1,10 +1,13 @@
 ﻿using System;
 using Azure;
 using Azure.Data.Tables;
+using FastRide.Server.Services.Attributes;
+using FastRide.Server.Services.Constants;
 using FastRide.Server.Services.Enums;
 
 namespace FastRide.Server.Services.Entities;
 
+[TableName(TableNames.Users)]
 public class UserEntity : ITableEntity
 {
     /// <summary>

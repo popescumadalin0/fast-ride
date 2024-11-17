@@ -19,7 +19,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.4.0"/>
         <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.10"/>
     </ItemGroup>
     <ItemGroup>
         <None Update="host.json">
@@ -31,6 +30,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj" />
         <ProjectReference Include="..\FastRide.Server.Services\FastRide.Server.Services.csproj"/>
     </ItemGroup>
 </Project>

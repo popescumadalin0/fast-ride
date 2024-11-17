@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using FastRide.Server.Attributes;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -22,7 +20,6 @@ public class UserFunction
         _logger = logger;
     }
 
-    [Authorize]
     [Function(nameof(GetUserAsync))]
     public async Task<IActionResult> GetUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "user/{nameIdentifier}/{email}")]

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
@@ -10,12 +9,10 @@ namespace FastRide.Server.Sdk;
 public static class DependencyInjection
 {
     /// <summary />
-    public static IServiceCollection AddFastRideApiClient<AuthenticationApiHttpMessageHandler>(this IServiceCollection services, Uri url)
-        where AuthenticationApiHttpMessageHandler : DelegatingHandler
+    public static IServiceCollection AddFastRideApiClient(this IServiceCollection services, Uri url)
     {
         services.AddRefitClient<IFastRideApi>()
-            .ConfigureHttpClient(c => c.BaseAddress = url)
-            .AddHttpMessageHandler<AuthenticationApiHttpMessageHandler>();
+            .ConfigureHttpClient(c => c.BaseAddress = url);
 
         services.AddSingleton<IFastRideApiClient, FastRideApiClient>();
         return services;

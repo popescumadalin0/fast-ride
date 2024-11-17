@@ -3,7 +3,6 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "Google:ClientId": "380926423162-770d4ue7oisolehb231r175e3buto8a0.apps.googleusercontent.com",
-    "Google:ClientSecret": "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"
+    "Proxy:BaseUrl": "https://localhost:7062"
   }
 }
