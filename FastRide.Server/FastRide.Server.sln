@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Sdk", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Contracts", "src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj", "{A35AFB20-44A4-4892-8C0E-7B6BA6D5B2EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Proxy", "FastRide.Proxy\FastRide.Proxy.csproj", "{DF5808B9-4AFF-45E6-A316-20888DACE176}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Proxy", "src\FastRide.Proxy\FastRide.Proxy.csproj", "{DF5808B9-4AFF-45E6-A316-20888DACE176}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

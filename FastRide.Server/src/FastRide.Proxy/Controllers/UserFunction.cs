@@ -1,6 +1,5 @@
 ﻿using FastRide.Proxy.HttpResponse;
 using FastRide.Server.Sdk.Contracts;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +15,7 @@ public class UserFunction(ILogger<UserFunction> logger, IFastRideApiClient fastR
         string nameIdentifier,
         string email)
     {
-        GoogleJsonWebSignature.
-            logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger proxy processed a request.");
+        logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger proxy processed a request.");
 
         var response = await fastRideApiClient.GetUserTypeAsync(nameIdentifier, email);
 
