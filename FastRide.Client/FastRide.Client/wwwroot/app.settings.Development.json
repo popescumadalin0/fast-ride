@@ -1,9 +1,0 @@
-{
-  "Google": {
-    "ClientId": "",
-    "ClientSecret": ""
-  },
-  "FastRide": {
-    "BaseUrl": ""
-  }
-}

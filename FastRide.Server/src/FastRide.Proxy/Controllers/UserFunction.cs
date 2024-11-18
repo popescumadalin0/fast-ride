@@ -1,6 +1,5 @@
 ﻿using FastRide.Proxy.HttpResponse;
 using FastRide.Server.Sdk.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastRide.Proxy.Controllers;

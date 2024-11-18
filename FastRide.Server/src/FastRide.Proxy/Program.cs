@@ -1,4 +1,5 @@
 using FastRide.Server.Sdk;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ var app = builder.Build();
 app.UseCors();
 app.UseRouting();
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -50,5 +53,12 @@ void ConfigureCors()
 
 void ConfigureAuthentication()
 {
+    builder.Services.AddAuthentication().AddCookie()
+        .AddGoogle(o =>
+        {
+            o.ClientId = builder.Configuration.GetValue<string>("Google:ClientId")!;
+            o.ClientSecret = builder.Configuration.GetValue<string>("Google:ClientSecret")!;
+        });
     
+    builder.Services.AddAuthorization();
 }
