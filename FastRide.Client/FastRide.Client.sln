@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Sdk", "..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj", "{EB119DC7-96CC-4531-A8D4-A0CFF707E2D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Client", "src\FastRide.Client\FastRide.Client.csproj", "{442C63CF-9716-4001-AB8D-750FBA066F4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Contracts", "..\FastRide.Server\src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj", "{242EE7D4-7A00-459F-90EB-B23BC27EDC6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Sdk", "..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj", "{CF7D662E-7BA7-44C0-B736-A042ECD6B3BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Client", "FastRide.Client\FastRide.Client.csproj", "{442C63CF-9716-4001-AB8D-750FBA066F4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastRide.Server.Contracts", "..\FastRide.Server\src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj", "{FAD567B4-9703-44FF-8433-0120D97E16D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EB119DC7-96CC-4531-A8D4-A0CFF707E2D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB119DC7-96CC-4531-A8D4-A0CFF707E2D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB119DC7-96CC-4531-A8D4-A0CFF707E2D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB119DC7-96CC-4531-A8D4-A0CFF707E2D8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{242EE7D4-7A00-459F-90EB-B23BC27EDC6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{242EE7D4-7A00-459F-90EB-B23BC27EDC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{242EE7D4-7A00-459F-90EB-B23BC27EDC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{242EE7D4-7A00-459F-90EB-B23BC27EDC6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{442C63CF-9716-4001-AB8D-750FBA066F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{442C63CF-9716-4001-AB8D-750FBA066F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{442C63CF-9716-4001-AB8D-750FBA066F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{442C63CF-9716-4001-AB8D-750FBA066F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF7D662E-7BA7-44C0-B736-A042ECD6B3BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF7D662E-7BA7-44C0-B736-A042ECD6B3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF7D662E-7BA7-44C0-B736-A042ECD6B3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7D662E-7BA7-44C0-B736-A042ECD6B3BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAD567B4-9703-44FF-8433-0120D97E16D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAD567B4-9703-44FF-8433-0120D97E16D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAD567B4-9703-44FF-8433-0120D97E16D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAD567B4-9703-44FF-8433-0120D97E16D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

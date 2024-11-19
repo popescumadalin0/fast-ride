@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\FastRide.Server\src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj" />
-        <ProjectReference Include="..\..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj" />
+      <ProjectReference Include="..\..\..\FastRide.Server\src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj" />
+      <ProjectReference Include="..\..\..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj" />
     </ItemGroup>
 
 </Project>
