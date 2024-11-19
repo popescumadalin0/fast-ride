@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
+using FastRide.Server.Services.Models;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,8 +39,8 @@ public class UserFunction
             Audience = new List<string>() { Environment.GetEnvironmentVariable("Google:ClientId") }
         };
 
-        var payload =  await GoogleJsonWebSignature.ValidateAsync(
-            req.Headers["Authorization"].ToString().Split("Bearer ")[1], settings);
+        var payload = await GoogleJsonWebSignature.ValidateAsync(
+            req.Headers["Authentication"].ToString().Split("Bearer ")[1], settings);
 
         var response = await _userService.GetUserType(nameIdentifier, email);
 

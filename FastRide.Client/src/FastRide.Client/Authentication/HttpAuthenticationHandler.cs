@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.Extensions.Configuration;
+using Microsoft.JSInterop;
 
 namespace FastRide.Client.Authentication;
 
@@ -11,9 +15,19 @@ public class HttpAuthenticationHandler : DelegatingHandler
 {
     private readonly IAccessTokenProvider _accessTokenProvider;
 
-    public HttpAuthenticationHandler(IAccessTokenProvider accessTokenProvider)
+    private readonly ISessionStorageService _sessionStorage;
+
+    private readonly NavigationManager _navigationManager;
+
+    private readonly IConfiguration _configuration;
+
+    public HttpAuthenticationHandler(IAccessTokenProvider accessTokenProvider, ISessionStorageService sessionStorage,
+        NavigationManager navigationManager, IConfiguration configuration)
     {
         _accessTokenProvider = accessTokenProvider;
+        _sessionStorage = sessionStorage;
+        _navigationManager = navigationManager;
+        _configuration = configuration;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
@@ -21,20 +35,33 @@ public class HttpAuthenticationHandler : DelegatingHandler
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var token = await _accessTokenProvider.RequestAccessToken();
+        var accessTokenResponse = await _accessTokenProvider.RequestAccessToken();
 
-        if (token.Status != AccessTokenResultStatus.Success)
+        var baseUri = _configuration["Google:Authority"];
+        var clientId = _configuration["Google:ClientId"] ??
+                       throw new ArgumentNullException($"{_configuration["Google:ClientId"]}");
+        var key = $"oidc.user:{baseUri}:{clientId}";
+
+        var tokenId = _sessionStorage.GetItem<TokenSession>(key).id_token;
+
+        if (accessTokenResponse.Status != AccessTokenResultStatus.Success)
         {
             return new HttpResponseMessage(HttpStatusCode.Unauthorized);
         }
 
-        if (!token.TryGetToken(out var accessToken))
+        if (!accessTokenResponse.TryGetToken(out var accessToken))
         {
             return new HttpResponseMessage(HttpStatusCode.Unauthorized);
         }
 
-        request.Headers.Add("Authorization", $"Bearer {accessToken}");
+        request.Headers.Add("Authentication", $"Bearer {tokenId}");
+        request.Headers.Add("Authorization", $"Bearer {accessToken.Value}");
 
         return await base.SendAsync(request, cancellationToken);
     }
+}
+
+public class TokenSession
+{
+    public string id_token { get; set; }
 }
