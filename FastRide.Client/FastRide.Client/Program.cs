@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using Blazored.LocalStorage;
 using FastRide.Client;
+using FastRide.Client.Authentication;
 using FastRide.Server.Sdk;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,9 +22,10 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddOidcAuthentication(options =>
 {
     builder.Configuration.Bind("Google", options.ProviderOptions);
-    //options.ProviderOptions.DefaultScopes.Add("https://localhost:7062");
 });
 
-builder.Services.AddFastRideApiClient(new Uri(builder.Configuration["FastRide:BaseUrl"]!));
+builder.Services.AddTransient<HttpAuthenticationHandler>();
+
+builder.Services.AddFastRideApiClient<HttpAuthenticationHandler>(new Uri(builder.Configuration["FastRide:BaseUrl"]!));
 
 await builder.Build().RunAsync();

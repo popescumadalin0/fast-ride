@@ -1,5 +1,5 @@
+using FastRide.Proxy.Authentication;
 using FastRide.Server.Sdk;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +31,11 @@ async Task ConfigureServicesAsync()
 {
     builder.Services.AddLogging();
     builder.Services.AddControllers();
-    
-    builder.Services.AddFastRideApiClient(new Uri(builder.Configuration["FastRideApi:BaseUrl"]!));
+
+    builder.Services.AddTransient<HttpAuthenticationHandler>();
+
+    builder.Services.AddFastRideApiClient<HttpAuthenticationHandler>(
+        new Uri(builder.Configuration["FastRideApi:BaseUrl"]!));
 
     builder.Services.AddRazorPages();
 }
@@ -59,6 +62,6 @@ void ConfigureAuthentication()
             o.ClientId = builder.Configuration.GetValue<string>("Google:ClientId")!;
             o.ClientSecret = builder.Configuration.GetValue<string>("Google:ClientSecret")!;
         });
-    
+
     builder.Services.AddAuthorization();
 }
