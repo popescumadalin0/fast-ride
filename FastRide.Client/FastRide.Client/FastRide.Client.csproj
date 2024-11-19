@@ -1,20 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <RootNamespace>FastRide.Client</RootNamespace>
-    </PropertyGroup>
+      <UserSecretsId>cc3eb834-34f3-42ce-942f-3be208eb28ca</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.11"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\FastRide.Server\src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj"/>
-        <ProjectReference Include="..\..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj"/>
+        <ProjectReference Include="..\..\FastRide.Server\src\FastRide.Server.Contracts\FastRide.Server.Contracts.csproj" />
+        <ProjectReference Include="..\..\FastRide.Server\src\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj" />
     </ItemGroup>
 
 </Project>

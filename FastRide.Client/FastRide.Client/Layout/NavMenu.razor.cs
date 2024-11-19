@@ -1,4 +1,4 @@
-﻿namespace FastRide.Client.Layout;
+namespace FastRide.Client.Layout;
 
 public partial class NavMenu
 {

@@ -20,15 +20,10 @@ builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddOidcAuthentication(options =>
 {
-    options.ProviderOptions.Authority = builder.Configuration["Google:Authority"];
-    options.ProviderOptions.ClientId = builder.Configuration["Google:ClientId"];
-    options.ProviderOptions.ResponseType = "id_token";
-    options.ProviderOptions.DefaultScopes.Add("openid");
-    options.ProviderOptions.DefaultScopes.Add("profile");
+    builder.Configuration.Bind("Google", options.ProviderOptions);
+    //options.ProviderOptions.DefaultScopes.Add("https://localhost:7062");
 });
-;
-builder.Services.AddFastRideApiClient(new Uri(builder.Configuration["FastRide:BaseUrl"]!));
 
-builder.Services.AddApiAuthorization();
+builder.Services.AddFastRideApiClient(new Uri(builder.Configuration["FastRide:BaseUrl"]!));
 
 await builder.Build().RunAsync();
