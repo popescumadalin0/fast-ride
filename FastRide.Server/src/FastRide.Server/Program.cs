@@ -1,5 +1,4 @@
-﻿using System;
-using FastRide.Server.Sdk;
+﻿using FastRide.Server.Authentication;
 using FastRide.Server.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWebApplication()
+    .ConfigureFunctionsWebApplication(options =>
+    {
+        options.UseMiddleware<AuthenticationMiddleware>();
+        options.UseMiddleware<AuthorizationMiddleware>();
+    })
     .ConfigureAppConfiguration((context, builder) => { builder.AddUserSecrets<Program>(); })
     .ConfigureServices((context, services) =>
     {

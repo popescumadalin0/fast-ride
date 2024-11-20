@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FastRide.Server.Authentication;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
-using FastRide.Server.Services.Models;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -24,6 +21,7 @@ public class UserFunction
         _logger = logger;
     }
 
+    [Authorize]
     [Function(nameof(GetUserAsync))]
     public async Task<IActionResult> GetUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "user/{nameIdentifier}/{email}")]
@@ -32,15 +30,6 @@ public class UserFunction
         string email)
     {
         _logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger function processed a request.");
-
-        //todo: see if this works and if the proxy is needed
-        var settings = new GoogleJsonWebSignature.ValidationSettings()
-        {
-            Audience = new List<string>() { Environment.GetEnvironmentVariable("Google:ClientId") }
-        };
-
-        var payload = await GoogleJsonWebSignature.ValidateAsync(
-            req.Headers["Authentication"].ToString().Split("Bearer ")[1], settings);
 
         var response = await _userService.GetUserType(nameIdentifier, email);
 

@@ -18,7 +18,7 @@ public class UserRepository : IUserRepository
     public async Task<UserType?> GetUserType(string nameIdentifier, string email)
     {
         var user = await _userTable.GetAsync(nameIdentifier, email);
-        if (!user.HasValue)
+        if (user is not { HasValue: true })
         {
             return null;
         }

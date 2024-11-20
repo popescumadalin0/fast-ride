@@ -34,7 +34,7 @@ public class UserService : IUserService
                     RowKey = email,
                 });
 
-                if (!registerUser.IsError)
+                if (registerUser.IsError)
                 {
                     throw new Exception(registerUser.ReasonPhrase);
                 }

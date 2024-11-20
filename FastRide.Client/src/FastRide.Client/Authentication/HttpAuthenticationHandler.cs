@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -17,16 +16,13 @@ public class HttpAuthenticationHandler : DelegatingHandler
 
     private readonly ISessionStorageService _sessionStorage;
 
-    private readonly NavigationManager _navigationManager;
-
     private readonly IConfiguration _configuration;
 
     public HttpAuthenticationHandler(IAccessTokenProvider accessTokenProvider, ISessionStorageService sessionStorage,
-        NavigationManager navigationManager, IConfiguration configuration)
+        IConfiguration configuration)
     {
         _accessTokenProvider = accessTokenProvider;
         _sessionStorage = sessionStorage;
-        _navigationManager = navigationManager;
         _configuration = configuration;
     }
 
@@ -59,9 +55,4 @@ public class HttpAuthenticationHandler : DelegatingHandler
 
         return await base.SendAsync(request, cancellationToken);
     }
-}
-
-public class TokenSession
-{
-    public string id_token { get; set; }
 }
