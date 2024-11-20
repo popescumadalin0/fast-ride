@@ -33,6 +33,6 @@ public class UserFunction
 
         var response = await _userService.GetUserType(nameIdentifier, email);
 
-        return ApiServiceResult.CreateApiResult(response);
+        return ApiServiceResponse.ApiServiceResult(response);
     }
 }

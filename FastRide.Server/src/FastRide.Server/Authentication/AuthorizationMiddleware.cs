@@ -23,6 +23,7 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         if (roles is null || roles.Length == 0)
         {
             await next(context);
+            return;
         }
         
         if (!TokenRetriever.TryGetAccessToken(context, out var accessToken))

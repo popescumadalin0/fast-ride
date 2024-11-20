@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace FastRide.Server.HttpResponse;
 
-public static class ApiServiceResult
+public static class ApiServiceResponse
 {
     public static IActionResult ApiServiceResultFromJson<T>(ServiceResponse<T> serviceResponse)
         where T : new()
@@ -16,12 +16,12 @@ public static class ApiServiceResult
             return new ContentResult
             {
                 ContentType = MediaTypeNames.Application.Json,
-                Content = JsonConvert.SerializeObject(serviceResponse.Response),
+                Content = serviceResponse.Response.ToString(),
                 StatusCode = (int)HttpStatusCode.OK
             };
         }
 
-        if (!string.IsNullOrEmpty(serviceResponse.ErrorMessage))
+        if (serviceResponse.Exception == null)
         {
             return new ContentResult
             {
@@ -34,12 +34,12 @@ public static class ApiServiceResult
         return new ContentResult
         {
             ContentType = MediaTypeNames.Text.Plain,
-            Content = JsonConvert.SerializeObject(serviceResponse.Exception),
+            Content = serviceResponse.ErrorMessage,
             StatusCode = (int)HttpStatusCode.InternalServerError
         };
     }
 
-    public static IActionResult CreateApiResult<T>(ServiceResponse<T> serviceResponse)
+    public static IActionResult ApiServiceResult<T>(ServiceResponse<T> serviceResponse)
         where T : new()
     {
         if (serviceResponse.Success)
@@ -47,7 +47,7 @@ public static class ApiServiceResult
             return new ObjectResult(serviceResponse.Response);
         }
 
-        if (!string.IsNullOrEmpty(serviceResponse.ErrorMessage))
+        if (serviceResponse.Exception == null)
         {
             return new ContentResult
             {
@@ -60,18 +60,28 @@ public static class ApiServiceResult
         return new ContentResult
         {
             ContentType = MediaTypeNames.Text.Plain,
-            Content = JsonConvert.SerializeObject(serviceResponse.Exception),
+            Content = serviceResponse.ErrorMessage,
             StatusCode = (int)HttpStatusCode.InternalServerError
         };
     }
 
-    public static IActionResult CreateApiResult(ServiceResponse serviceResponse)
+    public static IActionResult ApiServiceResult(ServiceResponse serviceResponse)
     {
         if (serviceResponse.Success)
         {
             return new OkResult();
         }
 
+        if (serviceResponse.Exception != null)
+        {
+            return new ContentResult
+            {
+                ContentType = MediaTypeNames.Text.Plain,
+                Content = serviceResponse.Exception.Message,
+                StatusCode = (int)HttpStatusCode.BadRequest
+            };
+        }
+
         if (!string.IsNullOrEmpty(serviceResponse.ErrorMessage))
         {
             return new ContentResult
@@ -85,7 +95,7 @@ public static class ApiServiceResult
         return new ContentResult
         {
             ContentType = MediaTypeNames.Text.Plain,
-            Content = JsonConvert.SerializeObject(serviceResponse.Exception),
+            Content = serviceResponse.ErrorMessage,
             StatusCode = (int)HttpStatusCode.InternalServerError
         };
     }

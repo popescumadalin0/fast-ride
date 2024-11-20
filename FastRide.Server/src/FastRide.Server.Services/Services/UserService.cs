@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.SymbolStore;
 using System.Threading.Tasks;
+using FastRide.Server.Contracts;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
-using FastRide.Server.Services.Enums;
 using FastRide.Server.Services.Models;
 using Microsoft.Extensions.Logging;
+using UserType = FastRide.Server.Services.Enums.UserType;
 
 namespace FastRide.Server.Services.Services;
 
@@ -19,7 +21,7 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<UserType>> GetUserType(string nameIdentifier, string email)
+    public async Task<ServiceResponse<UserTypeResponse>> GetUserType(string nameIdentifier, string email)
     {
         try
         {
@@ -42,12 +44,13 @@ public class UserService : IUserService
                 userType = UserType.User;
             }
 
-            return new ServiceResponse<UserType>((UserType)userType);
+            return new ServiceResponse<UserTypeResponse>(new UserTypeResponse
+                { UserType = (Server.Contracts.UserType)userType });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return new ServiceResponse<UserType>(ex);
+            return new ServiceResponse<UserTypeResponse>(ex);
         }
     }
 }

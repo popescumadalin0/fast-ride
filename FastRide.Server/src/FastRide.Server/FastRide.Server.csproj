@@ -32,7 +32,6 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\FastRide.Server.Sdk\FastRide.Server.Sdk.csproj" />
         <ProjectReference Include="..\FastRide.Server.Services\FastRide.Server.Services.csproj"/>
     </ItemGroup>
 </Project>

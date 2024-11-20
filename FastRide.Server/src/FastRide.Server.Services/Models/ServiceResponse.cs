@@ -2,12 +2,41 @@ using System;
 
 namespace FastRide.Server.Services.Models;
 
+public class ServiceResponse<T>
+    where T : new()
+{
+    public ServiceResponse(T response)
+    {
+        Success = true;
+        Response = response;
+    }
+
+    public ServiceResponse(T response, string errorMessage = "")
+    {
+        Success = false;
+        Response = response;
+        ErrorMessage = errorMessage;
+    }
+
+    public ServiceResponse(Exception e = null, string errorMessage = "")
+    {
+        Exception = e;
+        ErrorMessage = errorMessage;
+        Success = false;
+    }
+
+    public T Response { get; set; }
+    public bool Success { get; set; }
+    public Exception Exception { get; set; }
+    public string ErrorMessage { get; set; }
+}
+
 public class ServiceResponse
 {
-    public ServiceResponse(Exception? e = null, string errorMessage = "")
+    public ServiceResponse(Exception e = null, string errorMessage = "")
     {
-        ErrorMessage = errorMessage;
         Exception = e;
+        ErrorMessage = errorMessage;
         Success = false;
     }
 
@@ -16,33 +45,7 @@ public class ServiceResponse
         Success = true;
     }
 
-    public string ErrorMessage { get; set; } = string.Empty;
-
-    public Exception? Exception { get; set; }
-
     public bool Success { get; set; }
-}
-
-public class ServiceResponse<T> where T : new()
-{
-    public ServiceResponse(T response)
-    {
-        Response = response;
-        Success = true;
-    }
-
-    public ServiceResponse(Exception? e = null, string errorMessage = "")
-    {
-        ErrorMessage = errorMessage;
-        Exception = e;
-        Success = false;
-    }
-
-    public string ErrorMessage { get; set; } = string.Empty;
-
-    public Exception? Exception { get; set; }
-
-    public T? Response { get; set; }
-
-    public bool Success { get; set; }
+    public Exception Exception { get; set; }
+    public string ErrorMessage { get; set; }
 }

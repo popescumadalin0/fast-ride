@@ -5,7 +5,6 @@ using Refit;
 namespace FastRide.Server.Sdk.Contracts;
 
 /// <summary />
-[Headers("Accept: application/json")]
 public interface IFastRideApi
 {
     [Get("/api/user/{nameIdentifier}/{email}")]
