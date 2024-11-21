@@ -1,12 +1,14 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
 namespace FastRide.Client.Layout;
 
 public partial class NavMenu
 {
-    private bool collapseNavMenu = true;
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    [Inject] private NavigationManager Navigation { get; set; }
 
-    private void ToggleNavMenu()
+    private void LogOut()
     {
-        collapseNavMenu = !collapseNavMenu;
+        Navigation.NavigateToLogout("authentication/logout");
     }
 }
