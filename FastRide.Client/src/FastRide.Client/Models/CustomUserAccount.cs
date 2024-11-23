@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
-namespace FastRide.Client.Authentication;
+namespace FastRide.Client.Models;
 
 public class CustomUserAccount : RemoteUserAccount
 {

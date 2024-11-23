@@ -2,6 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    z-index: 1;
 }
 
 main {
@@ -10,13 +11,13 @@ main {
 
 .sidebar {
     position: fixed;
+    z-index: 1000;
     transform: translate(-50%, 0);
     left: 50%;
     bottom: 2px;
     background-color: white;
     border-radius: 10px;
     width: 100vw;
-    border: 1px solid gray;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     text-align: center;
 }

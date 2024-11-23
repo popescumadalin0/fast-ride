@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+using FastRide.Client.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
@@ -14,9 +14,9 @@ public class HttpAuthenticationHandler : DelegatingHandler
 {
     private readonly IAccessTokenProvider _accessTokenProvider;
 
-    private readonly ISessionStorageService _sessionStorage;
-
     private readonly IConfiguration _configuration;
+
+    private readonly ISessionStorageService _sessionStorage;
 
     public HttpAuthenticationHandler(IAccessTokenProvider accessTokenProvider, ISessionStorageService sessionStorage,
         IConfiguration configuration)

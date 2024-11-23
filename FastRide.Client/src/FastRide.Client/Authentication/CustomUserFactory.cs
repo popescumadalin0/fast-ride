@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FastRide.Client.Models;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
@@ -11,7 +12,7 @@ namespace FastRide.Client.Authentication;
 
 public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount>
 {
-    private readonly IServiceProvider  _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
 
     public CustomUserFactory(IAccessTokenProviderAccessor accessor, IServiceProvider serviceProvider)
         : base(accessor)
@@ -37,7 +38,7 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
             {
                 throw new Exception($"Failed to get user roles: {userType.ResponseMessage}");
             }
-            
+
             userIdentity.AddClaim(new Claim(ClaimTypes.Role, userType.Response.UserType.ToString()));
         }
 

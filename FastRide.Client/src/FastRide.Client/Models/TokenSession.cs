@@ -1,4 +1,4 @@
-namespace FastRide.Client.Authentication;
+namespace FastRide.Client.Models;
 
 public class TokenSession
 {
