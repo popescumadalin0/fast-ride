@@ -1,5 +1,7 @@
 using System;
 using System.Net.Http;
+using Blazorise;
+using Blazorise.Bootstrap5;
 using FastRide.Client;
 using FastRide.Client.Authentication;
 using FastRide.Client.Contracts;
@@ -36,5 +38,9 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
+
+builder.Services
+    .AddBlazorise(options => { options.Immediate = true; })
+    .AddBootstrap5Providers();
 
 await builder.Build().RunAsync();

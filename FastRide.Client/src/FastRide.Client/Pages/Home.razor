@@ -3,6 +3,22 @@
 
 <PageTitle>Home</PageTitle>
 
+<div class="search-destination">
+    <Autocomplete TItem="string"
+                  TValue="string"
+                  TextField="@(item => item)"
+                  ValueField="@(item => item)"
+                  @bind-SelectedValue="@SelectedSearchValue"
+                  @bind-SelectedText="SelectedAutoCompleteText"
+                  Placeholder="Where to?"
+                  Filter="AutocompleteFilter.StartsWith"
+                  FreeTyping
+                  SearchStyle="border-radius: 50px; outline: none;"
+                  CustomFilter="@((item, searchValue) => item.IndexOf(searchValue, 0, StringComparison.CurrentCultureIgnoreCase) >= 0)">
+        <NotFoundContent> Sorry... @context was not found! :(</NotFoundContent>
+    </Autocomplete>
+</div>
+
 <div style="height:98vh">
     <GoogleMap @ref="@_map" Id="map" Options="@_mapOptions" Height="100%" OnAfterInit="AfterMapRender"></GoogleMap>
 </div>
