@@ -1,0 +1,14 @@
+.ride{
+    width: 500px;
+    height: 50px;
+}
+
+.gray-label{
+    background-color: gray;
+    color: black;
+    border-radius: 50px;
+}
+
+.destination-name{
+    text-overflow: ellipsis;
+}

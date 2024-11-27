@@ -17,10 +17,20 @@
                      alt="@context.User.Identity!.Name"/>
             </div>
             <div class="nav-item px-1">
-                <NavLink class="nav-link btn btn-link" @onclick="LogOut">
-                    <i class="bi bi-box-arrow-right"></i>
+                <NavLink class="nav-link btn btn-link bg-danger text-white" @onclick="LogOut">
+                    <i class="bi bi-box-arrow-right "></i>
                 </NavLink>
             </div>
+            @if (context.User.IsInRole("User"))
+            {
+                @if (DestinationState.Geolocation != null)
+                {
+                    <div class="nav-item px-1">
+                        <NavLink class="nav-link btn btn-link bg-success text-white" onclick="@DriveAsync">Drive
+                        </NavLink>
+                    </div>
+                }
+            }
         </Authorized>
         <NotAuthorized>
             <div class="nav-item px-1">

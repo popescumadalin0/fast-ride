@@ -7,6 +7,7 @@ using FastRide.Client.Authentication;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using FastRide.Client.Service;
+using FastRide.Client.State;
 using FastRide.Server.Sdk;
 using GoogleMapsComponents;
 using Microsoft.AspNetCore.Components.Web;
@@ -20,6 +21,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+
+builder.Services.AddScoped<DestinationState>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

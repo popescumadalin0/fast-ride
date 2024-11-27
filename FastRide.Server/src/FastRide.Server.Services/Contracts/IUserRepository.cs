@@ -7,6 +7,9 @@ namespace FastRide.Server.Services.Contracts;
 
 public interface IUserRepository
 {
-    Task<UserType?> GetUserType(string nameIdentifier, string email);
-    Task<Response> RegisterUser(UserEntity user);
+    Task<UserType?> GetUserTypeAsync(string nameIdentifier, string email);
+    
+    Task<UserEntity> GetUserAsync(string nameIdentifier, string email);
+    
+    Task<Response> AddOrUpdateUserAsync(UserEntity user);
 }

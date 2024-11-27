@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using FastRide.Server.Contracts;
 using FastRide.Server.Services.Contracts;
 using Google.Apis.Auth;
 using Microsoft.Azure.Functions.Worker;
@@ -52,7 +53,11 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
             var email = payload.Email;
             var nameIdentifier = payload.Subject;
 
-            var userType = await _userService.GetUserType(nameIdentifier, email);
+            var userType = await _userService.GetUserType(new UserIdentifier()
+            {
+                Email = email,
+                NameIdentifier = nameIdentifier
+            });
 
             if (!userType.Success)
             {

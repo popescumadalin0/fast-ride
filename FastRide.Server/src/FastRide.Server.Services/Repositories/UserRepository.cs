@@ -15,9 +15,9 @@ public class UserRepository : IUserRepository
         this._userTable = userTable;
     }
 
-    public async Task<UserType?> GetUserType(string nameIdentifier, string email)
+    public async Task<UserType?> GetUserTypeAsync(string nameIdentifier, string email)
     {
-        var user = await _userTable.GetAsync(nameIdentifier, email);
+        var user = await _userTable.GetAsync(email, nameIdentifier);
         if (user is not { HasValue: true })
         {
             return null;
@@ -26,7 +26,18 @@ public class UserRepository : IUserRepository
         return user.Value.UserType;
     }
 
-    public async Task<Response> RegisterUser(UserEntity user)
+    public async Task<UserEntity> GetUserAsync(string nameIdentifier, string email)
+    {
+        var user = await _userTable.GetAsync(email, nameIdentifier);
+        if (user is not { HasValue: true })
+        {
+            return null;
+        }
+        
+        return user.Value;
+    }
+
+    public async Task<Response> AddOrUpdateUserAsync(UserEntity user)
     {
         var response = await _userTable.AddOrUpdateAsync(user);
 

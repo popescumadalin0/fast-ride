@@ -1,5 +1,20 @@
 ﻿@page "/history"
 
 <PageTitle>History</PageTitle>
-
-<h1>History</h1>
+<div class="content">
+    <h2>My rides</h2>
+    <Accordion>
+        @foreach (var ride in _rideGroups)
+        {
+            <AccordionItem Visible="true">
+                <AccordionHeader>
+                    <strong></strong>
+                </AccordionHeader>
+                <AccordionBody>
+                    <Ride RideInfo="@ride">
+                    </Ride>
+                </AccordionBody>
+            </AccordionItem>
+        }
+    </Accordion>
+</div>

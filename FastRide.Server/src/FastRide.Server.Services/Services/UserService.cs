@@ -21,19 +21,19 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<UserTypeResponse>> GetUserType(string nameIdentifier, string email)
+    public async Task<ServiceResponse<UserTypeResponse>> GetUserType(UserIdentifier user)
     {
         try
         {
-            var userType = await _userRepository.GetUserType(nameIdentifier, email);
+            var userType = await _userRepository.GetUserTypeAsync(user.NameIdentifier, user.Email);
 
             if (userType == null)
             {
-                var registerUser = await _userRepository.RegisterUser(new UserEntity()
+                var registerUser = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
                 {
                     UserType = UserType.User,
-                    PartitionKey = nameIdentifier,
-                    RowKey = email,
+                    PartitionKey = user.Email,
+                    RowKey = user.NameIdentifier,
                 });
 
                 if (registerUser.IsError)
@@ -52,5 +52,38 @@ public class UserService : IUserService
             _logger.LogError(ex, ex.Message);
             return new ServiceResponse<UserTypeResponse>(ex);
         }
+    }
+
+    public async Task<ServiceResponse> UpdateUserRating(UserRating userRating)
+    {
+        try
+        {
+            var actualUser = await _userRepository.GetUserAsync(userRating.User.NameIdentifier, userRating.User.Email);
+
+            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
+            {
+                PartitionKey = userRating.User.Email,
+                RowKey = userRating.User.NameIdentifier,
+                UserType = actualUser.UserType,
+                Rating = CalculateRating(actualUser.Rating, userRating.Rating)
+            });
+
+            if (response.IsError)
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+            
+            return new ServiceResponse();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return new ServiceResponse(ex);
+        }
+    }
+
+    private static double CalculateRating(double currentRating, int rating)
+    {
+        return (currentRating + rating) / 2;
     }
 }

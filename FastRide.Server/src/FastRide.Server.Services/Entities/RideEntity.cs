@@ -7,16 +7,16 @@ using FastRide.Server.Services.Enums;
 
 namespace FastRide.Server.Services.Entities;
 
-[TableName(TableNames.Users)]
-public class UserEntity : ITableEntity
+[TableName(TableNames.Rides)]
+public class RideEntity : ITableEntity
 {
     /// <summary>
-    /// Gets or sets the email.
+    /// Gets or sets the user email.
     /// </summary>
     public string PartitionKey { get; set; }
 
     /// <summary>
-    /// Gets or sets the name identifier.
+    /// Gets or sets the id.
     /// </summary>
     public string RowKey { get; set; }
 
@@ -27,10 +27,11 @@ public class UserEntity : ITableEntity
 
     public ETag ETag { get; set; }
 
-    /// <summary>
-    /// Gets or sets the user type.
-    /// </summary>
-    public UserType UserType { get; set; }
+    public string Destination { get; set; }
     
-    public double Rating { get; set; }
+    public DateTime FinishTime { get; set; }
+    
+    public double Cost { get; set; }
+    
+    public string DriverEmail { get; set; }
 }
