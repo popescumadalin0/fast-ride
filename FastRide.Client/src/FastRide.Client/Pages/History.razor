@@ -4,15 +4,18 @@
 <div class="content">
     <h2>My rides</h2>
     <Accordion>
-        @foreach (var ride in _rideGroups)
+        @foreach (var rideGroup in _rideGroups)
         {
             <AccordionItem Visible="true">
                 <AccordionHeader>
-                    <strong></strong>
+                    <strong>@rideGroup.Key</strong>
                 </AccordionHeader>
                 <AccordionBody>
-                    <Ride RideInfo="@ride">
-                    </Ride>
+                    @foreach (var ride in rideGroup)
+                    {
+                        <authentication RideInfo="@ride">
+                        </authentication>
+                    }
                 </AccordionBody>
             </AccordionItem>
         }

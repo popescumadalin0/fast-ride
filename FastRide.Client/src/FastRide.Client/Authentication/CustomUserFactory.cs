@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Models;
+using FastRide.Server.Contracts;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
@@ -31,8 +32,13 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
 
             var fastRideApiClient = _serviceProvider.GetRequiredService<IFastRideApiClient>();
             var userType = await fastRideApiClient.GetUserTypeAsync(
-                initialUser.Claims.First(x => x.Type == "sub").Value,
-                initialUser.Claims.First(x => x.Type == "email").Value);
+                new UserIdentifier()
+                {
+                    NameIdentifier =
+                        initialUser.Claims.First(x => x.Type == "sub").Value,
+                    Email =
+                        initialUser.Claims.First(x => x.Type == "email").Value
+                });
 
             if (!userType.Success)
             {

@@ -8,7 +8,7 @@ namespace FastRide.Server.Sdk.Contracts;
 /// <summary />
 public interface IFastRideApi
 {
-    [Post("/api/user/{nameIdentifier}/{email}")]
+    [Post("/api/user")]
     Task<UserTypeResponse> GetUserTypeAsync([Body] UserIdentifier user);
 
     [Get("/api/rides")]
@@ -16,7 +16,7 @@ public interface IFastRideApi
 
     [Post("/api/ride")]
     Task AddRideAsync([Body] Ride ride);
-    
+
     [Put("/api/user")]
     Task UpdateUserRatingAsync([Body] UserRating user);
 }

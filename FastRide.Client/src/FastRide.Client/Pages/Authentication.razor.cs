@@ -2,7 +2,7 @@
 
 namespace FastRide.Client.Pages;
 
-public partial class Ride : ComponentBase
+public partial class Authentication : ComponentBase
 {
     [Parameter] public string Action { get; set; }
 }

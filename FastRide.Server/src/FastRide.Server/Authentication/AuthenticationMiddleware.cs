@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FastRide.Server.Contracts;
 using FastRide.Server.Services.Contracts;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Middleware;
 
@@ -30,12 +31,6 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
 
         var roles = customerAttributes.FirstOrDefault()?.UserRoles;
 
-        if (roles is null || roles.Length == 0)
-        {
-            await next(context);
-            return;
-        }
-
         if (!TokenRetriever.TryGetIdToken(context, out var idToken))
         {
             context.SetHttpResponseStatusCode(HttpStatusCode.Unauthorized);
@@ -50,6 +45,14 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
         try
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            
+            if (roles is null || roles.Length == 0)
+            {
+                //context.GetHttpContext().SignInAsync()
+                await next(context);
+                return;
+            }
+            
             var email = payload.Email;
             var nameIdentifier = payload.Subject;
 

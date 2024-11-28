@@ -27,7 +27,7 @@ public class UserFunction
     [Authorize]
     [Function(nameof(GetUserAsync))]
     public async Task<IActionResult> GetUserAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "user/{nameIdentifier}/{email}")]
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "user")]
         HttpRequest req)
     {
         _logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger function processed a request.");
