@@ -26,7 +26,7 @@ public partial class History
             return;
         }
 
-        _rideGroups = response.Response
+        _rideGroups = response.Response 
             .Select(x => new RideInformation()
             {
                 FinishTime = x.FinishTime,

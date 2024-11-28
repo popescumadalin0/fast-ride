@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts;
 using FastRide.Server.Services.Contracts;
@@ -45,10 +46,11 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
         try
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            /*var principal = ConvertPayloadToClaimsPrincipal(payload);
+            context.Items["User"] = principal;*/
             
             if (roles is null || roles.Length == 0)
             {
-                //context.GetHttpContext().SignInAsync()
                 await next(context);
                 return;
             }
@@ -81,5 +83,29 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
         }
 
         await next(context);
+    }
+    
+    public static ClaimsPrincipal ConvertPayloadToClaimsPrincipal(GoogleJsonWebSignature.Payload payload)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, payload.Subject),
+            new Claim(ClaimTypes.Name, payload.Name),
+            new Claim(ClaimTypes.Email, payload.Email),
+        };
+
+        if (!string.IsNullOrEmpty(payload.Picture))
+        {
+            claims.Add(new Claim("picture", payload.Picture));
+        }
+
+        if (!string.IsNullOrEmpty(payload.Issuer))
+        {
+            claims.Add(new Claim(ClaimTypes.GroupSid, payload.Issuer));
+        }
+
+        var identity = new ClaimsIdentity(claims, "Google");
+
+        return new ClaimsPrincipal(identity);
     }
 }
