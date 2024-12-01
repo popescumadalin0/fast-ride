@@ -8,8 +8,11 @@ namespace FastRide.Server.Sdk.Contracts;
 /// <summary />
 public interface IFastRideApi
 {
+    [Get("/api/user")]
+    Task<User> GetCurrentUserAsync();
+    
     [Post("/api/user")]
-    Task<UserTypeResponse> GetUserTypeAsync([Body] UserIdentifier user);
+    Task<User> GetUserAsync([Body] UserIdentifier userIdentifier);
 
     [Get("/api/rides")]
     Task<List<Ride>> GetRidesByUserAsync();
@@ -17,6 +20,10 @@ public interface IFastRideApi
     [Post("/api/ride")]
     Task AddRideAsync([Body] Ride ride);
 
-    [Put("/api/user")]
+    [Put("/api/user/rating")]
     Task UpdateUserRatingAsync([Body] UserRating user);
+    
+    
+    [Put("/api/user")]
+    Task UpdateUserAsync([Body] UpdateUserPayload updatePayload);
 }

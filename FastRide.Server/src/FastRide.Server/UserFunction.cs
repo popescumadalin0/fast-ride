@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
 using FastRide.Server.Contracts;
@@ -25,6 +26,46 @@ public class UserFunction
     }
 
     [Authorize]
+    [Function(nameof(GetCurrentUserAsync))]
+    public async Task<IActionResult> GetCurrentUserAsync(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "user")]
+        HttpRequest req)
+    {
+        _logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger function processed a request.");
+
+        var response = await _userService.GetUserAsync(new UserIdentifier()
+        {
+            NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
+            Email = req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
+        });
+
+        if (response.Success)
+        {
+            if (response.Response.PictureUrl != req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value)
+            {
+                response.Response.PictureUrl = req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value;
+                var update = await _userService.UpdateUserAsync(new UserIdentifier()
+                    {
+                        NameIdentifier = response.Response.NameIdentifier,
+                        Email = response.Response.Email,
+                    },
+                    new UpdateUserPayload()
+                    {
+                        PictureUrl = response.Response.PictureUrl,
+                        PhoneNumber = response.Response.PhoneNumber,
+                    });
+
+                if (!update.Success)
+                {
+                    return ApiServiceResponse.ApiServiceResult(update);
+                }
+            }
+        }
+
+        return ApiServiceResponse.ApiServiceResult(response);
+    }
+
+    [Authorize]
     [Function(nameof(GetUserAsync))]
     public async Task<IActionResult> GetUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "user")]
@@ -39,16 +80,45 @@ public class UserFunction
         }
 
         var request = JsonConvert.DeserializeObject<UserIdentifier>(requestBody);
-        
-        var response = await _userService.GetUserType(request);
+
+        var response = await _userService.GetUserAsync(request);
 
         return ApiServiceResponse.ApiServiceResult(response);
     }
-    
+
+    [Authorize]
+    [Function(nameof(UpdateUserAsync))]
+    public async Task<IActionResult> UpdateUserAsync(
+        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "user")]
+        HttpRequest req)
+    {
+        _logger.LogInformation($"{nameof(UpdateUserAsync)} HTTP trigger function processed a request.");
+
+        string requestBody;
+        using (var streamReader = new StreamReader(req.Body))
+        {
+            requestBody = await streamReader.ReadToEndAsync();
+        }
+
+        var request = JsonConvert.DeserializeObject<UpdateUserPayload>(requestBody);
+
+        request.PictureUrl = req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value;
+
+        var response = await _userService.UpdateUserAsync(
+            new UserIdentifier()
+            {
+                NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
+                Email = req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
+            },
+            request);
+
+        return ApiServiceResponse.ApiServiceResult(response);
+    }
+
     [Authorize]
     [Function(nameof(UpdateUserRatingAsync))]
     public async Task<IActionResult> UpdateUserRatingAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "user")]
+        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "user/rating")]
         HttpRequest req)
     {
         _logger.LogInformation($"{nameof(UpdateUserRatingAsync)} HTTP trigger function processed a request.");
@@ -60,8 +130,8 @@ public class UserFunction
         }
 
         var request = JsonConvert.DeserializeObject<UserRating>(requestBody);
-        
-        var response = await _userService.UpdateUserRating(request);
+
+        var response = await _userService.UpdateUserRatingAsync(request);
 
         return ApiServiceResponse.ApiServiceResult(response);
     }

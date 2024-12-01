@@ -2,6 +2,11 @@
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <MudSkeleton />
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+                </Authorizing>
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated != true)
                     {

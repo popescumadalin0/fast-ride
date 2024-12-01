@@ -10,4 +10,12 @@ public interface IGeolocationService
     /// </summary>
     /// <returns></returns>
     Task<Geolocation> GetLocationAsync();
+
+    /// <summary>
+    /// Get location name based on latitude and longitude
+    /// </summary>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
+    /// <returns></returns>
+    Task<string> GetLocationByLatLong(double latitude, double longitude);
 }

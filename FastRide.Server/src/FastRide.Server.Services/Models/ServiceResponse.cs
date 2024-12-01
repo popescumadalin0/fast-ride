@@ -3,7 +3,6 @@ using System;
 namespace FastRide.Server.Services.Models;
 
 public class ServiceResponse<T>
-    where T : new()
 {
     public ServiceResponse(T response)
     {

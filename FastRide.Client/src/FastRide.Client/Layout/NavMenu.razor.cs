@@ -13,6 +13,8 @@ public partial class NavMenu : IDisposable
     [Inject] private NavigationManager Navigation { get; set; }
     
     [Inject] private DestinationState DestinationState { get; set; }
+
+    private bool _open = false;
     
     protected override void OnInitialized()
     {
@@ -28,6 +30,16 @@ public partial class NavMenu : IDisposable
     private async Task DriveAsync()
     {
         
+    }
+    
+    private void OpenRides()
+    {
+        
+    }
+    
+    private void OpenAccountMenu()
+    {
+        _open = !_open;
     }
 
     private void LogOut()

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
@@ -17,10 +20,8 @@ public partial class Home : ComponentBase, IDisposable
     [Inject] private IGeolocationService GeolocationService { get; set; }
     
     [Inject] private DestinationState DestinationState { get; set; }
-
-    private string SelectedSearchValue { get; set; }
-
-    private string SelectedAutoCompleteText { get; set; }
+    
+    private string _state;
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,16 +43,9 @@ public partial class Home : ComponentBase, IDisposable
             MapTypeId = MapTypeId.Roadmap,
             MapTypeControl = false,
             ZoomControl = false,
+            StreetViewControl = false,
             ColorScheme = ColorScheme.Dark,
-            RenderingType = RenderingType.Vector,
-            StreetViewControlOptions = new StreetViewControlOptions()
-            {
-                Position = ControlPosition.RightTop
-            },
-            CameraControlOptions = new CameraControlOptions()
-            {
-                Position = ControlPosition.TopRight
-            }
+            CameraControl = false
         };
 
         DestinationState.OnChange += StateHasChanged;
@@ -67,5 +61,10 @@ public partial class Home : ComponentBase, IDisposable
         var bounds = await LatLngBounds.CreateAsync(_map.JsRuntime);
         
         DestinationState.Geolocation = new Geolocation();
+    }
+    
+    private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
+    {
+        return ["test", "test1", "test2", "test3"];
     }
 }

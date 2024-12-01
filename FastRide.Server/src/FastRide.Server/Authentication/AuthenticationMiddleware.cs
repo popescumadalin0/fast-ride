@@ -9,6 +9,7 @@ using FastRide.Server.Contracts;
 using FastRide.Server.Services.Contracts;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Middleware;
 
@@ -46,8 +47,8 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
         try
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
-            /*var principal = ConvertPayloadToClaimsPrincipal(payload);
-            context.Items["User"] = principal;*/
+            var principal = ConvertPayloadToClaimsPrincipal(payload);
+            ((DefaultHttpContext)context.Items["HttpRequestContext"]).User = principal;
             
             if (roles is null || roles.Length == 0)
             {
@@ -58,19 +59,19 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
             var email = payload.Email;
             var nameIdentifier = payload.Subject;
 
-            var userType = await _userService.GetUserType(new UserIdentifier()
+            var user = await _userService.GetUserAsync(new UserIdentifier()
             {
                 Email = email,
                 NameIdentifier = nameIdentifier
             });
 
-            if (!userType.Success)
+            if (!user.Success)
             {
                 context.SetHttpResponseStatusCode(HttpStatusCode.Forbidden);
                 return;
             }
 
-            if (!roles.Contains(userType.Response.ToString()))
+            if (!roles.Contains(user.Response.UserType.ToString()))
             {
                 context.SetHttpResponseStatusCode(HttpStatusCode.Forbidden);
                 return;
@@ -84,14 +85,14 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
 
         await next(context);
     }
-    
-    public static ClaimsPrincipal ConvertPayloadToClaimsPrincipal(GoogleJsonWebSignature.Payload payload)
+
+    private static ClaimsPrincipal ConvertPayloadToClaimsPrincipal(GoogleJsonWebSignature.Payload payload)
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, payload.Subject),
-            new Claim(ClaimTypes.Name, payload.Name),
-            new Claim(ClaimTypes.Email, payload.Email),
+            new("sub", payload.Subject),
+            new("name", payload.Name),
+            new("email", payload.Email),
         };
 
         if (!string.IsNullOrEmpty(payload.Picture))

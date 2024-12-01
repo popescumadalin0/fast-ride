@@ -18,13 +18,7 @@ public class RideRepository : IRideRepository
 
     public Task<List<RideEntity>> GetRidesByUser(string email)
     {
-        
-        var rides = _rideTable.GetBy(x=> x.PartitionKey == email);
-        
-        if (rides is not { Count: 0 })
-        {
-            return null;
-        }
+        var rides = _rideTable.GetBy(x => x.PartitionKey == email);
 
         return Task.FromResult(rides);
     }

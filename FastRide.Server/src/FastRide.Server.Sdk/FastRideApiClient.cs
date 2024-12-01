@@ -23,21 +23,36 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
         _logger = logger;
     }
 
-    public async Task<ApiResponseMessage<UserTypeResponse>> GetUserTypeAsync(UserIdentifier userIdentifier)
+    public async Task<ApiResponseMessage<User>> GetCurrentUserAsync()
     {
         try
         {
-            var task = _apiClient.GetUserTypeAsync(userIdentifier);
+            var task = _apiClient.GetCurrentUserAsync();
             var result = await Execute(task);
             return result;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error executing {nameof(GetUserTypeAsync)}");
+            _logger.LogError(e, $"Error executing {nameof(GetCurrentUserAsync)}");
             throw;
         }
     }
-
+    
+    public async Task<ApiResponseMessage<User>> GetUserAsync(UserIdentifier userIdentifier)
+    {
+        try
+        {
+            var task = _apiClient.GetUserAsync(userIdentifier);
+            var result = await Execute(task);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error executing {nameof(GetUserAsync)}");
+            throw;
+        }
+    }
+    
     public async Task<ApiResponseMessage<List<Ride>>> GetRidesByUserAsync()
     {
         try
@@ -79,6 +94,21 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
         catch (Exception e)
         {
             _logger.LogError(e, $"Error executing {nameof(UpdateUserRatingAsync)}");
+            throw;
+        }
+    }
+
+    public async Task<ApiResponseMessage> UpdateUserAsync(UpdateUserPayload updateUserPayload)
+    {
+        try
+        {
+            var task = _apiClient.UpdateUserAsync(updateUserPayload);
+            var result = await ExecuteWithNoContentResponse(task);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error executing {nameof(UpdateUserAsync)}");
             throw;
         }
     }

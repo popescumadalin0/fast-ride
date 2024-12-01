@@ -31,14 +31,7 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
             var userIdentity = (ClaimsIdentity)initialUser.Identity;
 
             var fastRideApiClient = _serviceProvider.GetRequiredService<IFastRideApiClient>();
-            var userType = await fastRideApiClient.GetUserTypeAsync(
-                new UserIdentifier()
-                {
-                    NameIdentifier =
-                        initialUser.Claims.First(x => x.Type == "sub").Value,
-                    Email =
-                        initialUser.Claims.First(x => x.Type == "email").Value
-                });
+            var userType = await fastRideApiClient.GetCurrentUserAsync();
 
             if (!userType.Success)
             {

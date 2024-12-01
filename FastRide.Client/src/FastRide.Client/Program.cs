@@ -1,7 +1,5 @@
 using System;
 using System.Net.Http;
-using Blazorise;
-using Blazorise.Bootstrap5;
 using FastRide.Client;
 using FastRide.Client.Authentication;
 using FastRide.Client.Contracts;
@@ -15,6 +13,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -42,8 +41,6 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 
-builder.Services
-    .AddBlazorise(options => { options.Immediate = true; })
-    .AddBootstrap5Providers();
+builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();

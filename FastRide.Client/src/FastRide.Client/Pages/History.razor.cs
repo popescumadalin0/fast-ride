@@ -1,46 +1,114 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blazorise.Snackbar;
+using FastRide.Client.Contracts;
 using FastRide.Client.Models;
+using FastRide.Server.Contracts;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace FastRide.Client.Pages;
 
 public partial class History
 {
-    private IEnumerable<IGrouping<string, RideInformation>> _rideGroups;
     [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
 
-    private SnackbarStack SnackBar { get; set; }
+    [Inject] private IGeolocationService GeolocationService { get; set; }
+        
+    [Inject]
+    private ISnackbar SnackBar { get; set; }
+    
+    private IEnumerable<IGrouping<string, RideInformation>> _rideGroups;
 
     protected override async Task OnInitializedAsync()
     {
         var response = await FastRideApiClient.GetRidesByUserAsync();
         if (!response.Success)
         {
-            await SnackBar.PushAsync("Something went wrong",
-                SnackbarColor.Warning,
-                options => { options.IntervalBeforeClose = (double)Delay.Notification; });
+            SnackBar.Add("Something went wrong", Severity.Error);
             return;
         }
 
-        _rideGroups = response.Response 
-            .Select(x => new RideInformation()
+        response.Response.AddRange(new[]
+        {
+            new Ride()
             {
-                FinishTime = x.FinishTime,
-                Cost = x.Cost,
-                Destination = x.Destination,
-                Id = x.Id,
-                DriverEmail = x.DriverEmail,
-            })
-            .GroupBy(x => x.FinishTime.ToString("dd MMM, HH:mm"));
-    }
-}
+                TimeStamp = DateTime.Now,
+                DestinationLat = 44.4647452,
+                DestinationLng = 7.3553838,
+                StartPointLat = 50.3,
+                StartPointLng = 50.3,
+                DriverEmail = "test@test.com",
+                Cost = 100.2,
+                Id = Guid.NewGuid().ToString(),
+            },
+            new Ride()
+            {
+                TimeStamp = DateTime.Now,
+                DestinationLat = 44.4647452,
+                DestinationLng = 7.3553838,
+                StartPointLat = 50.3,
+                StartPointLng = 50.3,
+                DriverEmail = "test@test.com",
+                Cost = 10.2,
+                Id = Guid.NewGuid().ToString(),
+            },
+            new Ride()
+            {
+                TimeStamp = DateTime.Now,
+                DestinationLat = 44.4647452,
+                DestinationLng = 7.3553838,
+                StartPointLat = 50.3,
+                StartPointLng = 50.3,
+                DriverEmail = "test@test.com",
+                Cost = 1.2,
+                Id = Guid.NewGuid().ToString(),
+            },
+            new Ride()
+            {
+                TimeStamp = DateTime.Now.AddDays(-1),
+                DestinationLat = 44.4647452,
+                DestinationLng = 7.3553838,
+                StartPointLat = 50.3,
+                StartPointLng = 50.3,
+                DriverEmail = "test@test.com",
+                Cost = 1.2,
+                Id = Guid.NewGuid().ToString(),
+            },
+            new Ride()
+            {
+                TimeStamp = DateTime.Now.AddDays(-1),
+                DestinationLat = 44.4647452,
+                DestinationLng = 7.3553838,
+                StartPointLat = 50.3,
+                StartPointLng = 50.3,
+                DriverEmail = "test@test.com",
+                Cost = 1.2,
+                Id = Guid.NewGuid().ToString(),
+            }
+        });
 
-public enum Delay
-{
-    None = 0,
-    Notification = 5000,
+        var rides = new List<RideInformation>();
+
+        if (response.Response.Count != 0)
+        {
+            foreach (var ride in response.Response)
+            {
+                var destination =
+                    await GeolocationService.GetLocationByLatLong(ride.DestinationLat, ride.DestinationLng);
+                rides.Add(new RideInformation()
+                {
+                    TimeStamp = ride.TimeStamp,
+                    Cost = ride.Cost,
+                    Destination = destination,
+                    Id = ride.Id,
+                    DriverEmail = ride.DriverEmail,
+                });
+            }
+
+            _rideGroups = rides.GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
+        }
+    }
 }

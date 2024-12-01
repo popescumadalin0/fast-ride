@@ -1,4 +1,5 @@
-﻿<nav class="d-flex flex-row align-items-center justify-content-center">
+﻿@using FastRide.Server.Contracts
+<nav class="d-flex flex-row align-items-center justify-content-center">
     <div class="nav-item px-1">
         <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
             <i class="bi bi-house"></i>
@@ -14,14 +15,24 @@
             <div class="nav-item px-1">
                 <img class="nav-link profile-image"
                      src="@context.User.Claims.Single(c => c.Type == "picture").Value"
-                     alt="@context.User.Identity!.Name"/>
+                     alt="@context.User.Identity!.Name"
+                     onclick="@OpenAccountMenu"/>
+                <MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                    <MudPaper Width="200px">
+                        <MudList T="string">
+                            <MudListItem Text="Account settings" Icon="@Icons.Material.Filled.VerifiedUser" Href="https://myaccount.google.com"/>
+                            <MudDivider />
+                            <MudListItem Text="Change phone number" Icon="@Icons.Material.Filled.Phone" />
+                        </MudList>
+                    </MudPaper>
+                </MudPopover>
             </div>
             <div class="nav-item px-1">
                 <NavLink class="nav-link btn btn-link bg-danger text-white" @onclick="LogOut">
                     <i class="bi bi-box-arrow-right "></i>
                 </NavLink>
             </div>
-            @if (context.User.IsInRole("User"))
+            @if (context.User.IsInRole(UserType.User.ToString()))
             {
                 @if (DestinationState.Geolocation != null)
                 {
@@ -30,6 +41,14 @@
                         </NavLink>
                     </div>
                 }
+            }
+            @if (context.User.IsInRole(UserType.Driver.ToString()))
+            {
+                <div class="nav-item px-1">
+                    <NavLink class="@($"nav-link btn btn-link {(false ? "bg-body" : "bg-warning")} text-white")"
+                             onclick="@OpenRides">Rides
+                    </NavLink>
+                </div>
             }
         </Authorized>
         <NotAuthorized>

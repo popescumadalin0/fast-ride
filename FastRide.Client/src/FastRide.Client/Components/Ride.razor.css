@@ -1,14 +1,33 @@
 .ride{
-    width: 500px;
-    height: 50px;
+    height: min-content;
 }
 
-.gray-label{
-    background-color: gray;
+.icon-label{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    background-color: #e1e1e1;
     color: black;
-    border-radius: 50px;
+    height: 40px;
+    width: 40px;
+    font-size: 1.4rem;
+    border-radius: 25px;
+}
+
+.rebook-button{
+    border-radius: 25px;
+    align-items: center;
+    background-color: #e1e1e1;
+    height: 30px;
+    width: 90px;
+    border: none;
 }
 
 .destination-name{
     text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 45dvw;
 }

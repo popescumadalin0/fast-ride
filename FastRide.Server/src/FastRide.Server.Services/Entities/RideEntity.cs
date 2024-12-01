@@ -27,11 +27,18 @@ public class RideEntity : ITableEntity
 
     public ETag ETag { get; set; }
 
-    public string Destination { get; set; }
+    public double DestinationLng { get; set; }
+
+    public double DestinationLat { get; set; }
+
     
-    public DateTime FinishTime { get; set; }
+    public double StartPointLat { get; set; }
+ 
+    public double StartPointLng { get; set; }
     
     public double Cost { get; set; }
+    
+    public RideStatus Status { get; set; }
     
     public string DriverEmail { get; set; }
 }

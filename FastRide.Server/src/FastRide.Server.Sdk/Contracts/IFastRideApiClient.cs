@@ -8,10 +8,15 @@ namespace FastRide.Server.Sdk.Contracts;
 /// <summary />
 public interface IFastRideApiClient
 {
-    Task<ApiResponseMessage<UserTypeResponse>> GetUserTypeAsync(UserIdentifier user);
+    Task<ApiResponseMessage<User>> GetCurrentUserAsync();
+
+    Task<ApiResponseMessage<User>> GetUserAsync(UserIdentifier userIdentifier);
+    
     Task<ApiResponseMessage<List<Ride>>> GetRidesByUserAsync();
     
     Task<ApiResponseMessage> AddRideAsync(Ride ride);
     
     Task<ApiResponseMessage> UpdateUserRatingAsync(UserRating user);
+    
+    Task<ApiResponseMessage> UpdateUserAsync(UpdateUserPayload updateUserPayload);
 }

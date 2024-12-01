@@ -33,4 +33,8 @@ public class UserEntity : ITableEntity
     public UserType UserType { get; set; }
     
     public double Rating { get; set; }
+    
+    public string PictureUrl { get; set; }
+    
+    public string PhoneNumber { get; set; }
 }

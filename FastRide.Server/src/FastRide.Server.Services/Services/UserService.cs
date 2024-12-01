@@ -21,50 +21,98 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<UserTypeResponse>> GetUserType(UserIdentifier user)
+    public async Task<ServiceResponse<User>> GetUserAsync(UserIdentifier user)
     {
         try
         {
-            var userType = await _userRepository.GetUserTypeAsync(user.NameIdentifier, user.Email);
+            var actualUser = await _userRepository.GetUserAsync(user.NameIdentifier, user.Email);
 
-            if (userType == null)
+            if (actualUser == null)
             {
-                var registerUser = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
+                actualUser = new UserEntity()
                 {
                     UserType = UserType.User,
                     PartitionKey = user.Email,
                     RowKey = user.NameIdentifier,
-                });
+                };
+                var registerUser = await _userRepository.AddOrUpdateUserAsync(actualUser);
 
                 if (registerUser.IsError)
                 {
                     throw new Exception(registerUser.ReasonPhrase);
                 }
-
-                userType = UserType.User;
             }
 
-            return new ServiceResponse<UserTypeResponse>(new UserTypeResponse
-                { UserType = (Server.Contracts.UserType)userType });
+            return new ServiceResponse<User>(new User()
+            {
+                UserType = (Server.Contracts.UserType)actualUser.UserType,
+                NameIdentifier = actualUser.RowKey,
+                Email = actualUser.PartitionKey,
+                Rating = actualUser.Rating,
+                PhoneNumber = actualUser.PhoneNumber,
+                PictureUrl = actualUser.PictureUrl,
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return new ServiceResponse<UserTypeResponse>(ex);
+            return new ServiceResponse<User>(ex);
         }
     }
 
-    public async Task<ServiceResponse> UpdateUserRating(UserRating userRating)
+    public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload)
+    {
+        try
+        {
+            var actualUser = await _userRepository.GetUserAsync(user.NameIdentifier, user.Email);
+
+            if (actualUser == null)
+            {
+                return new ServiceResponse(errorMessage: "User not found");
+            }
+
+            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
+            {
+                PartitionKey = actualUser.PartitionKey,
+                RowKey = actualUser.RowKey,
+                UserType = actualUser.UserType,
+                Rating = actualUser.Rating,
+                PhoneNumber = updateUserPayload.PhoneNumber,
+                PictureUrl = updateUserPayload.PictureUrl,
+            });
+            
+            if (response.IsError)
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+
+            return new ServiceResponse();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return new ServiceResponse(ex);
+        }
+    }
+
+    public async Task<ServiceResponse> UpdateUserRatingAsync(UserRating userRating)
     {
         try
         {
             var actualUser = await _userRepository.GetUserAsync(userRating.User.NameIdentifier, userRating.User.Email);
 
+            if (actualUser == null)
+            {
+                return new ServiceResponse(errorMessage: "User not found");
+            }
+            
             var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
             {
                 PartitionKey = userRating.User.Email,
                 RowKey = userRating.User.NameIdentifier,
                 UserType = actualUser.UserType,
+                PhoneNumber = actualUser.PhoneNumber,
+                PictureUrl = actualUser.PictureUrl,
                 Rating = CalculateRating(actualUser.Rating, userRating.Rating)
             });
 

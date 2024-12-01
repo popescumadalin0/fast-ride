@@ -8,6 +8,7 @@ using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 using FastRide.Server.Services.Models;
 using Microsoft.Extensions.Logging;
+using RideStatus = FastRide.Server.Services.Entities.RideStatus;
 using UserType = FastRide.Server.Services.Enums.UserType;
 
 namespace FastRide.Server.Services.Services;
@@ -32,10 +33,15 @@ public class RideService : IRideService
             return new ServiceResponse<List<Ride>>(rides.Select(x => new Ride
             {
                 Cost = x.Cost,
-                Destination = x.Destination,
                 Id = x.RowKey,
-                FinishTime = x.FinishTime,
-                DriverEmail = x.DriverEmail,
+                TimeStamp = x.Timestamp!.Value.DateTime,
+                    DriverEmail = x.DriverEmail,
+                Status = (Server.Contracts.RideStatus)x.Status,
+                UserEmail = x.PartitionKey,
+                DestinationLat = x.DestinationLat,
+                DestinationLng = x.DestinationLng,
+                StartPointLat = x.StartPointLat,
+                StartPointLng = x.StartPointLng,
             }).ToList());
         }
         catch (Exception ex)
@@ -52,11 +58,15 @@ public class RideService : IRideService
             await _rideRepository.AddRideForUser(new RideEntity()
             {
                 Cost = ride.Cost,
-                Destination = ride.Destination,
+                StartPointLat = ride.StartPointLat,
+                StartPointLng = ride.StartPointLng,
+                DestinationLat = ride.DestinationLat,
+                DestinationLng = ride.DestinationLng,
                 PartitionKey = email,
                 RowKey = Guid.NewGuid().ToString(),
-                FinishTime = ride.FinishTime,
+                Timestamp= ride.TimeStamp,
                 DriverEmail = ride.DriverEmail,
+                Status = (RideStatus)ride.Status,
             });
 
             return new ServiceResponse();
