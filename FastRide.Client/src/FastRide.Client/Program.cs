@@ -23,6 +23,8 @@ builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true
 
 builder.Services.AddScoped<DestinationState>();
 
+builder.Services.AddScoped<OverlayState>();
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddSessionStorageServices();

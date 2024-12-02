@@ -1,11 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
-<MudPopoverProvider />
+<MudThemeProvider/>
+<MudPopoverProvider/>
 
-<MudDialogProvider />
+<MudDialogProvider/>
 
-<MudSnackbarProvider />
+<MudSnackbarProvider/>
 
 <div class="sidebar">
     <NavMenu/>
@@ -14,7 +14,12 @@
 <div class="page">
     <main>
         <article class="content">
-            @Body
+            <div visibility=@(!OverlayState.DataLoading ? "visible" : "hidden")>
+                @Body
+            </div>
+            <div visibility=@(OverlayState.DataLoading ? "visible" : "hidden")>
+                <Overlay/>
+            </div>
         </article>
     </main>
 </div>

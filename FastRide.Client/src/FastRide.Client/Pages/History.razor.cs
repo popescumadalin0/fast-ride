@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
+using FastRide.Client.State;
 using FastRide.Server.Contracts;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
@@ -11,19 +12,23 @@ using MudBlazor;
 
 namespace FastRide.Client.Pages;
 
-public partial class History
+public partial class History : IDisposable
 {
     [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
 
     [Inject] private IGeolocationService GeolocationService { get; set; }
-        
-    [Inject]
-    private ISnackbar SnackBar { get; set; }
-    
+
+    [Inject] private ISnackbar SnackBar { get; set; }
+
+    [Inject] private OverlayState OverlayState { get; set; }
+
     private IEnumerable<IGrouping<string, RideInformation>> _rideGroups;
 
     protected override async Task OnInitializedAsync()
     {
+        OverlayState.OnChange += StateHasChanged;
+
+        OverlayState.DataLoading = true;
         var response = await FastRideApiClient.GetRidesByUserAsync();
         if (!response.Success)
         {
@@ -110,5 +115,12 @@ public partial class History
 
             _rideGroups = rides.GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
         }
+        
+        OverlayState.DataLoading = false;
+    }
+
+    public void Dispose()
+    {
+        OverlayState.OnChange -= StateHasChanged;
     }
 }
