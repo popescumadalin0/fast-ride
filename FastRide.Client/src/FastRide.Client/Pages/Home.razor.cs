@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
@@ -17,11 +16,16 @@ public partial class Home : ComponentBase, IDisposable
     private GoogleMap _map;
     private MapOptions _mapOptions;
 
-    [Inject] private IGeolocationService GeolocationService { get; set; }
-    
-    [Inject] private DestinationState DestinationState { get; set; }
-    
     private string _state;
+
+    [Inject] private IGeolocationService GeolocationService { get; set; }
+
+    [Inject] private DestinationState DestinationState { get; set; }
+
+    public void Dispose()
+    {
+        DestinationState.OnChange -= StateHasChanged;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,19 +54,12 @@ public partial class Home : ComponentBase, IDisposable
 
         DestinationState.OnChange += StateHasChanged;
     }
-    
-    public void Dispose()
-    {
-        DestinationState.OnChange -= StateHasChanged;
-    }
 
     private async Task AfterMapRender()
     {
         var bounds = await LatLngBounds.CreateAsync(_map.JsRuntime);
-        
-        DestinationState.Geolocation = new Geolocation();
     }
-    
+
     private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
     {
         return ["test", "test1", "test2", "test3"];

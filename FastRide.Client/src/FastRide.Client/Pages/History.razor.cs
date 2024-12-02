@@ -14,6 +14,7 @@ namespace FastRide.Client.Pages;
 
 public partial class History : IDisposable
 {
+    private IEnumerable<IGrouping<string, RideInformation>> _rideGroups;
     [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
 
     [Inject] private IGeolocationService GeolocationService { get; set; }
@@ -22,7 +23,14 @@ public partial class History : IDisposable
 
     [Inject] private OverlayState OverlayState { get; set; }
 
-    private IEnumerable<IGrouping<string, RideInformation>> _rideGroups;
+    [Inject] private DestinationState DestinationState { get; set; }
+
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    public void Dispose()
+    {
+        OverlayState.OnChange -= StateHasChanged;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,17 +118,25 @@ public partial class History : IDisposable
                     Destination = destination,
                     Id = ride.Id,
                     DriverEmail = ride.DriverEmail,
+                    DestinationLocation = new Geolocation()
+                    {
+                        Longitude = ride.DestinationLng,
+                        Latitude = ride.DestinationLat
+                    },
                 });
             }
 
             _rideGroups = rides.GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
         }
-        
+
         OverlayState.DataLoading = false;
     }
 
-    public void Dispose()
+    private Task RebookClickedAsync(RideInformation ride)
     {
-        OverlayState.OnChange -= StateHasChanged;
+        DestinationState.Geolocation = ride.DestinationLocation;
+        NavigationManager.NavigateTo("/");
+
+        return Task.CompletedTask;
     }
 }

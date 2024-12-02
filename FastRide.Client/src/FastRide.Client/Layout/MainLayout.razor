@@ -11,15 +11,15 @@
     <NavMenu/>
 </div>
 
+@if (OverlayState.DataLoading)
+{
+    <Overlay/>
+}
+
 <div class="page">
     <main>
         <article class="content">
-            <div visibility=@(!OverlayState.DataLoading ? "visible" : "hidden")>
-                @Body
-            </div>
-            <div visibility=@(OverlayState.DataLoading ? "visible" : "hidden")>
-                <Overlay/>
-            </div>
+            @Body
         </article>
     </main>
 </div>

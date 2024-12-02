@@ -1,15 +1,15 @@
-﻿<MudCard Style="height: 100dvh; width: 100dvw;">
-    <MudSkeleton SkeletonType="SkeletonType.Rectangle"/>
+﻿<MudCard Style="height: 100dvh; width: 100dvw; position: fixed; z-index: 900;">
     <MudCardContent>
+        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px"/>
         <MudSkeleton Width="30%" Height="42px;"/>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25%"/>
         <MudSkeleton Width="80%"/>
         <MudSkeleton Width="100%"/>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="10%"/>
+        <MudSkeleton Width="64px" Height="40px"/>
+        <MudSkeleton Width="105px" Height="40px"/>
     </MudCardContent>
-    <MudCardActions>
-        <MudSkeleton Width="64px" Height="40px" Class="ml-2"/>
-        <MudSkeleton Width="105px" Height="40px" Class="ml-3"/>
-    </MudCardActions>
-    <MudOverlay Visible="OverlayState.DataLoading" DarkBackground="true" Absolute="true">
+    <MudOverlay Visible="OverlayState.DataLoading" LightBackground="true" Absolute="true">
         <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
     </MudOverlay>
 </MudCard>

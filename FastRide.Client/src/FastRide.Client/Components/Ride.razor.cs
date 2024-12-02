@@ -6,4 +6,6 @@ namespace FastRide.Client.Components;
 public partial class Ride : ComponentBase
 {
     [Parameter] public RideInformation RideInfo { get; set; }
+
+    [Parameter] public EventCallback<RideInformation> OnRebook { get; set; }
 }

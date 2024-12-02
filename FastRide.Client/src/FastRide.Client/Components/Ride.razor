@@ -8,8 +8,8 @@
             <spam class="text-muted">@RideInfo.TimeStamp.ToString("dd MMM, HH:mm"), LEI @RideInfo.Cost</spam>
         </div>
     </div>
-    <button class="rebook-button fw-bold">
+    <button class="rebook-button fw-bold" onclick="@(async () => await OnRebook.InvokeAsync(RideInfo))">
         <i class="bi bi-arrow-counterclockwise"></i>
-        <span>Rebook </span>
+        <span>Rebook</span>
     </button>
 </div>

@@ -9,11 +9,12 @@
             @foreach (var rideGroup in _rideGroups)
             {
                 <MudExpansionPanel HideIcon="true" Text="@rideGroup.Key" Expanded="true">
-                    @foreach (var ride in rideGroup)
+                    @foreach (var ride in rideGroup.SkipLast(1))
                     {
-                        <Ride RideInfo="@ride"/>
+                        <Ride RideInfo="@ride" OnRebook="RebookClickedAsync"/>
                         <hr/>
                     }
+                    <Ride RideInfo="@rideGroup.Last()"/>
                 </MudExpansionPanel>
             }
         }
