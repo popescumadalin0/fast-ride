@@ -41,6 +41,8 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
+builder.Services.AddScoped<IDistanceService, DistanceService>();
+
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 
 builder.Services.AddMudServices();

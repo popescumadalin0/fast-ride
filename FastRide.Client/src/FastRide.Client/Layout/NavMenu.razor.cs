@@ -30,8 +30,11 @@ public partial class NavMenu : IDisposable
         DestinationState.OnChange -= StateHasChanged;
     }
 
-    private async Task DriveAsync()
+    private async Task RideAsync()
     {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.ShowAsync<PaymentConfirmationDialog>("Confirm payment", options);
     }
 
     private void OpenRides()

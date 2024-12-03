@@ -1,0 +1,12 @@
+﻿<MudDialog>
+    <TitleContent>
+        Change user settings
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="_phoneNumber" InputType="InputType.Telephone" Label="Phone number" Variant="Variant.Filled" Margin="Margin.Dense" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Pay</MudButton>
+    </DialogActions>
+</MudDialog>
