@@ -43,7 +43,6 @@ public class UserFunction
         {
             if (response.Response.PictureUrl != req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value)
             {
-                response.Response.PictureUrl = req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value;
                 var update = await _userService.UpdateUserAsync(new UserIdentifier()
                     {
                         NameIdentifier = response.Response.NameIdentifier,
@@ -51,9 +50,9 @@ public class UserFunction
                     },
                     new UpdateUserPayload()
                     {
-                        PictureUrl = response.Response.PictureUrl,
                         PhoneNumber = response.Response.PhoneNumber,
-                    });
+                    },
+                    req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value);
 
                 if (!update.Success)
                 {
@@ -102,15 +101,14 @@ public class UserFunction
 
         var request = JsonConvert.DeserializeObject<UpdateUserPayload>(requestBody);
 
-        request.PictureUrl = req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value;
-
         var response = await _userService.UpdateUserAsync(
             new UserIdentifier()
             {
                 NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
                 Email = req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
             },
-            request);
+            request,
+            req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value);
 
         return ApiServiceResponse.ApiServiceResult(response);
     }

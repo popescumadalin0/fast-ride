@@ -1,0 +1,33 @@
+﻿<MudPopover Open="@Opened" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <MudPaper Width="300px">
+        <MudList T="string">
+            @foreach (var ride in _availableRides.SkipLast(1))
+            {
+                <MudListItem Text="@ride.Destination" Icon="@Icons.Material.Filled.CarRental">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div class="d-flex flex-column">
+                            <span class="ellipsis-text destination-width"
+                                  title="@ride.Destination">@ride.Destination</span>
+                            <span class="text-muted">4.5 KM</span>
+                        </div>
+                        <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
+                                       OnClick="@(async () => await AcceptRideAsync(ride))"></MudIconButton>
+                    </div>
+                </MudListItem>
+                <MudDivider/>
+            }
+            <MudListItem Text="@_availableRides.Last().Destination" Icon="@Icons.Material.Filled.CarRental">
+                <div class="d-flex flex-row justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="ellipsis-text destination-width"
+                              title="@_availableRides.Last().Destination">@_availableRides.Last().Destination</span>
+                        <span class="text-muted">4.5 KM</span>
+                    </div>
+                    <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
+                                   OnClick="@(async () => await AcceptRideAsync(_availableRides.Last()))"></MudIconButton>
+                </div>
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+</MudPopover>
+            

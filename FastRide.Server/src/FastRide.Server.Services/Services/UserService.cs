@@ -60,7 +60,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload)
+    public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload, string pictureUrl)
     {
         try
         {
@@ -78,7 +78,7 @@ public class UserService : IUserService
                 UserType = actualUser.UserType,
                 Rating = actualUser.Rating,
                 PhoneNumber = updateUserPayload.PhoneNumber,
-                PictureUrl = updateUserPayload.PictureUrl,
+                PictureUrl = pictureUrl,
             });
             
             if (response.IsError)

@@ -98,3 +98,9 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.ellipsis-text {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
