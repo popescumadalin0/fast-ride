@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace FastRide.Client.Service;
 
-//todo: register with DI
-/// A wrapper around a SignalR connection that receives notifications about rides.
 public class SignalRObserver : ISignalRObserver
 {
     private readonly HubConnection _connection;
@@ -16,15 +14,21 @@ public class SignalRObserver : ISignalRObserver
     {
         _connection = connection;
 
-        connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
-        connection.On("AvailableRides", async (Ride message) => await OnAvailableRidesUpdatedAsync(message));
+        _connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
+        _connection.On("AvailableRides", async (Ride message) => await OnAvailableRidesUpdatedAsync(message));
     }
 
     /// <inheritdoc />
     public event Func<Ride, Task> AvailableRiders = default!;
-    
+
     /// <inheritdoc />
     public event Func<Ride, Task> AvailableRides = default!;
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        await _connection.StopAsync();
+        await _connection.DisposeAsync();
+    }
 
     private async Task OnAvailableRidesUpdatedAsync(Ride arg)
     {
@@ -34,11 +38,5 @@ public class SignalRObserver : ISignalRObserver
     private async Task OnAvailableRidersUpdatedAsync(Ride arg)
     {
         if (AvailableRiders != null!) await AvailableRiders(arg);
-    }
-
-    async ValueTask IAsyncDisposable.DisposeAsync()
-    {
-        await _connection.StopAsync();
-        await _connection.DisposeAsync();
     }
 }

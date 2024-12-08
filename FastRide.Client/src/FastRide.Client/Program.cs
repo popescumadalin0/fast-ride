@@ -43,8 +43,18 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddScoped<IDistanceService, DistanceService>();
 
+builder.Services.AddScoped<ISignalRObserver, SignalRObserver>();
+
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 
 builder.Services.AddMudServices();
+
+builder.Services.AddSignalR();
+
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
 await builder.Build().RunAsync();
