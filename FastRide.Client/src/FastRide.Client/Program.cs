@@ -8,9 +8,11 @@ using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Sdk;
 using GoogleMapsComponents;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
@@ -43,18 +45,20 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddScoped<IDistanceService, DistanceService>();
 
+var navigation = builder.Services.BuildServiceProvider().GetRequiredService<NavigationManager>();
+
+var hubConnection = new HubConnectionBuilder()
+    .WithUrl(navigation.ToAbsoluteUri("/ride"))
+    .Build();
+
+builder.Services.AddSingleton(hubConnection);
+
 builder.Services.AddScoped<ISignalRObserver, SignalRObserver>();
+
+builder.Services.AddScoped<ISignalRSender, SignalRSender>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 
 builder.Services.AddMudServices();
-
-builder.Services.AddSignalR();
-
-builder.Services.AddResponseCompression(opts =>
-{
-    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/octet-stream" });
-});
 
 await builder.Build().RunAsync();

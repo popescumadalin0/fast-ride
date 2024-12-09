@@ -1,0 +1,19 @@
+﻿<MudPopover Open="@Opened" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <MudPaper Width="300px">
+        <MudList T="string">
+            <MudListItem Text="@AvailableRide.Destination" Icon="@Icons.Material.Filled.CarRental">
+                <div class="d-flex flex-row justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="ellipsis-text destination-width"
+                              title="@AvailableRide.Destination">@AvailableRide.Destination</span>
+                        <span class="text-muted">4.5 KM</span>
+                    </div>
+                    <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
+                                   OnClick="@(async () => await AcceptRideAsync(AvailableRide))"></MudIconButton>
+                </div>
+            </MudListItem>
+            <MudDivider/>
+        </MudList>
+    </MudPaper>
+</MudPopover>
+@*todo: something that represents reloading: time to respond to the request*@

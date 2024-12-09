@@ -5,8 +5,10 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "Proxy:BaseUrl": "https://localhost:7062",
     "Google:ClientId": "380926423162-qve7d250c6r1eji1o16hk94rjk5acd76.apps.googleusercontent.com",
-    "Google:Api": "https://oauth2.googleapis.com/"
-    },
+    "Google:Api": "https://oauth2.googleapis.com/",
+    //"AzureSignalRConnectionString ": "Endpoint=http://localhost;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;"
+    "AzureSignalRConnectionString ": "Endpoint=http://0.0.0.0;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;"
+  },
   "Host": {
     "CORS": "*"
   }

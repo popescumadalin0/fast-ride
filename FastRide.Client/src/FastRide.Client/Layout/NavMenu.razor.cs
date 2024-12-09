@@ -1,6 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using FastRide.Client.Components;
+using FastRide.Client.Contracts;
+using FastRide.Client.Models;
+using FastRide.Client.Service;
 using FastRide.Client.State;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -15,19 +18,25 @@ public partial class NavMenu : IDisposable
     [Inject] private DestinationState DestinationState { get; set; }
 
     [Inject] private IDialogService DialogService { get; set; }
+    
+    [Inject] private ISignalRObserver SignalRObserver { get; set; }
 
     private bool _openProfileSettings;
-    private bool OpenAvailableRides { get; set; }
+    private bool OpenAvailableRide { get; set; }
+    
+    private RideInformation _availableRide;
 
     protected override void OnInitialized()
     {
         DestinationState.OnChange += StateHasChanged;
+        SignalRObserver.AvailableRide += OpenRideAsync;
         base.OnInitialized();
     }
 
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
+        SignalRObserver.AvailableRide -= OpenRideAsync;
     }
 
     private async Task RideAsync()
@@ -37,10 +46,17 @@ public partial class NavMenu : IDisposable
         await DialogService.ShowAsync<PaymentConfirmationDialog>("Confirm payment", options);
     }
 
-    private void OpenRides()
+    private Task OpenRideAsync(Server.Contracts.Ride ride)
     {
-        OpenAvailableRides = !OpenAvailableRides;
+        OpenAvailableRide = !OpenAvailableRide;
+        _availableRide =
+            new RideInformation()
+            {
+                Destination = "tsetasdfasdf asdfasdfasd fasdfasdfasdf asdfasdfas dfasdf"
+            };
         StateHasChanged();
+        
+        return Task.CompletedTask;
     }
 
     private void OpenAccountMenu()

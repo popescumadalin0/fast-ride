@@ -1,4 +1,4 @@
-﻿namespace FastRide.Server.Services.Entities;
+﻿namespace FastRide.Server.Services.Enums;
 
 public enum RideStatus
 {

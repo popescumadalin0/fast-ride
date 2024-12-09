@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Middleware;
+using UserType = FastRide.Server.Services.Enums.UserType;
 
 namespace FastRide.Server.Authentication;
 
@@ -71,7 +72,7 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
                 return;
             }
 
-            if (!roles.Contains(user.Response.UserType.ToString()))
+            if (!roles.Contains((UserType)user.Response.UserType))
             {
                 context.SetHttpResponseStatusCode(HttpStatusCode.Forbidden);
                 return;

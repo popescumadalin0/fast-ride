@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using FastRide.Server.Activities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 
-namespace FastRide.Server;
+namespace FastRide.Server.Orchestrations;
 
 public class StartNewRideOrchestration
 {

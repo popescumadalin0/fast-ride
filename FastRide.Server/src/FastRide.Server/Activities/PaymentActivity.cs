@@ -2,7 +2,7 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace FastRide.Server;
+namespace FastRide.Server.Activities;
 
 public class PaymentActivity
 {

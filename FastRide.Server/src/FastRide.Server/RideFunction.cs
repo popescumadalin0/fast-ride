@@ -38,7 +38,7 @@ public class RideFunction
 
         return ApiServiceResponse.ApiServiceResult(response);
     }
-    
+
     [Authorize]
     [Function(nameof(AddRideAsync))]
     public async Task<IActionResult> AddRideAsync(
@@ -46,7 +46,7 @@ public class RideFunction
         HttpRequest req)
     {
         _logger.LogInformation($"{nameof(AddRideAsync)} HTTP trigger function processed a request.");
-        
+
         string requestBody;
         using (var streamReader = new StreamReader(req.Body))
         {
@@ -54,7 +54,7 @@ public class RideFunction
         }
 
         var request = JsonConvert.DeserializeObject<Ride>(requestBody);
-        
+
         var response =
             await _rideService.AddRideAsync(request, req.HttpContext.User.Claims.Single(x => x.Type == "email").Value);
 

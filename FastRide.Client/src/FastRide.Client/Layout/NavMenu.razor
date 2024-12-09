@@ -46,10 +46,10 @@
             {
                 <div class="nav-item px-1">
                     <NavLink class="@($"nav-link btn btn-link {(false ? "bg-body" : "bg-warning")} text-white")"
-                             onclick="@OpenRides">Rides
+                             onclick="@OpenRideAsync">Ride
                     </NavLink>
                 </div>
-                <AvailableRidesPopup @bind-Opened="OpenAvailableRides" /> 
+                <AcceptAvailableRidePopup AvailableRide="@_availableRide" @bind-Opened="OpenAvailableRide" /> 
             }
         </Authorized>
         <NotAuthorized>

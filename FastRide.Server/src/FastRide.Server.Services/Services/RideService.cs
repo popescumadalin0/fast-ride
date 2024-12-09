@@ -8,7 +8,7 @@ using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 using FastRide.Server.Services.Models;
 using Microsoft.Extensions.Logging;
-using RideStatus = FastRide.Server.Services.Entities.RideStatus;
+using RideStatus = FastRide.Server.Services.Enums.RideStatus;
 using UserType = FastRide.Server.Services.Enums.UserType;
 
 namespace FastRide.Server.Services.Services;

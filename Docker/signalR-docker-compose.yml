@@ -1,0 +1,10 @@
+services:
+  signalr-emulator:
+    container_name: signalr-emulator
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: signalr-emulator
+    ports:
+      - "7071:7071"
+      - "8888:8888"
