@@ -1,6 +1,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -19,8 +21,10 @@ public class StartRideTrigger
     [Function(nameof(StartRideTrigger))]
     [SignalROutput(HubName = "serverless")]
     public Task HttpStart(
-        [SignalRTrigger("serverless", "messages", "start-ride")]
-        SignalRInvocationContext invocationContext, FunctionContext functionContext)
+        [SignalRTrigger("*", "messages", "SendMessage")]
+        SignalRInvocationContext invocationContext,
+        string message,
+        FunctionContext functionContext)
     {
         // Function input comes from the request content.
         /*string instanceId =
@@ -36,14 +40,11 @@ public class StartRideTrigger
         return Task.CompletedTask;
     }
 
-    [Function("negotiate")]
-    public static HttpResponseData Negotiate([HttpTrigger(AuthorizationLevel.Anonymous)] HttpRequestData req,
-        [SignalRConnectionInfoInput(HubName = "serverless")]
+    [Function("Negotiate")]
+    public static string Negotiate([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "test/negotiate")] HttpRequestData req,
+        [SignalRConnectionInfoInput(HubName = "*")]
         string connectionInfo)
     {
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        response.Headers.Add("Content-Type", "application/json");
-        response.WriteString(connectionInfo);
-        return response;
+       return connectionInfo;
     }
 }

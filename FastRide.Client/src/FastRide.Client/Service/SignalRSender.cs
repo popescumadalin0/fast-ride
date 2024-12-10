@@ -15,7 +15,7 @@ public class SignalRSender : ISignalRSender
     {
         _connection = connection;
 
-        _connection.StartAsync().GetAwaiter().GetResult();
+        //_connection.StartAsync().GetAwaiter().GetResult();
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
@@ -31,6 +31,7 @@ public class SignalRSender : ISignalRSender
 
     public async Task BookRideAsync(Ride ride)
     {
-        await _connection.SendAsync("BookRide", ride);
+        await _connection.StartAsync();
+        await _connection.SendAsync("SendMessage", "this is test");
     }
 }

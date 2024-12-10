@@ -18,7 +18,7 @@ public class SignalRObserver : ISignalRObserver
         _connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
         _connection.On("AvailableRide", async (Ride message) => await OnAvailableRideUpdatedAsync(message));
         
-        _connection.StartAsync().GetAwaiter().GetResult();
+        //_connection.StartAsync().GetAwaiter().GetResult();
     }
 
     /// <inheritdoc />

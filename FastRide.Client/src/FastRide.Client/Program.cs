@@ -45,10 +45,9 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddScoped<IDistanceService, DistanceService>();
 
-var navigation = builder.Services.BuildServiceProvider().GetRequiredService<NavigationManager>();
-
 var hubConnection = new HubConnectionBuilder()
-    .WithUrl(navigation.ToAbsoluteUri("/ride"))
+    .WithUrl(new Uri($"{builder.Configuration["FastRide:BaseUrl"]!}/api"), options =>
+    { })
     .Build();
 
 builder.Services.AddSingleton(hubConnection);

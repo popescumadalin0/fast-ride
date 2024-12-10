@@ -20,7 +20,7 @@ public partial class NavMenu : IDisposable
     [Inject] private IDialogService DialogService { get; set; }
     
     [Inject] private ISignalRObserver SignalRObserver { get; set; }
-
+    
     private bool _openProfileSettings;
     private bool OpenAvailableRide { get; set; }
     

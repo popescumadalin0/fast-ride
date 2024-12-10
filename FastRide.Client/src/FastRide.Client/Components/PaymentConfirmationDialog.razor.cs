@@ -15,6 +15,8 @@ public partial class PaymentConfirmationDialog : ComponentBase
     [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
 
     [Inject] private IDistanceService  DistanceService { get; set; }
+
+    [Inject] private ISignalRSender SignalRSender { get; set; }
     
     [Inject] private OverlayState OverlayState { get; set; }
 
@@ -43,6 +45,16 @@ public partial class PaymentConfirmationDialog : ComponentBase
     private async Task Submit()
     {
         OverlayState.DataLoading = true;
+
+        await SignalRSender.BookRideAsync(new Server.Contracts.Ride()
+        {
+            Cost = 1,
+            Id = "test",
+            Status = RideStatus.Pending,
+            DriverEmail = "test@test.com",
+            UserEmail = "test@test.com",
+        });
+
         /*
          var totalAmount = DistanceService.Calculate...()
         // Obține PaymentIntent din API
