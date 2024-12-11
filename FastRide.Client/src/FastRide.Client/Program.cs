@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -45,12 +46,16 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddScoped<IDistanceService, DistanceService>();
 
-var hubConnection = new HubConnectionBuilder()
-    .WithUrl(new Uri($"{builder.Configuration["FastRide:BaseUrl"]!}/api"), options =>
-    { })
+var loggerProvider = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerProvider>();
+
+/*var hubConnection = new HubConnectionBuilder()
+    .WithUrl($"{builder.Configuration["FastRide:BaseUrl"]!}/api")
+    .ConfigureLogging(logger => logger.AddProvider(loggerProvider))
     .Build();
 
-builder.Services.AddSingleton(hubConnection);
+await hubConnection.StartAsync();
+
+builder.Services.AddSingleton(hubConnection);*/
 
 builder.Services.AddScoped<ISignalRObserver, SignalRObserver>();
 

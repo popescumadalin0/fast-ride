@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts;
@@ -9,7 +8,6 @@ using FastRide.Server.Services.Entities;
 using FastRide.Server.Services.Models;
 using Microsoft.Extensions.Logging;
 using RideStatus = FastRide.Server.Services.Enums.RideStatus;
-using UserType = FastRide.Server.Services.Enums.UserType;
 
 namespace FastRide.Server.Services.Services;
 

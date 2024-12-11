@@ -11,9 +11,9 @@ public class SignalRSender : ISignalRSender
     private readonly HubConnection _connection;
 
     /// A wrapper around a SignalR connection that receives notifications about rides.
-    public SignalRSender(HubConnection connection)
+    public SignalRSender(/*HubConnection connection*/)
     {
-        _connection = connection;
+        //_connection = connection;
 
         //_connection.StartAsync().GetAwaiter().GetResult();
     }
@@ -31,7 +31,6 @@ public class SignalRSender : ISignalRSender
 
     public async Task BookRideAsync(Ride ride)
     {
-        await _connection.StartAsync();
-        await _connection.SendAsync("SendMessage", "this is test");
+        await _connection.SendAsync("SendMessage", "this is test", _connection.ConnectionId);
     }
 }

@@ -2,7 +2,6 @@
 using Azure;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
-using FastRide.Server.Services.Enums;
 
 namespace FastRide.Server.Services.Repositories;
 

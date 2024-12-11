@@ -2,7 +2,6 @@
 using System.Net.Mime;
 using FastRide.Server.Services.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace FastRide.Server.HttpResponse;
 

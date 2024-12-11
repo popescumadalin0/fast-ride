@@ -1,9 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FastRide.Server.Contracts;
-using FastRide.Server.Services.Enums;
 using FastRide.Server.Services.Models;
-using UserType = FastRide.Server.Contracts.UserType;
 
 namespace FastRide.Server.Services.Contracts;
 

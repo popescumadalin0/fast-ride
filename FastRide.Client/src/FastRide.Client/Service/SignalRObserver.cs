@@ -11,12 +11,12 @@ public class SignalRObserver : ISignalRObserver
     private readonly HubConnection _connection;
 
     /// A wrapper around a SignalR connection that receives notifications about rides.
-    public SignalRObserver(HubConnection connection)
+    public SignalRObserver(/*HubConnection connection*/)
     {
-        _connection = connection;
+        //_connection = connection;
 
-        _connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
-        _connection.On("AvailableRide", async (Ride message) => await OnAvailableRideUpdatedAsync(message));
+        /*_connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
+        _connection.On("AvailableRide", async (Ride message) => await OnAvailableRideUpdatedAsync(message));*/
         
         //_connection.StartAsync().GetAwaiter().GetResult();
     }

@@ -15,6 +15,14 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
         FunctionContext context,
         FunctionExecutionDelegate next)
     {
+        var targetMethod = context.GetTargetFunctionMethod();
+        var customerAttributes = TokenRetriever.GetCustomAttributesOnClassAndMethod<AuthorizeAttribute>(targetMethod);
+        if (!customerAttributes?.Any() ?? true)
+        {
+            await next(context);
+            return;
+        }
+
         if (!TokenRetriever.TryGetAccessToken(context, out var accessToken))
         {
             context.SetHttpResponseStatusCode(HttpStatusCode.Unauthorized);

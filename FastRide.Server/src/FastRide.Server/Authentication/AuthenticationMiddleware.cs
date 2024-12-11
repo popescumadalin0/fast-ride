@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts;
 using FastRide.Server.Services.Contracts;
 using Google.Apis.Auth;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Middleware;
@@ -31,8 +29,11 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
     {
         var targetMethod = context.GetTargetFunctionMethod();
         var customerAttributes = TokenRetriever.GetCustomAttributesOnClassAndMethod<AuthorizeAttribute>(targetMethod);
-
-        var roles = customerAttributes.FirstOrDefault()?.UserRoles;
+        if (!customerAttributes?.Any() ?? true)
+        {
+            await next(context);
+            return;
+        }
 
         if (!TokenRetriever.TryGetIdToken(context, out var idToken))
         {
@@ -50,7 +51,9 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
             var principal = ConvertPayloadToClaimsPrincipal(payload);
             ((DefaultHttpContext)context.Items["HttpRequestContext"]).User = principal;
-            
+
+            var roles = customerAttributes.FirstOrDefault()?.UserRoles;
+
             if (roles is null || roles.Length == 0)
             {
                 await next(context);
