@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FastRide.Server.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -23,5 +24,31 @@ public class SignalRConfigurationFunction
     {
         _logger.LogInformation("Negotiate request received");
         return new ObjectResult(connectionInfo);
+    }
+    
+    [Function("onconnected")]
+    [SignalROutput(HubName = "serverless")]
+    public static SignalRMessage OnConnected(
+        [SignalRTrigger(hubName: "serverless", category: "connections", @event: "connected")]
+        SignalRInvocationContext context)
+    {
+        return new SignalRMessage
+        {
+            Target = "ReceiveMessage",
+            Arguments = [$"Client with connection ID {context.ConnectionId} has connected."]
+        };
+    }
+    
+    [Function("ondisconnected")]
+    [SignalROutput(HubName = "serverless")]
+    public static SignalRMessage OnDisconnected(
+        [SignalRTrigger(hubName: "serverless", category: "connections", @event: "disconnected")]
+        SignalRInvocationContext context)
+    {
+        return new SignalRMessage
+        {
+            Target = "ReceiveMessage",
+            Arguments = [$"Client with connection ID {context.ConnectionId} has disconnected."]
+        };
     }
 }

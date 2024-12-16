@@ -15,7 +15,7 @@ public class TestFunction
         return new SignalRMessageAction("clientMessage")
         {
             // broadcast to all the connected clients without specifying any connection, user or group.
-            Arguments = new[] { message },
+            Arguments = invocationContext.Arguments,
         };
     }
 }
