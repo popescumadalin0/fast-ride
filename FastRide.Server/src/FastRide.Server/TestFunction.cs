@@ -14,16 +14,11 @@ public class TestFunction
     {
         return new SignalRMessageAction("clientMessage")
         {
+            
             // broadcast to all the connected clients without specifying any connection, user or group.
             Arguments = invocationContext.Arguments,
         };
     }
-}
-
-public class ClientMessage
-{
-    public string Name { get; set; }
-    public string Message { get; set; }
 }
 
 /*
