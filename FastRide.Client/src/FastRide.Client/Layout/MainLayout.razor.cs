@@ -1,4 +1,5 @@
 ﻿using System;
+using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using Microsoft.AspNetCore.Components;
 

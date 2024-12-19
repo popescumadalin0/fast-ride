@@ -8,6 +8,7 @@ using FastRide.Client.State;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using MudBlazor;
+using Ride = FastRide.Server.Contracts.Models.Ride;
 
 namespace FastRide.Client.Layout;
 
@@ -19,7 +20,7 @@ public partial class NavMenu : IDisposable
 
     [Inject] private IDialogService DialogService { get; set; }
     
-    [Inject] private ISignalRObserver SignalRObserver { get; set; }
+    [Inject] private IObserver Observer { get; set; }
     
     private bool _openProfileSettings;
     private bool OpenAvailableRide { get; set; }
@@ -29,14 +30,14 @@ public partial class NavMenu : IDisposable
     protected override void OnInitialized()
     {
         DestinationState.OnChange += StateHasChanged;
-        SignalRObserver.AvailableRide += OpenRideAsync;
+        //Observer.AvailableRide += OpenRideAsync;
         base.OnInitialized();
     }
 
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
-        SignalRObserver.AvailableRide -= OpenRideAsync;
+        //Observer.AvailableRide -= OpenRideAsync;
     }
 
     private async Task RideAsync()
@@ -46,7 +47,7 @@ public partial class NavMenu : IDisposable
         await DialogService.ShowAsync<PaymentConfirmationDialog>("Confirm payment", options);
     }
 
-    private Task OpenRideAsync(Server.Contracts.Ride ride)
+    private Task OpenRideAsync(Ride ride)
     {
         OpenAvailableRide = !OpenAvailableRide;
         _availableRide =

@@ -1,6 +1,7 @@
 ﻿using System;
+using FastRide.Server.Contracts.Enums;
 
-namespace FastRide.Server.Contracts;
+namespace FastRide.Server.Contracts.Models;
 
 public class Ride
 {
@@ -18,9 +19,9 @@ public class Ride
 
     public double Cost { get; set; }
 
-    public string DriverEmail { get; set; }
+    public UserIdentifier Driver { get; set; }
 
-    public string UserEmail { get; set; }
+    public UserIdentifier User { get; set; }
 
     public RideStatus Status { get; set; }
 }

@@ -2,6 +2,7 @@
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -16,7 +17,7 @@ public partial class PaymentConfirmationDialog : ComponentBase
 
     [Inject] private IDistanceService  DistanceService { get; set; }
 
-    [Inject] private ISignalRSender SignalRSender { get; set; }
+    [Inject] private ISender Sender { get; set; }
     
     [Inject] private OverlayState OverlayState { get; set; }
 
@@ -46,14 +47,14 @@ public partial class PaymentConfirmationDialog : ComponentBase
     {
         OverlayState.DataLoading = true;
 
-        await SignalRSender.BookRideAsync(new Server.Contracts.Ride()
+        /*await Sender.BookRideAsync(new Server.Contracts.Models.Ride()
         {
             Cost = 1,
             Id = "test",
             Status = RideStatus.Pending,
             DriverEmail = "test@test.com",
             UserEmail = "test@test.com",
-        });
+        });*/
 
         /*
          var totalAmount = DistanceService.Calculate...()

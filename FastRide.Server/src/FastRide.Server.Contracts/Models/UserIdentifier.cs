@@ -1,4 +1,4 @@
-namespace FastRide.Server.Contracts;
+namespace FastRide.Server.Contracts.Models;
 
 public class UserIdentifier
 {

@@ -4,6 +4,8 @@ using FastRide.Client;
 using FastRide.Client.Authentication;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
+using FastRide.Client.Observers;
+using FastRide.Client.Senders;
 using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Sdk;
@@ -48,18 +50,20 @@ builder.Services.AddScoped<IDistanceService, DistanceService>();
 
 var loggerProvider = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerProvider>();
 
-/*var hubConnection = new HubConnectionBuilder()
+var hubConnection = new HubConnectionBuilder()
     .WithUrl($"{builder.Configuration["FastRide:BaseUrl"]!}/api")
     .ConfigureLogging(logger => logger.AddProvider(loggerProvider))
     .Build();
 
 await hubConnection.StartAsync();
 
-builder.Services.AddSingleton(hubConnection);*/
+builder.Services.AddSingleton(hubConnection);
 
-builder.Services.AddScoped<ISignalRObserver, SignalRObserver>();
+builder.Services.AddScoped<IObserver, DriverObserver>();
 
-builder.Services.AddScoped<ISignalRSender, SignalRSender>();
+builder.Services.AddScoped<ISender, DriverSender>();
+
+builder.Services.AddScoped<ISender, UserSender>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 

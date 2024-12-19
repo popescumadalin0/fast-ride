@@ -2,23 +2,24 @@
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Enums;
+using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace FastRide.Client.Service;
+namespace FastRide.Client.Observers;
 
-public class SignalRObserver : ISignalRObserver
+public class DriverObserver : IObserver
 {
     private readonly HubConnection _connection;
 
-    /// A wrapper around a SignalR connection that receives notifications about rides.
-    public SignalRObserver(/*HubConnection connection*/)
-    {
-        //_connection = connection;
+    public UserType UserType { get; } = UserType.Driver;
 
-        /*_connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
-        _connection.On("AvailableRide", async (Ride message) => await OnAvailableRideUpdatedAsync(message));*/
-        
-        //_connection.StartAsync().GetAwaiter().GetResult();
+    public DriverObserver(HubConnection connection)
+    {
+        _connection = connection;
+
+        _connection.On("AvailableRiders", async (Ride message) => await OnAvailableRidersUpdatedAsync(message));
+        _connection.On("AvailableRide", async (Ride message) => await OnAvailableRideUpdatedAsync(message));
     }
 
     /// <inheritdoc />

@@ -6,6 +6,7 @@ using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using FastRide.Client.State;
 using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -53,7 +54,7 @@ public partial class History : IDisposable
                 DestinationLng = 7.3553838,
                 StartPointLat = 50.3,
                 StartPointLng = 50.3,
-                DriverEmail = "test@test.com",
+                Driver = new UserIdentifier(){Email = "test@test.com"},
                 Cost = 100.2,
                 Id = Guid.NewGuid().ToString(),
             },
@@ -64,7 +65,7 @@ public partial class History : IDisposable
                 DestinationLng = 7.3553838,
                 StartPointLat = 50.3,
                 StartPointLng = 50.3,
-                DriverEmail = "test@test.com",
+                Driver = new UserIdentifier(){Email = "test@test.com"},
                 Cost = 10.2,
                 Id = Guid.NewGuid().ToString(),
             },
@@ -75,7 +76,7 @@ public partial class History : IDisposable
                 DestinationLng = 7.3553838,
                 StartPointLat = 50.3,
                 StartPointLng = 50.3,
-                DriverEmail = "test@test.com",
+                Driver = new UserIdentifier(){Email = "test@test.com"},
                 Cost = 1.2,
                 Id = Guid.NewGuid().ToString(),
             },
@@ -86,7 +87,7 @@ public partial class History : IDisposable
                 DestinationLng = 7.3553838,
                 StartPointLat = 50.3,
                 StartPointLng = 50.3,
-                DriverEmail = "test@test.com",
+                Driver = new UserIdentifier(){Email = "test@test.com"},
                 Cost = 1.2,
                 Id = Guid.NewGuid().ToString(),
             },
@@ -97,7 +98,7 @@ public partial class History : IDisposable
                 DestinationLng = 7.3553838,
                 StartPointLat = 50.3,
                 StartPointLng = 50.3,
-                DriverEmail = "test@test.com",
+                Driver = new UserIdentifier(){Email = "test@test.com"},
                 Cost = 1.2,
                 Id = Guid.NewGuid().ToString(),
             }
@@ -117,7 +118,7 @@ public partial class History : IDisposable
                     Cost = ride.Cost,
                     Destination = destination,
                     Id = ride.Id,
-                    DriverEmail = ride.DriverEmail,
+                    DriverEmail = ride.Driver.Email,
                     DestinationLocation = new Geolocation()
                     {
                         Longitude = ride.DestinationLng,

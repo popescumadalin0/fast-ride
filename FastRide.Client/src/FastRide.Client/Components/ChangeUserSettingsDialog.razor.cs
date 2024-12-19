@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FastRide.Client.State;
 using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
