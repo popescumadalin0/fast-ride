@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
-using FastRide.Server.Contracts;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
@@ -46,8 +45,8 @@ public class UserFunction
             {
                 var update = await _userService.UpdateUserAsync(new UserIdentifier()
                     {
-                        NameIdentifier = response.Response.NameIdentifier,
-                        Email = response.Response.Email,
+                        NameIdentifier = response.Response.Identifier.NameIdentifier,
+                        Email = response.Response.Identifier.Email,
                     },
                     new UpdateUserPayload()
                     {

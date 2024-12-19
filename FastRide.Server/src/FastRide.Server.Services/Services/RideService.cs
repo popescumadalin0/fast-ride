@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 using FastRide.Server.Services.Models;
@@ -33,9 +33,17 @@ public class RideService : IRideService
                 Cost = x.Cost,
                 Id = x.RowKey,
                 TimeStamp = x.Timestamp!.Value.DateTime,
-                    DriverEmail = x.DriverEmail,
-                Status = (Server.Contracts.RideStatus)x.Status,
-                UserEmail = x.PartitionKey,
+                Driver = new UserIdentifier()
+                {
+                    Email = x.DriverEmail,
+                    NameIdentifier = x.DriverId
+                },
+                Status = (Server.Contracts.Enums.RideStatus)x.Status,
+                User = new UserIdentifier()
+                {
+                    Email = x.PartitionKey,
+                    NameIdentifier = x.UserId
+                },
                 DestinationLat = x.DestinationLat,
                 DestinationLng = x.DestinationLng,
                 StartPointLat = x.StartPointLat,
@@ -49,7 +57,7 @@ public class RideService : IRideService
         }
     }
 
-    public async Task<ServiceResponse> AddRideAsync(Ride ride, string email)
+    public async Task<ServiceResponse> AddRideAsync(Ride ride)
     {
         try
         {
@@ -60,11 +68,14 @@ public class RideService : IRideService
                 StartPointLng = ride.StartPointLng,
                 DestinationLat = ride.DestinationLat,
                 DestinationLng = ride.DestinationLng,
-                PartitionKey = email,
+                PartitionKey = ride.User.Email,
                 RowKey = Guid.NewGuid().ToString(),
-                Timestamp= ride.TimeStamp,
-                DriverEmail = ride.DriverEmail,
+                Timestamp = ride.TimeStamp,
+                DriverEmail = ride.Driver.Email,
+                DriverId = ride.Driver.NameIdentifier,
+                UserId = ride.User.NameIdentifier,
                 Status = (RideStatus)ride.Status,
+                
             });
 
             return new ServiceResponse();

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Services.Contracts;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;

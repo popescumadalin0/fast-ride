@@ -17,7 +17,7 @@ public abstract class Sender(HubConnection connection) : ISender
         await Connection.DisposeAsync();
     }
     
-    public async Task JoinUserInGroup(string userId)
+    public async Task JoinUserInGroupAsync(string userId)
     {
         await Connection.SendAsync("JoinUserToGroup", userId, UserType);
     }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using FastRide.Server.Contracts;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Refit;
 

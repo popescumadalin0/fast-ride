@@ -9,5 +9,5 @@ public interface ISender : IAsyncDisposable
 {
     UserType UserType { get; }
 
-    Task JoinUserInGroup(string userId);
+    Task JoinUserInGroupAsync(string userId);
 }

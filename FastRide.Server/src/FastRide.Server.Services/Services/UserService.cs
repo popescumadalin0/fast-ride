@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 using FastRide.Server.Services.Models;
@@ -44,9 +44,12 @@ public class UserService : IUserService
 
             return new ServiceResponse<User>(new User()
             {
-                UserType = (Server.Contracts.UserType)actualUser.UserType,
-                NameIdentifier = actualUser.RowKey,
-                Email = actualUser.PartitionKey,
+                UserType = (Server.Contracts.Enums.UserType)actualUser.UserType,
+                Identifier = new UserIdentifier()
+                {
+                    NameIdentifier = actualUser.RowKey,
+                    Email = actualUser.PartitionKey,
+                },
                 Rating = actualUser.Rating,
                 PhoneNumber = actualUser.PhoneNumber,
                 PictureUrl = actualUser.PictureUrl,
@@ -59,7 +62,8 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload, string pictureUrl)
+    public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload,
+        string pictureUrl)
     {
         try
         {
@@ -79,7 +83,7 @@ public class UserService : IUserService
                 PhoneNumber = updateUserPayload.PhoneNumber,
                 PictureUrl = pictureUrl,
             });
-            
+
             if (response.IsError)
             {
                 throw new Exception(response.ReasonPhrase);
@@ -104,7 +108,7 @@ public class UserService : IUserService
             {
                 return new ServiceResponse(errorMessage: "User not found");
             }
-            
+
             var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
             {
                 PartitionKey = userRating.User.Email,
@@ -119,7 +123,7 @@ public class UserService : IUserService
             {
                 throw new Exception(response.ReasonPhrase);
             }
-            
+
             return new ServiceResponse();
         }
         catch (Exception ex)

@@ -30,7 +30,6 @@ public class RideEntity : ITableEntity
     public double DestinationLng { get; set; }
 
     public double DestinationLat { get; set; }
-
     
     public double StartPointLat { get; set; }
  
@@ -41,4 +40,8 @@ public class RideEntity : ITableEntity
     public RideStatus Status { get; set; }
     
     public string DriverEmail { get; set; }
+    
+    public string DriverId { get; set; }
+    
+    public string UserId { get; set; }
 }

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
-using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
 using Microsoft.AspNetCore.Http;
@@ -56,7 +56,7 @@ public class RideFunction
         var request = JsonConvert.DeserializeObject<Ride>(requestBody);
 
         var response =
-            await _rideService.AddRideAsync(request, req.HttpContext.User.Claims.Single(x => x.Type == "email").Value);
+            await _rideService.AddRideAsync(request);
 
         return ApiServiceResponse.ApiServiceResult(response);
     }

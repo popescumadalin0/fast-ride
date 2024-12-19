@@ -44,7 +44,7 @@ public class SignalRFactory : ISignalRFactory
         var groupName = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         var sender = _senders.First(x => x.UserType == Enum.Parse<UserType>(groupName!));
 
-        return sender;
+        return sender;              
     }
 
     public async Task<IObserver> GetObserverAsync()
