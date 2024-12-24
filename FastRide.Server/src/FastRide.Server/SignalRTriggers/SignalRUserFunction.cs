@@ -1,4 +1,6 @@
-﻿using Microsoft.Azure.Functions.Worker;
+﻿using FastRide.Server.Contracts;
+using FastRide.Server.Contracts.Constants;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.SignalRTriggers;
@@ -12,10 +14,10 @@ public class SignalRUserFunction
         _logger = logger;
     }
 
-    [Function("JoinUserToGroup")]
-    [SignalROutput(HubName = "serverless")]
+    [Function(SignalRConstants.JoinUserToGroup)]  
+    [SignalROutput(HubName = SignalRConstants.HubName)]
     public SignalRGroupAction JoinUserToGroup(
-        [SignalRTrigger("serverless", "messages", "JoinUserToGroup", "userId", "groupName")]
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.JoinUserToGroup, "userId", "groupName")]
         SignalRInvocationContext invocationContext, string userId, string groupName)
     {
         return new SignalRGroupAction(SignalRGroupActionType.Add)
@@ -25,10 +27,10 @@ public class SignalRUserFunction
         };
     }
 
-    [Function("LeaveUserFromGroup")]
-    [SignalROutput(HubName = "serverless")]
+    [Function(SignalRConstants.LeaveUserFromGroup)]
+    [SignalROutput(HubName = SignalRConstants.HubName)]
     public SignalRGroupAction LeaveUserFromGroup(
-        [SignalRTrigger("serverless", "messages", "LeaveUserFromGroup", "userId", "groupName")]
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.LeaveUserFromGroup, "userId", "groupName")]
         SignalRInvocationContext invocationContext, string userId, string groupName)
     {
         return new SignalRGroupAction(SignalRGroupActionType.Remove)

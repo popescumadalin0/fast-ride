@@ -17,5 +17,13 @@ public interface IGeolocationService
     /// <param name="latitude"></param>
     /// <param name="longitude"></param>
     /// <returns></returns>
-    Task<string> GetLocationByLatLong(double latitude, double longitude);
+    Task<string> GetLocationByLatLongAsync(double latitude, double longitude);
+
+    /// <summary>
+    /// Get locality name based on latitude and longitude
+    /// </summary>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
+    /// <returns></returns>
+    Task<string> GetLocalityByLatLongAsync(double latitude, double longitude);
 }

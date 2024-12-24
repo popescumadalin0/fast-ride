@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using FastRide.Client;
 using FastRide.Client.Authentication;
+using FastRide.Client.BackgroundService;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using FastRide.Client.Observers;
@@ -10,7 +11,6 @@ using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Sdk;
 using GoogleMapsComponents;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -43,6 +43,10 @@ builder.Services.AddOidcAuthentication<RemoteAuthenticationState,
     .AddAccountClaimsPrincipalFactory<RemoteAuthenticationState, CustomUserAccount, CustomUserFactory>();
 
 builder.Services.AddAuthorizationCore();
+
+builder.Services.AddSingleton<SendCurrentGeolocationService>();
+
+builder.Services.AddSingleton<ISignalRFactory, SignalRFactory>();
 
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
