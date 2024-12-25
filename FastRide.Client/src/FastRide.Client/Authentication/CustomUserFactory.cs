@@ -18,12 +18,12 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
     private readonly IServiceProvider _serviceProvider;
 
     public CustomUserFactory(IAccessTokenProviderAccessor accessor, IServiceProvider serviceProvider,
-        ISignalRFactory signalRFactory, IGeolocationService geolocationService)
+        ISender sender, IGeolocationService geolocationService)
         : base(accessor)
     {
         _serviceProvider = serviceProvider;
         _geolocationService = geolocationService;
-        _sender = signalRFactory.GetSenderAsync().GetAwaiter().GetResult();
+        _sender = sender;
     }
 
     public override async ValueTask<ClaimsPrincipal> CreateUserAsync(CustomUserAccount account,

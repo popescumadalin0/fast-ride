@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -10,13 +9,19 @@ namespace FastRide.Client.Pages;
 
 public partial class Test : ComponentBase
 {
-    private HubConnection hubConnection; //for connecting to SignalR
-    private List<ClientMessage> messages = new List<ClientMessage>(); //List of messages to display
-    private string userInput; //username
-    private string messageInput; //message
     private readonly HttpClient _httpClient = new HttpClient(); //HttpClient for posting messages
 
-    private readonly string functionAppBaseUri = "http://localhost:7102/api/"; //URL for function app. Leave this as is for now.
+    private readonly string
+        functionAppBaseUri = "http://localhost:7102/api/"; //URL for function app. Leave this as is for now.
+
+    private HubConnection hubConnection; //for connecting to SignalR
+    private string messageInput; //message
+    private List<ClientMessage> messages = new List<ClientMessage>(); //List of messages to display
+    private string userInput; //username
+
+    //Check we're connected
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
 
     protected override async Task OnInitializedAsync() //actions to do when the page is initialized
     {
@@ -36,8 +41,8 @@ public partial class Test : ComponentBase
     }
 
     //send our message to the function app
-    async Task SendAsync() {
-
+    async Task SendAsync()
+    {
         var msg = new ClientMessage
         {
             Name = userInput,
@@ -48,10 +53,6 @@ public partial class Test : ComponentBase
         messageInput = string.Empty; // clear the message from the textbox
         StateHasChanged(); //update the UI
     }
-
-    //Check we're connected
-    public bool IsConnected =>
-        hubConnection.State == HubConnectionState.Connected;
 
     public class ClientMessage
     {

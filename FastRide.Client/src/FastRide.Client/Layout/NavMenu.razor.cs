@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using FastRide.Client.Components;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
-using FastRide.Client.Service;
 using FastRide.Client.State;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -14,30 +13,29 @@ namespace FastRide.Client.Layout;
 
 public partial class NavMenu : IDisposable
 {
+    private RideInformation _availableRide;
+
+    private bool _openProfileSettings;
     [Inject] private NavigationManager Navigation { get; set; }
 
     [Inject] private DestinationState DestinationState { get; set; }
 
     [Inject] private IDialogService DialogService { get; set; }
-    
+
     [Inject] private IObserver Observer { get; set; }
-    
-    private bool _openProfileSettings;
     private bool OpenAvailableRide { get; set; }
-    
-    private RideInformation _availableRide;
+
+    public void Dispose()
+    {
+        DestinationState.OnChange -= StateHasChanged;
+        //Observer.AvailableRide -= OpenRideAsync;
+    }
 
     protected override void OnInitialized()
     {
         DestinationState.OnChange += StateHasChanged;
         //Observer.AvailableRide += OpenRideAsync;
         base.OnInitialized();
-    }
-
-    public void Dispose()
-    {
-        DestinationState.OnChange -= StateHasChanged;
-        //Observer.AvailableRide -= OpenRideAsync;
     }
 
     private async Task RideAsync()
@@ -56,7 +54,7 @@ public partial class NavMenu : IDisposable
                 Destination = "tsetasdfasdf asdfasdfasd fasdfasdfasdf asdfasdfas dfasdf"
             };
         StateHasChanged();
-        
+
         return Task.CompletedTask;
     }
 

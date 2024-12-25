@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using FastRide.Client.State;
-using FastRide.Server.Contracts;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
@@ -10,6 +9,7 @@ namespace FastRide.Client.Components;
 
 public partial class ChangeUserSettingsDialog : ComponentBase
 {
+    private string _phoneNumber;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
     [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
@@ -18,15 +18,13 @@ public partial class ChangeUserSettingsDialog : ComponentBase
 
     [Inject] private ISnackbar Snackbar { get; set; }
 
-    private string _phoneNumber;
-
     protected override async Task OnInitializedAsync()
     {
         OverlayState.DataLoading = true;
         var userInformation = await FastRideApiClient.GetCurrentUserAsync();
-        
+
         OverlayState.DataLoading = false;
-        
+
         if (!userInformation.Success)
         {
             Snackbar.Add(userInformation.ResponseMessage, Severity.Error);
@@ -34,7 +32,7 @@ public partial class ChangeUserSettingsDialog : ComponentBase
         }
 
         _phoneNumber = userInformation.Response.PhoneNumber;
-        
+
         StateHasChanged();
     }
 

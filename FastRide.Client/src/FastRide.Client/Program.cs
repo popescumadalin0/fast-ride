@@ -44,9 +44,7 @@ builder.Services.AddOidcAuthentication<RemoteAuthenticationState,
 
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddSingleton<SendCurrentGeolocationService>();
-
-builder.Services.AddSingleton<ISignalRFactory, SignalRFactory>();
+builder.Services.AddScoped<SendCurrentGeolocationService>();
 
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
@@ -63,11 +61,9 @@ await hubConnection.StartAsync();
 
 builder.Services.AddSingleton(hubConnection);
 
-builder.Services.AddScoped<IObserver, DriverObserver>();
+builder.Services.AddScoped<IObserver, Observer>();
 
-builder.Services.AddScoped<ISender, DriverSender>();
-
-builder.Services.AddScoped<ISender, UserSender>();
+builder.Services.AddScoped<ISender, Sender>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 

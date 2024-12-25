@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Timers;
 using FastRide.Client.Contracts;
+using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components.Authorization;
+using Timer = System.Timers.Timer;
 
 namespace FastRide.Client.BackgroundService;
 
@@ -10,17 +14,19 @@ public class JobExecutedEventArgs : EventArgs;
 
 public class SendCurrentGeolocationService : IDisposable
 {
+    private readonly Task<AuthenticationState> _authenticatonState;
+    private readonly IGeolocationService _geolocationService;
     private readonly ISender _sender;
-
-    private readonly Task<AuthenticationState> authenticatonState;
     private bool _running;
 
     private Timer _timer;
 
-    public SendCurrentGeolocationService(ISignalRFactory factory, Task<AuthenticationState> authenticatonState)
+    public SendCurrentGeolocationService(ISender sender, Task<AuthenticationState> authenticatonState,
+        IGeolocationService geolocationService)
     {
-        this.authenticatonState = authenticatonState;
-        _sender = factory.GetSenderAsync().GetAwaiter().GetResult();
+        this._authenticatonState = authenticatonState;
+        _geolocationService = geolocationService;
+        _sender = sender;
     }
 
     public void Dispose()
@@ -54,8 +60,20 @@ public class SendCurrentGeolocationService : IDisposable
 
     private void HandleTimer(object source, ElapsedEventArgs e)
     {
-        var auth = authenticatonState.Result;
-        _sender.NotifyUserGeolocationAsync(auth.User.Claims)
+        var auth = _authenticatonState.Result;
+        var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
+        var groupName = auth.User.Claims.Single(x => x.Type == ClaimTypes.GroupSid).Value;
+        var geolocation = _geolocationService.GetLocationAsync().GetAwaiter().GetResult();
+        _sender.NotifyUserGeolocationAsync(userId,
+                groupName,
+                new Geolocation()
+                {
+                    Latitude = geolocation.Latitude,
+                    Longitude = geolocation.Longitude,
+                })
+            .GetAwaiter()
+            .GetResult();
+
         OnJobExecuted();
     }
 }

@@ -13,18 +13,22 @@ namespace FastRide.Client.Pages;
 
 public partial class Home : ComponentBase, IDisposable
 {
+    private Dictionary<string, Geolocation> _drivers = new Dictionary<string, Geolocation>();
+
     private GoogleMap _map;
     private MapOptions _mapOptions;
 
     private string _state;
-
     [Inject] private IGeolocationService GeolocationService { get; set; }
+
+    [Inject] private IObserver Observer { get; set; } = default!;
 
     [Inject] private DestinationState DestinationState { get; set; }
 
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
+        Observer.NotifyUserGeolocation -= NotifyUserGeolocationAsync;
     }
 
     protected override async Task OnInitializedAsync()
@@ -53,6 +57,8 @@ public partial class Home : ComponentBase, IDisposable
         };
 
         DestinationState.OnChange += StateHasChanged;
+
+        Observer.NotifyUserGeolocation += NotifyUserGeolocationAsync;
     }
 
     private async Task AfterMapRender()
@@ -63,5 +69,15 @@ public partial class Home : ComponentBase, IDisposable
     private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
     {
         return ["test", "test1", "test2", "test3"];
+    }
+
+    private Task NotifyUserGeolocationAsync(string userId, Server.Contracts.Models.Geolocation geolocation)
+    {
+        _drivers[userId] = new Geolocation()
+        {
+            Longitude = geolocation.Longitude,
+            Latitude = geolocation.Latitude,
+        };
+        return Task.CompletedTask;
     }
 }

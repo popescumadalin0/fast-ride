@@ -1,37 +1,35 @@
 ﻿using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
-using FastRide.Server.Contracts;
-using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace FastRide.Client.Components;
+
 //todo: payment confirmation
 public partial class PaymentConfirmationDialog : ComponentBase
 {
+    private string _phoneNumber;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
     [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
 
-    [Inject] private IDistanceService  DistanceService { get; set; }
+    [Inject] private IDistanceService DistanceService { get; set; }
 
     [Inject] private ISender Sender { get; set; }
-    
+
     [Inject] private OverlayState OverlayState { get; set; }
 
     [Inject] private ISnackbar Snackbar { get; set; }
-
-    private string _phoneNumber;
 
     protected override async Task OnInitializedAsync()
     {
         OverlayState.DataLoading = true;
         var userInformation = await FastRideApiClient.GetCurrentUserAsync();
-        
+
         /*OverlayState.DataLoading = false;
-        
+
         if (!userInformation.Success)
         {
             Snackbar.Add(userInformation.ResponseMessage, Severity.Error);
@@ -39,7 +37,7 @@ public partial class PaymentConfirmationDialog : ComponentBase
         }
 
         _phoneNumber = userInformation.Response.PhoneNumber;*/
-        
+
         StateHasChanged();
     }
 
