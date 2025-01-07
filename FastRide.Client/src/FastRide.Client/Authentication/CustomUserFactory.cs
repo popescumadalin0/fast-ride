@@ -43,7 +43,7 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
                 throw new Exception($"Failed to get user roles: {user.ResponseMessage}");
             }
 
-            var position = await _geolocationService.GetLocationAsync();
+            var position = await _geolocationService.GetCoordonatesAsync();
 
             var city = await _geolocationService.GetLocalityByLatLongAsync(position.Latitude, position.Longitude);
             var userGroup = $"{city}_{user.Response.UserType}";

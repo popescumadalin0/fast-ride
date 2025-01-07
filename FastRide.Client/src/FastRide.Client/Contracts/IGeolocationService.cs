@@ -9,7 +9,7 @@ public interface IGeolocationService
     /// Get geolocation based on device.
     /// </summary>
     /// <returns></returns>
-    Task<Geolocation> GetLocationAsync();
+    Task<Geolocation> GetCoordonatesAsync();
 
     /// <summary>
     /// Get location name based on latitude and longitude
@@ -17,7 +17,7 @@ public interface IGeolocationService
     /// <param name="latitude"></param>
     /// <param name="longitude"></param>
     /// <returns></returns>
-    Task<string> GetLocationByLatLongAsync(double latitude, double longitude);
+    Task<string> GetAddressByLatLongAsync(double latitude, double longitude);
 
     /// <summary>
     /// Get locality name based on latitude and longitude
@@ -26,4 +26,12 @@ public interface IGeolocationService
     /// <param name="longitude"></param>
     /// <returns></returns>
     Task<string> GetLocalityByLatLongAsync(double latitude, double longitude);
+
+    /// <summary>
+    /// Get country name based on latitude and longitude
+    /// </summary>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
+    /// <returns></returns>
+    Task<string> GetCountryByLatLongAsync(double latitude, double longitude);
 }

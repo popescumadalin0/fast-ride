@@ -111,7 +111,7 @@ public partial class History : IDisposable
             foreach (var ride in response.Response)
             {
                 var destination =
-                    await GeolocationService.GetLocationByLatLongAsync(ride.DestinationLat, ride.DestinationLng);
+                    await GeolocationService.GetAddressByLatLongAsync(ride.DestinationLat, ride.DestinationLng);
                 rides.Add(new RideInformation()
                 {
                     TimeStamp = ride.TimeStamp,

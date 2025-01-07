@@ -63,7 +63,7 @@ public class SendCurrentGeolocationService : IDisposable
         var auth = _authenticatonState.Result;
         var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
         var groupName = auth.User.Claims.Single(x => x.Type == ClaimTypes.GroupSid).Value;
-        var geolocation = _geolocationService.GetLocationAsync().GetAwaiter().GetResult();
+        var geolocation = _geolocationService.GetCoordonatesAsync().GetAwaiter().GetResult();
         _sender.NotifyUserGeolocationAsync(userId,
                 groupName,
                 new Geolocation()
