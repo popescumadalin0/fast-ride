@@ -12,17 +12,16 @@ namespace FastRide.Client.Authentication;
 
 public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount>
 {
-    private readonly IGeolocationService _geolocationService;
-
     private readonly ISender _sender;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IUserGroupService _userGroupService;
 
     public CustomUserFactory(IAccessTokenProviderAccessor accessor, IServiceProvider serviceProvider,
-        ISender sender, IGeolocationService geolocationService)
+        ISender sender, IUserGroupService userGroupService)
         : base(accessor)
     {
         _serviceProvider = serviceProvider;
-        _geolocationService = geolocationService;
+        _userGroupService = userGroupService;
         _sender = sender;
     }
 
@@ -43,15 +42,12 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
                 throw new Exception($"Failed to get user roles: {user.ResponseMessage}");
             }
 
-            var position = await _geolocationService.GetCoordonatesAsync();
+            var userGroup = await _userGroupService.GetCurrentUserGroupNameAsync();
 
-            var city = await _geolocationService.GetLocalityByLatLongAsync(position.Latitude, position.Longitude);
-            var userGroup = $"{city}_{user.Response.UserType}";
             var userId = user.Response.Identifier.NameIdentifier;
 
             await _sender.JoinUserInGroupAsync(userId, userGroup);
 
-            userIdentity.AddClaim(new Claim(ClaimTypes.GroupSid, userGroup));
             userIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Response.UserType.ToString()));
         }
 

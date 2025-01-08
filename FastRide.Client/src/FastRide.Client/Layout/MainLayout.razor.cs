@@ -14,9 +14,9 @@ public partial class MainLayout : IDisposable
 {
     [Inject] private OverlayState OverlayState { get; set; }
 
-    [Inject] private SendCurrentGeolocationService SendCurrentGeolocationService { get; set; }
+    [Inject] private DriverSendCurrentGeolocationService DriverSendCurrentGeolocationService { get; set; }
 
-    [Inject] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     public void Dispose()
     {
@@ -31,7 +31,7 @@ public partial class MainLayout : IDisposable
 
         if (authState.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
         {
-            SendCurrentGeolocationService.StartExecuting();
+            DriverSendCurrentGeolocationService.StartExecuting();
         }
     }
 }

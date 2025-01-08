@@ -34,4 +34,12 @@ public interface IGeolocationService
     /// <param name="longitude"></param>
     /// <returns></returns>
     Task<string> GetCountryByLatLongAsync(double latitude, double longitude);
+
+    /// <summary>
+    /// Get county name based on latitude and longitude
+    /// </summary>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
+    /// <returns></returns>
+    Task<string> GetCountyByLatLongAsync(double latitude, double longitude);
 }

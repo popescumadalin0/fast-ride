@@ -44,11 +44,13 @@ builder.Services.AddOidcAuthentication<RemoteAuthenticationState,
 
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddScoped<SendCurrentGeolocationService>();
+builder.Services.AddScoped<DriverSendCurrentGeolocationService>();
 
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddScoped<IDistanceService, DistanceService>();
+
+builder.Services.AddScoped<IUserGroupService, UserGroupService>();
 
 var loggerProvider = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerProvider>();
 

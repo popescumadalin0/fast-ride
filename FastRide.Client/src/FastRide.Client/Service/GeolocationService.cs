@@ -63,6 +63,17 @@ public class GeolocationService : IGeolocationService
         return locality;
     }
 
+    public async Task<string> GetCountyByLatLongAsync(double latitude, double longitude)
+    {
+        var result = await GetInformationByLatLong(latitude, longitude);
+
+        var locality =
+            ((List<dynamic>)result.results[0].address_components.ToList())
+            .Single(x => ((List<string>)x.types).Contains("administrative_area_level_1")).ToString();
+
+        return locality;
+    }
+
     private async Task<dynamic> GetInformationByLatLong(double latitude, double longitude)
     {
         var googleMapsBaseUrl = _configuration.GetValue<string>("GoogleMaps:BaseUrl");

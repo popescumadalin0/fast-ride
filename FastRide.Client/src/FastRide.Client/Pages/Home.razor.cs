@@ -28,7 +28,7 @@ public partial class Home : ComponentBase, IDisposable
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
-        Observer.NotifyUserGeolocation -= NotifyUserGeolocationAsync;
+        Observer.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
     }
 
     protected override async Task OnInitializedAsync()
@@ -58,7 +58,7 @@ public partial class Home : ComponentBase, IDisposable
 
         DestinationState.OnChange += StateHasChanged;
 
-        Observer.NotifyUserGeolocation += NotifyUserGeolocationAsync;
+        Observer.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
     }
 
     private async Task AfterMapRender()
@@ -71,7 +71,7 @@ public partial class Home : ComponentBase, IDisposable
         return ["test", "test1", "test2", "test3"];
     }
 
-    private Task NotifyUserGeolocationAsync(string userId, Server.Contracts.Models.Geolocation geolocation)
+    private Task NotifyDriverGeolocationAsync(string userId, Geolocation geolocation)
     {
         _drivers[userId] = new Geolocation()
         {

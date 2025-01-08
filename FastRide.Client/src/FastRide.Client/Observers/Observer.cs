@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Client.Models;
 using FastRide.Server.Contracts.Constants;
-using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace FastRide.Client.Observers;
@@ -16,11 +16,16 @@ public class Observer : IObserver
         _connection = connection;
 
         _connection.On(SignalRConstants.NotifyUserGeolocation,
-            async (string userId, Geolocation message) => await OnNotifyUserGeolocationAsync(userId, message));
+            async (string userId, Server.Contracts.Models.Geolocation message) => await OnNotifyDriverGeolocationAsync(
+                userId, new Geolocation()
+                {
+                    Latitude = message.Latitude,
+                    Longitude = message.Longitude
+                }));
     }
 
     /// <inheritdoc />
-    public event Func<string, Geolocation, Task> NotifyUserGeolocation = default!;
+    public event Func<string, Geolocation, Task> NotifyDriverGeolocation = null!;
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
@@ -28,8 +33,8 @@ public class Observer : IObserver
         await _connection.DisposeAsync();
     }
 
-    private async Task OnNotifyUserGeolocationAsync(string userId, Geolocation arg)
+    private async Task OnNotifyDriverGeolocationAsync(string userId, Geolocation arg)
     {
-        if (NotifyUserGeolocation != null!) await NotifyUserGeolocation(userId, arg);
+        if (NotifyDriverGeolocation != null!) await NotifyDriverGeolocation(userId, arg);
     }
 }
