@@ -113,7 +113,7 @@ public class UserFunction
         return ApiServiceResponse.ApiServiceResult(response);
     }
 
-    [Authorize]
+    /*[Authorize]
     [Function(nameof(UpdateUserRatingAsync))]
     public async Task<IActionResult> UpdateUserRatingAsync(
         [HttpTrigger(AuthorizationLevel.Function, "put", Route = "user/rating")]
@@ -132,5 +132,5 @@ public class UserFunction
         var response = await _userService.UpdateUserRatingAsync(request);
 
         return ApiServiceResponse.ApiServiceResult(response);
-    }
+    }*/
 }

@@ -39,7 +39,7 @@ public class RideFunction
         return ApiServiceResponse.ApiServiceResult(response);
     }
 
-    [Authorize]
+    /*[Authorize]
     [Function(nameof(AddRideAsync))]
     public async Task<IActionResult> AddRideAsync(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "ride")]
@@ -59,5 +59,5 @@ public class RideFunction
             await _rideService.AddRideAsync(request);
 
         return ApiServiceResponse.ApiServiceResult(response);
-    }
+    }*/
 }

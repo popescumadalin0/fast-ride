@@ -19,8 +19,7 @@ public partial class Home : ComponentBase, IDisposable
     private MapOptions _mapOptions;
 
     private string _state;
-    [Inject] private IGeolocationService GeolocationService { get; set; }
-
+    
     [Inject] private IObserver Observer { get; set; } = default!;
 
     [Inject] private DestinationState DestinationState { get; set; }

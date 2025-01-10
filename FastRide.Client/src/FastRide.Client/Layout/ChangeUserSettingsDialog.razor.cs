@@ -5,7 +5,7 @@ using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace FastRide.Client.Components;
+namespace FastRide.Client.Layout;
 
 public partial class ChangeUserSettingsDialog : ComponentBase
 {

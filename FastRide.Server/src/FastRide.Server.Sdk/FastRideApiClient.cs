@@ -68,6 +68,7 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
         }
     }
 
+    /*
     public async Task<ApiResponseMessage> AddRideAsync(Ride ride)
     {
         try
@@ -97,6 +98,7 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
             throw;
         }
     }
+    */
 
     public async Task<ApiResponseMessage> UpdateUserAsync(UpdateUserPayload updateUserPayload)
     {

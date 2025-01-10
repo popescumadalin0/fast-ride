@@ -44,12 +44,7 @@
             }
             @if (context.User.IsInRole(UserType.Driver.ToString()))
             {
-                <div class="nav-item px-1">
-                    <NavLink class="@($"nav-link btn btn-link {(false ? "bg-body" : "bg-warning")} text-white")"
-                             onclick="@OpenRideAsync">Ride
-                    </NavLink>
-                </div>
-                <AcceptAvailableRidePopup AvailableRide="@_availableRide" @bind-Opened="OpenAvailableRide" /> 
+                <AcceptRidePopup/> 
             }
         </Authorized>
         <NotAuthorized>

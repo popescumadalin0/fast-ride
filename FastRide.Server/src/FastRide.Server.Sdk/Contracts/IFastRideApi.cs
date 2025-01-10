@@ -17,11 +17,11 @@ public interface IFastRideApi
     [Get("/api/rides")]
     Task<List<Ride>> GetRidesByUserAsync();
 
-    [Post("/api/ride")]
+    /*[Post("/api/ride")]
     Task AddRideAsync([Body] Ride ride);
 
     [Put("/api/user/rating")]
-    Task UpdateUserRatingAsync([Body] UserRating user);
+    Task UpdateUserRatingAsync([Body] UserRating user);*/
     
     
     [Put("/api/user")]
