@@ -22,10 +22,17 @@ public class Observer : IObserver
                     Latitude = message.Latitude,
                     Longitude = message.Longitude
                 }));
+
+        _connection.On(SignalRConstants.RideCreated,
+            async (string instanceId) => await OnRideCreatedAsync(
+                instanceId));
     }
 
     /// <inheritdoc />
     public event Func<string, Geolocation, Task> NotifyDriverGeolocation = null!;
+
+    /// <inheritdoc />
+    public event Func<string, Task> RideCreated = null!;
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
@@ -36,5 +43,10 @@ public class Observer : IObserver
     private async Task OnNotifyDriverGeolocationAsync(string userId, Geolocation arg)
     {
         if (NotifyDriverGeolocation != null!) await NotifyDriverGeolocation(userId, arg);
+    }
+
+    private async Task OnRideCreatedAsync(string instanceId)
+    {
+        if (RideCreated != null!) await RideCreated(instanceId);
     }
 }

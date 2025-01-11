@@ -1,0 +1,15 @@
+﻿<img class="nav-link profile-image"
+     src="@Context.User.Claims.Single(c => c.Type == "picture").Value"
+     alt="@Context.User.Identity!.Name"
+     onclick="@OpenAccountMenu"/>
+<MudPopover Open="@_openProfileSettings" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <MudPaper Width="200px">
+        <MudList T="string">
+            <MudListItem Text="Account settings" Icon="@Icons.Material.Filled.VerifiedUser"
+                         Href="https://myaccount.google.com"/>
+            <MudDivider/>
+            <MudListItem Text="Change phone number" Icon="@Icons.Material.Filled.Phone"
+                         OnClick="OpenChangeUserSettingsAsync"/>
+        </MudList>
+    </MudPaper>
+</MudPopover>

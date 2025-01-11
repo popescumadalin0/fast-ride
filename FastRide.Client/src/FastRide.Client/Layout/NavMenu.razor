@@ -13,38 +13,20 @@
                 </NavLink>
             </div>
             <div class="nav-item px-1">
-                <img class="nav-link profile-image"
-                     src="@context.User.Claims.Single(c => c.Type == "picture").Value"
-                     alt="@context.User.Identity!.Name"
-                     onclick="@OpenAccountMenu"/>
-                <MudPopover Open="@_openProfileSettings" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
-                    <MudPaper Width="200px">
-                        <MudList T="string">
-                            <MudListItem Text="Account settings" Icon="@Icons.Material.Filled.VerifiedUser" Href="https://myaccount.google.com"/>
-                            <MudDivider />
-                            <MudListItem Text="Change phone number" Icon="@Icons.Material.Filled.Phone" OnClick="OpenChangeUserSettingsAsync" />
-                        </MudList>
-                    </MudPaper>
-                </MudPopover>
+                <UserSettingsPopover Context="@context"/>
             </div>
             <div class="nav-item px-1">
                 <NavLink class="nav-link btn btn-link bg-danger text-white" @onclick="LogOut">
                     <i class="bi bi-box-arrow-right "></i>
                 </NavLink>
             </div>
-            @if (context.User.IsInRole(UserType.User.ToString()))
+            @if (context.User.IsInRole(UserType.User.ToString()) && DestinationState.Geolocation != null)
             {
-                @if (DestinationState.Geolocation != null)
-                {
-                    <div class="nav-item px-1">
-                        <NavLink class="nav-link btn btn-link bg-success text-white" onclick="@RideAsync">Ride
-                        </NavLink>
-                    </div>
-                }
+                <StartRideButton/>
             }
             @if (context.User.IsInRole(UserType.Driver.ToString()))
             {
-                <AcceptRidePopup/> 
+                <AcceptRidePopup/>
             }
         </Authorized>
         <NotAuthorized>

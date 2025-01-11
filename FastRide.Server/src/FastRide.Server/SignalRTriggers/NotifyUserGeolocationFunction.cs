@@ -22,7 +22,7 @@ public class NotifyUserGeolocationFunction
             "groupName", "geolocation")]
         SignalRInvocationContext invocationContext, string userId, string groupName, Geolocation geolocation)
     {
-        return new SignalRMessageAction("clientMessage")
+        return new SignalRMessageAction(SignalRConstants.NotifyUserGeolocation)
         {
             Arguments = invocationContext.Arguments,
             GroupName = groupName

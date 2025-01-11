@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Geolocation = FastRide.Server.Contracts.Models.Geolocation;
 
@@ -16,9 +17,14 @@ public class Sender(HubConnection connection) : ISender
         await _connection.SendAsync(SignalRConstants.NotifyUserGeolocation, userId, groupName, geolocation);
     }
 
-    public Task AcceptRideAsync(RideInformation rideInformation)
+    public async Task AcceptRideAsync(RideInformation rideInformation)
     {
-        throw new System.NotImplementedException();
+        //await _connection.SendAsync(SignalRConstants.AcceptRide, userId, groupName);
+    }
+
+    public async Task StartRideAsync(string groupName, StartRide ride)
+    {
+        await _connection.SendAsync(SignalRConstants.StartRide, groupName, ride);
     }
 
     public async Task JoinUserInGroupAsync(string userId, string groupName)

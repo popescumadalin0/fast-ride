@@ -7,4 +7,6 @@ namespace FastRide.Client.Contracts;
 public interface IObserver : IAsyncDisposable
 {
     event Func<string, Geolocation, Task> NotifyDriverGeolocation;
+
+    event Func<string, Task> RideCreated;
 }

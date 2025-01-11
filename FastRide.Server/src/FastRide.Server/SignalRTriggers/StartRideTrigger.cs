@@ -1,5 +1,9 @@
 using System.Threading.Tasks;
+using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.Models;
+using FastRide.Server.Orchestrations;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.SignalRTriggers;
@@ -14,24 +18,24 @@ public class StartRideTrigger
     }
 
     [Function(nameof(StartRideTrigger))]
-    [SignalROutput(HubName = "serverless")]
-    public Task HttpStart(
-        [SignalRTrigger("*", "messages", "SendMessage")]
+    [SignalROutput(HubName = SignalRConstants.HubName)]
+    public async Task<SignalRMessageAction> StartRide(
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.StartRide, "groupName", "ride")]
         SignalRInvocationContext invocationContext,
-        string message,
-        FunctionContext functionContext)
+        [DurableClient] DurableTaskClient client,
+        string groupName,
+        StartRide ride)
     {
-        // Function input comes from the request content.
-        /*string instanceId =
-            await starter.ScheduleNewOrchestrationInstanceAsync(nameof(StartNewRideOrchestration), null);
-        _logger.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
-        return return new MyMessage()
+        var instance = await client.ScheduleNewOrchestrationInstanceAsync(nameof(StartNewRideOrchestration), input: ride);
+
+        return new SignalRMessageAction(SignalRConstants.RideCreated)
         {
-            Target = "newMessage",
-            Arguments = new[] { message }
+            Arguments =
+            [
+                new { InstanceId = instance }
+            ],
+            GroupName = groupName,
+            UserId = invocationContext.UserId,
         };
-        return await starter.CreateCheckStatusResponseAsync(req, instanceId);#1#
-*/
-        return Task.CompletedTask;
     }
 }
