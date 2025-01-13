@@ -6,7 +6,7 @@ public class SignalRConstants
 
     public const string JoinUserToGroup = "JoinUserToGroup";
 
-    public const string StartRide = "StartRide";
+    public const string CreateNewRide = "CreateNewRide";
 
     public const string RideCreated = "RideCreated";
 

@@ -19,15 +19,15 @@ public partial class Home : ComponentBase, IDisposable
     private MapOptions _mapOptions;
 
     private string _state;
-    
-    [Inject] private IObserver Observer { get; set; } = default!;
+
+    [Inject] private ISignalRService SignalRService { get; set; } = default!;
 
     [Inject] private DestinationState DestinationState { get; set; }
 
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
-        Observer.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
+        SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
     }
 
     protected override async Task OnInitializedAsync()
@@ -57,7 +57,7 @@ public partial class Home : ComponentBase, IDisposable
 
         DestinationState.OnChange += StateHasChanged;
 
-        Observer.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
+        SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
     }
 
     private async Task AfterMapRender()

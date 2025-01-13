@@ -1,17 +1,15 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
-using FastRide.Server.Contracts.Models;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
+using FastRide.Server.Services.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
-namespace FastRide.Server;
+namespace FastRide.Server.HttpTriggers;
 
 public class RideFunction
 {
@@ -25,7 +23,7 @@ public class RideFunction
         _logger = logger;
     }
 
-    [Authorize]
+    [Authorize(UserRoles = [UserType.User, UserType.Driver])]
     [Function(nameof(GetRidesByUserAsync))]
     public async Task<IActionResult> GetRidesByUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "rides")]
@@ -38,26 +36,4 @@ public class RideFunction
 
         return ApiServiceResponse.ApiServiceResult(response);
     }
-
-    /*[Authorize]
-    [Function(nameof(AddRideAsync))]
-    public async Task<IActionResult> AddRideAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "ride")]
-        HttpRequest req)
-    {
-        _logger.LogInformation($"{nameof(AddRideAsync)} HTTP trigger function processed a request.");
-
-        string requestBody;
-        using (var streamReader = new StreamReader(req.Body))
-        {
-            requestBody = await streamReader.ReadToEndAsync();
-        }
-
-        var request = JsonConvert.DeserializeObject<Ride>(requestBody);
-
-        var response =
-            await _rideService.AddRideAsync(request);
-
-        return ApiServiceResponse.ApiServiceResult(response);
-    }*/
 }

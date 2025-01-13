@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Timers;
 using FastRide.Client.Contracts;
-using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Timer = System.Timers.Timer;
 
@@ -14,20 +13,20 @@ public class DriverSendCurrentGeolocationService : IDisposable
 {
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly IGeolocationService _geolocationService;
-    private readonly ISender _sender;
+    private readonly ISignalRService _signalRService;
     private readonly IUserGroupService _userGroupService;
     private bool _running;
 
     private Timer _timer;
 
-    public DriverSendCurrentGeolocationService(ISender sender,
+    public DriverSendCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
         AuthenticationStateProvider authenticationStateProvider)
     {
         _geolocationService = geolocationService;
         _userGroupService = userGroupService;
         _authenticationStateProvider = authenticationStateProvider;
-        _sender = sender;
+        _signalRService = signalRService;
     }
 
     public void Dispose()
@@ -64,13 +63,9 @@ public class DriverSendCurrentGeolocationService : IDisposable
         var groupName = _userGroupService.GetCurrentUserGroupNameAsync().GetAwaiter().GetResult();
 
         var geolocation = _geolocationService.GetCoordonatesAsync().GetAwaiter().GetResult();
-        _sender.NotifyUserGeolocationAsync(userId,
+        _signalRService.NotifyUserGeolocationAsync(userId,
                 groupName,
-                new Geolocation()
-                {
-                    Latitude = geolocation.Latitude,
-                    Longitude = geolocation.Longitude,
-                })
+                geolocation)
             .GetAwaiter()
             .GetResult();
 

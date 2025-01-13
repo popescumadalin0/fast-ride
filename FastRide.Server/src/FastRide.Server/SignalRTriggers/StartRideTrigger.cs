@@ -20,13 +20,13 @@ public class StartRideTrigger
     [Function(nameof(StartRideTrigger))]
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public async Task<SignalRMessageAction> StartRide(
-        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.StartRide, "groupName", "ride")]
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.CreateNewRide, "groupName", "ride")]
         SignalRInvocationContext invocationContext,
         [DurableClient] DurableTaskClient client,
         string groupName,
-        StartRide ride)
+        NewRideInput ride)
     {
-        var instance = await client.ScheduleNewOrchestrationInstanceAsync(nameof(StartNewRideOrchestration), input: ride);
+        var instance = await client.ScheduleNewOrchestrationInstanceAsync(nameof(NewRideOrchestration), input: ride);
 
         return new SignalRMessageAction(SignalRConstants.RideCreated)
         {

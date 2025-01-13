@@ -1,18 +1,29 @@
 ﻿using System.Threading.Tasks;
 using FastRide.Server.Activities;
 using FastRide.Server.Models;
+using FastRide.Server.Services.Contracts;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
+using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.Orchestrations;
 
-public class StartNewRideOrchestration
+public class NewRideOrchestration
 {
-    [Function(nameof(StartNewRideOrchestration))]
+    private readonly ILogger<NewRideOrchestration> _logger;
+
+    public NewRideOrchestration(ILogger<NewRideOrchestration> logger)
+    {
+        _logger = logger;
+    }
+
+    [Function(nameof(NewRideOrchestration))]
     public async Task RunOrchestratorAsync(
         [OrchestrationTrigger] TaskOrchestrationContext context)
     {
-        var input = context.GetInput<StartRideInput>();
+        _logger.LogInformation($"{nameof(NewRideOrchestration)} was triggered!");
+        
+        var input = context.GetInput<NewRideInput>();
 
         //todo:replace object with PaymentIndent and input with all details
         

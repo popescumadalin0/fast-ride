@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -36,7 +34,7 @@ public class GeolocationService : IGeolocationService
     {
         var result = await GetInformationByLatLong(latitude, longitude);
 
-        var formattedAddress = result.results[0].formatted_address.ToString();
+        var formattedAddress = result.results[0].formatted_address;
 
         return formattedAddress;
     }
@@ -46,8 +44,8 @@ public class GeolocationService : IGeolocationService
         var result = await GetInformationByLatLong(latitude, longitude);
 
         var locality =
-            ((List<dynamic>)result.results[0].address_components.ToList())
-            .Single(x => ((List<string>)x.types).Contains("locality")).ToString();
+            result.results[0].address_components
+                .Single(x => x.types.Contains("locality")).long_name;
 
         return locality;
     }
@@ -57,8 +55,8 @@ public class GeolocationService : IGeolocationService
         var result = await GetInformationByLatLong(latitude, longitude);
 
         var locality =
-            ((List<dynamic>)result.results[0].address_components.ToList())
-            .Single(x => ((List<string>)x.types).Contains("country")).ToString();
+            result.results[0].address_components
+                .Single(x => x.types.Contains("country")).long_name;
 
         return locality;
     }
@@ -68,13 +66,13 @@ public class GeolocationService : IGeolocationService
         var result = await GetInformationByLatLong(latitude, longitude);
 
         var locality =
-            ((List<dynamic>)result.results[0].address_components.ToList())
-            .Single(x => ((List<string>)x.types).Contains("administrative_area_level_1")).ToString();
+            result.results[0].address_components
+                .Single(x => x.types.Contains("administrative_area_level_1")).long_name;
 
         return locality;
     }
 
-    private async Task<dynamic> GetInformationByLatLong(double latitude, double longitude)
+    private async Task<GoogleLocationResponse> GetInformationByLatLong(double latitude, double longitude)
     {
         var googleMapsBaseUrl = _configuration.GetValue<string>("GoogleMaps:BaseUrl");
         var googleMapsApiKey = _configuration.GetValue<string>("GoogleMaps:ApiKey");
@@ -84,8 +82,7 @@ public class GeolocationService : IGeolocationService
             await httpClient.GetAsync(
                 new Uri($"{googleMapsBaseUrl}/geocode/json?latlng={latitude},{longitude}&key={googleMapsApiKey}"));
         var json = await response.Content.ReadAsStringAsync();
-
-        dynamic result = JsonConvert.DeserializeObject<ExpandoObject>(json);
+        dynamic result = JsonConvert.DeserializeObject<GoogleLocationResponse>(json);
 
         return result;
     }

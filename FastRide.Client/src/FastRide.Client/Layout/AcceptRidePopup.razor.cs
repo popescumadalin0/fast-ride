@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using FastRide.Client.Components;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using FastRide.Client.State;
@@ -10,15 +9,14 @@ namespace FastRide.Client.Layout;
 
 public partial class AcceptRidePopup : IDisposable
 {
-    [Inject] private DestinationState DestinationState { get; set; }
-
-    [Inject] private ISender Sender { get; set; }
-    
-    private bool _opened;
-    
     private bool _openAvailableRide;
 
+    private bool _opened;
+
     private RideInformation _ride;
+    [Inject] private DestinationState DestinationState { get; set; }
+
+    [Inject] private ISignalRService SignalRService { get; set; }
 
     public void Dispose()
     {
@@ -49,6 +47,6 @@ public partial class AcceptRidePopup : IDisposable
     private async Task AcceptRideAsync()
     {
         _opened = false;
-        await Sender.AcceptRideAsync(_ride);
+        await SignalRService.AcceptRideAsync(_ride);
     }
 }

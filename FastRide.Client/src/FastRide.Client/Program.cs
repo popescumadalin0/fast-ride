@@ -5,8 +5,6 @@ using FastRide.Client.Authentication;
 using FastRide.Client.BackgroundService;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
-using FastRide.Client.Observers;
-using FastRide.Client.Senders;
 using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Sdk;
@@ -14,10 +12,8 @@ using GoogleMapsComponents;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -51,21 +47,9 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 builder.Services.AddScoped<IDistanceService, DistanceService>();
 
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
+;
 
-var loggerProvider = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerProvider>();
-
-var hubConnection = new HubConnectionBuilder()
-    .WithUrl($"{builder.Configuration["FastRide:BaseUrl"]!}/api")
-    .ConfigureLogging(logger => logger.AddProvider(loggerProvider))
-    .Build();
-
-await hubConnection.StartAsync();
-
-builder.Services.AddSingleton(hubConnection);
-
-builder.Services.AddScoped<IObserver, Observer>();
-
-builder.Services.AddScoped<ISender, Sender>();
+builder.Services.AddScoped<ISignalRService, SignalRService>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 

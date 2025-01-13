@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace FastRide.Server.Models;
 
-public class StartRideInput
+public class NewRideInput
 {
-    public StartRide Ride { get; set; }
+    public Contracts.Models.NewRideInput Ride { get; set; }
 }

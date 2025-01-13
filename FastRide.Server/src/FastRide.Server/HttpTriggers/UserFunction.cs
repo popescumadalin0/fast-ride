@@ -5,13 +5,14 @@ using FastRide.Server.Authentication;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
+using FastRide.Server.Services.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace FastRide.Server;
+namespace FastRide.Server.HttpTriggers;
 
 public class UserFunction
 {
@@ -25,7 +26,7 @@ public class UserFunction
         _logger = logger;
     }
 
-    [Authorize]
+    [Authorize(UserRoles = [UserType.User, UserType.Driver, UserType.Admin])]
     [Function(nameof(GetCurrentUserAsync))]
     public async Task<IActionResult> GetCurrentUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "user")]
@@ -64,7 +65,7 @@ public class UserFunction
         return ApiServiceResponse.ApiServiceResult(response);
     }
 
-    [Authorize]
+    [Authorize(UserRoles = [UserType.User, UserType.Driver, UserType.Admin])]
     [Function(nameof(GetUserAsync))]
     public async Task<IActionResult> GetUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "user")]
@@ -85,7 +86,7 @@ public class UserFunction
         return ApiServiceResponse.ApiServiceResult(response);
     }
 
-    [Authorize]
+    [Authorize(UserRoles = [UserType.User, UserType.Driver, UserType.Admin])]
     [Function(nameof(UpdateUserAsync))]
     public async Task<IActionResult> UpdateUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "put", Route = "user")]
@@ -112,25 +113,4 @@ public class UserFunction
 
         return ApiServiceResponse.ApiServiceResult(response);
     }
-
-    /*[Authorize]
-    [Function(nameof(UpdateUserRatingAsync))]
-    public async Task<IActionResult> UpdateUserRatingAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "put", Route = "user/rating")]
-        HttpRequest req)
-    {
-        _logger.LogInformation($"{nameof(UpdateUserRatingAsync)} HTTP trigger function processed a request.");
-
-        string requestBody;
-        using (var streamReader = new StreamReader(req.Body))
-        {
-            requestBody = await streamReader.ReadToEndAsync();
-        }
-
-        var request = JsonConvert.DeserializeObject<UserRating>(requestBody);
-
-        var response = await _userService.UpdateUserRatingAsync(request);
-
-        return ApiServiceResponse.ApiServiceResult(response);
-    }*/
 }

@@ -17,9 +17,7 @@ public partial class StartRideButton : IDisposable
 {
     [Inject] private IDialogService DialogService { get; set; }
 
-    [Inject] private ISender Sender { get; set; }
-
-    [Inject] private IObserver Observer { get; set; }
+    [Inject] private ISignalRService SignalRService { get; set; }
 
     [Inject] private DestinationState DestinationState { get; set; }
 
@@ -31,7 +29,7 @@ public partial class StartRideButton : IDisposable
     {
         DestinationState.OnChange -= StateHasChanged;
 
-        Observer.RideCreated -= RemoveUserFromGroups;
+        SignalRService.RideCreated -= RemoveUserFromGroups;
     }
 
     protected override void OnInitialized()
@@ -40,7 +38,7 @@ public partial class StartRideButton : IDisposable
 
         DestinationState.OnChange += StateHasChanged;
 
-        Observer.RideCreated += RemoveUserFromGroups;
+        SignalRService.RideCreated += RemoveUserFromGroups;
     }
 
     private async Task RideAsync()
@@ -51,7 +49,7 @@ public partial class StartRideButton : IDisposable
 
         var currentLocation = await GeolocationService.GetCoordonatesAsync();
 
-        await Sender.StartRideAsync(groupName, new StartRide()
+        await SignalRService.CreateNewRideAsync(groupName, new NewRideInput()
         {
             Destination = new Geolocation()
             {
@@ -69,14 +67,17 @@ public partial class StartRideButton : IDisposable
                 NameIdentifier = userId
             }
         });
-
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        await DialogService.ShowAsync<PaymentConfirmationDialog>("Pay", options);
     }
 
     private async Task RemoveUserFromGroups(string instanceId)
     {
-        //todo
+        //todo: this when the payment is made
+        /*var groupName = AuthenticationState.User.Claims.First(c => c.Type == ClaimTypes.GroupSid).Value;
+        var userId = AuthenticationState.User.Claims.First(c => c.Type == "sub").Value;
+        await Sender.RemoveUserFromGroupAsync(userId, groupName);*/
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await DialogService.ShowAsync<PaymentConfirmationDialog>("Pay", options);
     }
 }

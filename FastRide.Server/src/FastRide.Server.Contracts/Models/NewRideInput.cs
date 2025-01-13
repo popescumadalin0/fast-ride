@@ -1,6 +1,6 @@
 ﻿namespace FastRide.Server.Contracts.Models;
 
-public class StartRide
+public class NewRideInput
 {
     public Geolocation Destination { get; set; }
 
