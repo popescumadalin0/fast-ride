@@ -47,9 +47,8 @@ builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 builder.Services.AddScoped<IDistanceService, DistanceService>();
 
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
-;
 
-builder.Services.AddScoped<ISignalRService, SignalRService>();
+builder.Services.AddSingleton<ISignalRService, SignalRService>();
 
 builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
 

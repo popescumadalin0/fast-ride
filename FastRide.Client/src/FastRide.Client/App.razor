@@ -3,7 +3,7 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                        <Overlay />
+                    <Overlay />
                 </Authorizing>
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated != true)
@@ -26,3 +26,9 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code{
+
+    
+
+}

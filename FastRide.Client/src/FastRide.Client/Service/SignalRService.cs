@@ -12,15 +12,32 @@ namespace FastRide.Client.Service;
 
 public class SignalRService : ISignalRService
 {
-    private readonly HubConnection _connection;
+    private readonly IConfiguration _configuration;
+    private HubConnection _connection;
 
     public SignalRService(IConfiguration configuration)
     {
+        _configuration = configuration;
+    }
+    
+    public async ValueTask StartConnectionAsync()
+    {
         _connection = new HubConnectionBuilder()
-            .WithUrl($"{configuration["FastRide:BaseUrl"]!}/api")
+            .WithUrl($"{_configuration["FastRide:BaseUrl"]!}/api")
             .WithAutomaticReconnect()
             .Build();
+        
+        _connection.Closed += async (_) =>
+        {
+            await Task.Delay(new Random().Next(0, 5) * 1000);
+            await Connect();
+        };
+        
+        await Connect();
+    }
 
+    public ValueTask InitiateSignalRSubscribersAsync()
+    {
         _connection.On(SignalRConstants.NotifyUserGeolocation,
             async (string userId, Server.Contracts.Models.Geolocation message) =>
             {
@@ -42,6 +59,7 @@ public class SignalRService : ISignalRService
                     await RideCreated(instanceId);
                 }
             });
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc />
@@ -60,8 +78,9 @@ public class SignalRService : ISignalRService
             });
     }
 
-    public async Task AcceptRideAsync(RideInformation rideInformation)
+    public Task AcceptRideAsync(RideInformation rideInformation)
     {
+        return Task.CompletedTask;
         //await _connection.SendAsync(SignalRConstants.AcceptRide, userId, groupName);
     }
 
@@ -79,12 +98,43 @@ public class SignalRService : ISignalRService
     {
         await _connection.SendAsync(SignalRConstants.JoinUserToGroup, userId, groupName);
     }
-
-    public async ValueTask StartConnectionAsync()
+    
+    private async Task Connect()
     {
-        await _connection.StartAsync();
-    }
+        try
+        {
+            if (_connection != null)
+            {
+                    
+                Console.WriteLine("Trying to connect");
+                await _connection.StartAsync();
+                _connection.Reconnecting += error =>
+                {
+                    Console.WriteLine($"Reconnecting... : {error} ");
+                    return Task.CompletedTask;
+                };
 
+                _connection.Reconnecting += error =>
+                {
+                    Console.WriteLine($"Reconnected... : {error} ");
+                    return Task.CompletedTask;
+                };
+
+                _connection.Closed += error =>
+                {
+                    Console.WriteLine($"Connection Closed... : {error} ");
+                    return Task.CompletedTask;
+                };
+                Console.WriteLine($"Connected: {_connection.ConnectionId} {_connection.State}");
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"FAILED to connect SignalR {ex.Message}");
+        }
+    }
+    
     public async ValueTask DisposeAsync()
     {
         await _connection.StopAsync();

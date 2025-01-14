@@ -13,23 +13,16 @@ namespace FastRide.Client.Authentication;
 public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount>
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ISignalRService _signalRService;
-    private readonly IUserGroupService _userGroupService;
 
-    public CustomUserFactory(IAccessTokenProviderAccessor accessor, IServiceProvider serviceProvider,
-        ISignalRService signalRService, IUserGroupService userGroupService)
+    public CustomUserFactory(IAccessTokenProviderAccessor accessor, IServiceProvider serviceProvider)
         : base(accessor)
     {
         _serviceProvider = serviceProvider;
-        _userGroupService = userGroupService;
-        _signalRService = signalRService;
     }
 
     public override async ValueTask<ClaimsPrincipal> CreateUserAsync(CustomUserAccount account,
         RemoteAuthenticationUserOptions options)
     {
-        await _signalRService.StartConnectionAsync();
-
         var initialUser = await base.CreateUserAsync(account, options);
 
         if (initialUser?.Identity?.IsAuthenticated ?? false)
@@ -44,12 +37,10 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
                 throw new Exception($"Failed to get user roles: {user.ResponseMessage}");
             }
 
-            var userGroup = await _userGroupService.GetCurrentUserGroupNameAsync();
+            var userGroupService = _serviceProvider.GetRequiredService<IUserGroupService>();
+            var userGroup = await userGroupService.GetCurrentUserGroupNameAsync();
 
-            var userId = user.Response.Identifier.NameIdentifier;
-
-            await _signalRService.JoinUserInGroupAsync(userId, userGroup);
-
+            userIdentity.AddClaim(new Claim(ClaimTypes.GroupSid, userGroup));
             userIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Response.UserType.ToString()));
         }
 

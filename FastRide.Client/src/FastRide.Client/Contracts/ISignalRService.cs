@@ -14,6 +14,8 @@ public interface ISignalRService : IAsyncDisposable
 
     ValueTask StartConnectionAsync();
 
+    ValueTask InitiateSignalRSubscribersAsync();
+
     Task RemoveUserFromGroupAsync(string userId, string groupName);
 
     Task JoinUserInGroupAsync(string userId, string groupName);

@@ -67,39 +67,7 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
             throw;
         }
     }
-
-    /*
-    public async Task<ApiResponseMessage> AddRideAsync(Ride ride)
-    {
-        try
-        {
-            var task = _apiClient.AddRideAsync(ride);
-            var result = await ExecuteWithNoContentResponse(task);
-            return result;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error executing {nameof(AddRideAsync)}");
-            throw;
-        }
-    }
-
-    public async Task<ApiResponseMessage> UpdateUserRatingAsync(UserRating user)
-    {
-        try
-        {
-            var task = _apiClient.UpdateUserRatingAsync(user);
-            var result = await ExecuteWithNoContentResponse(task);
-            return result;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error executing {nameof(UpdateUserRatingAsync)}");
-            throw;
-        }
-    }
-    */
-
+    
     public async Task<ApiResponseMessage> UpdateUserAsync(UpdateUserPayload updateUserPayload)
     {
         try

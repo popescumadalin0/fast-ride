@@ -1,4 +1,5 @@
-﻿using FastRide.Server.Models;
+﻿using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -19,7 +20,7 @@ public class SignalRConfigurationFunction
     public IActionResult Negotiate(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "negotiate")]
         HttpRequest req,
-        [SignalRConnectionInfoInput(HubName = "serverless")]
+        [SignalRConnectionInfoInput(HubName = SignalRConstants.HubName)]
         SignalRConnectionInfo connectionInfo)
     {
         _logger.LogInformation("Negotiate request received");
@@ -27,9 +28,9 @@ public class SignalRConfigurationFunction
     }
     
     [Function("onconnected")]
-    [SignalROutput(HubName = "serverless")]
+    [SignalROutput(HubName = SignalRConstants.HubName)]
     public static SignalRMessage OnConnected(
-        [SignalRTrigger(hubName: "serverless", category: "connections", @event: "connected")]
+        [SignalRTrigger(hubName: SignalRConstants.HubName, category: "connections", @event: "connected")]
         SignalRInvocationContext context)
     {
         return new SignalRMessage
@@ -40,9 +41,9 @@ public class SignalRConfigurationFunction
     }
     
     [Function("ondisconnected")]
-    [SignalROutput(HubName = "serverless")]
+    [SignalROutput(HubName = SignalRConstants.HubName)]
     public static SignalRMessage OnDisconnected(
-        [SignalRTrigger(hubName: "serverless", category: "connections", @event: "disconnected")]
+        [SignalRTrigger(hubName: SignalRConstants.HubName, category: "connections", @event: "disconnected")]
         SignalRInvocationContext context)
     {
         return new SignalRMessage
