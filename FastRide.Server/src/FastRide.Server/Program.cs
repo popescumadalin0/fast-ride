@@ -19,9 +19,7 @@ var host = new HostBuilder()
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-
-        //services.AddFastRideApiClient(new Uri(Environment.GetEnvironmentVariable("Proxy:BaseUrl")!));
-
+        
         services.AddLogging();
 
         services.AddServices();

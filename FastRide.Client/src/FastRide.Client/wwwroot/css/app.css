@@ -105,6 +105,7 @@ code {
     overflow: hidden;
 }
 
+/*NavMenu*/
 .nav-item {
     font-size: 1.2rem;
     margin-top: 2px;
@@ -129,4 +130,30 @@ code {
 .nav-item a:hover {
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
     color: black;
+}
+
+/*PaymentDialog*/
+.completed-bullet {
+    height: 10px;
+    width: 10px;
+    background-color: var(--mud-palette-success);
+    border-radius: 50%;
+}
+
+.incomplete-bullet {
+    height: 10px;
+    width: 10px;
+    background-color: #d4ddeb;
+    border-radius: 50%;
+}
+
+.progress-bar {
+    height: 2px;
+    background-color: #d4ddeb;
+    border-radius: 2px;
+}
+
+.dialog-size{
+    min-height: 541px;
+    min-width: 552px;
 }

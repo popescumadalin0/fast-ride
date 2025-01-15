@@ -22,11 +22,8 @@ public class SignalRConstants
     public const string ClientSendPriceCalculation = "client.send-price-calculation";
     
     public const string ServerSendPriceCalculationResponseReceived = "server.send-price-calculation-response-received";
-
     
-    /*public const string SendPaymentRequest = "SendPaymentRequest";
-    
-    public const string SendPaymentResponse = "SendPaymentResponse";*/
+    public const string ServerSendPaymentIntent = "server.send-payment-intent";
     
     public const string ClientNotifyUserGeolocation = "client.notify-user-geolocation";
     

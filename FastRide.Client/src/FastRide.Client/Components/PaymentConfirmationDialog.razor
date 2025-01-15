@@ -1,71 +1,80 @@
 ﻿<MudDialog>
     <DialogContent>
-        <MudPaper>
-            <MudStepper @bind-ActiveIndex="_index" CompletedStepColor="Color.Success" CurrentStepColor="Color.Primary"
-                        NavClass="border-b mud-border-lines-default" StepClass="pt-4">
-                <TitleTemplate></TitleTemplate>
-                <ConnectorTemplate Context="step">
-                    <div class="mud-stepper-nav-connector">
-                        @{
-                            int value = step.Completed ? 100 : 0;
-                            <MudProgressLinear Indeterminate="@(step.IsActive)" Striped Value="value" Min="0" Max="100"
-                                               Color="Color.Success"
-                                               Class="progress-bar"/>
-                        }
-                    </div>
-                </ConnectorTemplate>
-                <LabelTemplate>
-                    @if (context.IsActive)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.DirectionsCar"
-                                 Color="context.Completed ? Color.Success : Color.Primary"></MudIcon>
+        <MudStepper @bind-ActiveIndex="_index" CompletedStepColor="Color.Success" CurrentStepColor="Color.Primary"
+                    NavClass="border-b mud-border-lines-default" StepClass="pt-4"
+                    class="dialog-size">
+            <TitleTemplate></TitleTemplate>
+            <ConnectorTemplate Context="step">
+                <div class="mud-stepper-nav-connector">
+                    @{
+                        var value = step.Completed ? 100 : 0;
+                        <MudProgressLinear Indeterminate="@(step.IsActive)" Striped Value="value" Min="0" Max="100"
+                                           Color="Color.Success"
+                                           Class="progress-bar"/>
                     }
-                    else if (context.Completed)
+                </div>
+            </ConnectorTemplate>
+            <LabelTemplate>
+                @if (context.IsActive)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.DirectionsCar"
+                             Color="context.Completed ? Color.Success : Color.Primary"></MudIcon>
+                }
+                else if (context.Completed)
+                {
+                    <div class="completed-bullet"></div>
+                }
+                else
+                {
+                    <div class="incomplete-bullet"></div>
+                }
+            </LabelTemplate>
+            <ChildContent>
+                <MudStep Title="Confirm the ride">
+                    @if (_stepperLoading)
                     {
-                        <div class="completed-bullet"></div>
+                        <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
+                                           Color="Color.Success"
+                                           Class="progress-bar"/>
                     }
                     else
                     {
-                        <div class="incomplete-bullet"></div>
+                        <MudText>The ride costs: <b>$@_price</b></MudText>
+                        <MudText>Do you want to continue?</MudText>
                     }
-                </LabelTemplate>
-                <ChildContent>
-                    <MudStep Title="Confirm the ride">
-                        @if (_price == 0)
-                        {
-                            <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
-                                               Color="Color.Success"
-                                               Class="progress-bar"/>
-                        }
-                        else
-                        {
-                            <p>The ride costs: $@_price</p>
-                            <p>Do you want to contSinue?</p>
-                        }
-                    </MudStep>
-                    <MudStep Title="Payment" @bind-Completed="_completed">todo: trigger stripe
-                    </MudStep>
-                </ChildContent>
-                <CompletedContent>
-                    <MudStack Row Class="ma-3">
-                        <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success"/>
-                        <MudText>
-                            Payment is completed! Search a rider is in progress...
-                        </MudText>
-                        <MudButton Color="Color.Primary" OnClick="@(() => MudDialog.Close(DialogResult.Ok(true)))">Ok
-                        </MudButton>
-                    </MudStack>
-                </CompletedContent>
-                <ActionContent Context="stepper">
-                    @if (!_completed)
+                </MudStep>
+                <MudStep Title="Payment" @bind-Completed="_completed">
+                    @if (_stepperLoading)
                     {
-                        <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
-                                       Disabled="_disabled"
-                                       Icon="@Icons.Material.Filled.ArrowForward"
-                                       Color="Color.Primary"/>
+                        <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
+                                           Color="Color.Success"
+                                           Class="progress-bar"/>
                     }
-                </ActionContent>
-            </MudStepper>
-        </MudPaper>
+                    else
+                    {
+                        //todo
+                    }
+                </MudStep>
+            </ChildContent>
+            <CompletedContent>
+                <MudStack Row Class="ma-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success"/>
+                    <MudText>
+                        Payment is completed! Search a rider is in progress...
+                    </MudText>
+                    <MudButton Color="Color.Primary" OnClick="@(() => MudDialog.Close(DialogResult.Ok(true)))">Ok
+                    </MudButton>
+                </MudStack>
+            </CompletedContent>
+            <ActionContent Context="stepper">
+                @if (!_completed)
+                {
+                    <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
+                                   Disabled="_nextDisabled"
+                                   Icon="@Icons.Material.Filled.ArrowForward"
+                                   Color="Color.Primary"/>
+                }
+            </ActionContent>
+        </MudStepper>
     </DialogContent>
 </MudDialog>

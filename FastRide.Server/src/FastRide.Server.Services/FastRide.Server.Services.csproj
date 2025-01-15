@@ -11,6 +11,7 @@
         <PackageReference Include="Azure.Data.Tables" Version="12.9.1"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Stripe.net" Version="47.2.0" />
     </ItemGroup>
 
     <ItemGroup>

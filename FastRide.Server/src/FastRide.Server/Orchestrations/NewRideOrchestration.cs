@@ -28,15 +28,7 @@ public class NewRideOrchestration
 
         var input = context.GetInput<NewRideInput>();
 
-        await context.CallActivityAsync<object>(nameof(SendPriceCalculationActivity), new SendPriceCalculationActivityInput
-        {
-           Destination = input.Destination,
-           InstanceId = context.InstanceId,
-           StartPoint = input.StartPoint,
-           UserId = input.User.NameIdentifier
-        });
-        
-        var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
+       var acccepted = await PriceCalculationStep(context, input);
 
         if (!acccepted)
         {
@@ -46,7 +38,7 @@ public class NewRideOrchestration
         
         //todo:replace object with PaymentIndent and input with all details
         //todo: create price payment and send it to user for confirmation
-        await context.CallActivityAsync<object>(nameof(PaymentActivity), "Tokyo");
+        await context.CallActivityAsync<object>(nameof(SendPaymentIntentActivity), "Tokyo");
 
         // = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPayment);
         
@@ -57,5 +49,20 @@ public class NewRideOrchestration
         }
         
         //todo: search a rider
+    }
+
+    private async Task<bool> PriceCalculationStep(TaskOrchestrationContext context, NewRideInput input)
+    {
+        await context.CallActivityAsync<object>(nameof(SendPriceCalculationActivity), new SendPriceCalculationActivityInput
+        {
+            Destination = input.Destination,
+            InstanceId = context.InstanceId,
+            StartPoint = input.StartPoint,
+            UserId = input.User.NameIdentifier
+        });
+        
+        var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
+        
+        return acccepted;
     }
 }
