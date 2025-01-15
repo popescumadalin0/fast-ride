@@ -36,15 +36,9 @@ public class NewRideOrchestration
             return;
         }
         
-        //todo:replace object with PaymentIndent and input with all details
-        //todo: create price payment and send it to user for confirmation
-        await context.CallActivityAsync<object>(nameof(SendPaymentIntentActivity), "Tokyo");
-
-        // = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPayment);
-        
         if (!acccepted)
         {
-            _logger.LogInformation($"The ride was canceled!");
+            _logger.LogInformation($"The ride was canceled!"); 
             return;
         }
         
@@ -53,7 +47,7 @@ public class NewRideOrchestration
 
     private async Task<bool> PriceCalculationStep(TaskOrchestrationContext context, NewRideInput input)
     {
-        await context.CallActivityAsync<object>(nameof(SendPriceCalculationActivity), new SendPriceCalculationActivityInput
+        var response = await context.CallActivityAsync<Task<SignalRMessageAction>>(nameof(SendPriceCalculationActivity), new SendPriceCalculationActivityInput
         {
             Destination = input.Destination,
             InstanceId = context.InstanceId,
@@ -61,7 +55,23 @@ public class NewRideOrchestration
             UserId = input.User.NameIdentifier
         });
         
+        var price = await response;
+        
         var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
+        
+        return acccepted;
+    }
+    
+    private async Task<bool> PaymentStep(TaskOrchestrationContext context, NewRideInput input)
+    {
+        await context.CallActivityAsync<object>(nameof(SendPaymentIntentActivity), new SendPaymentIntentActivityInput()
+        {
+            InstanceId = context.InstanceId,
+            UserId = input.User.NameIdentifier,
+            Price = input.Price,
+        });
+        
+        var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientPaymentConfirmation);
         
         return acccepted;
     }
