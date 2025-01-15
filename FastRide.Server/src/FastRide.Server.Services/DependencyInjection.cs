@@ -22,6 +22,8 @@ public static class DependencyInjection
         services.AddSingleton<IUserService, UserService>();
 
         services.AddSingleton<IRideService, RideService>();
+        
+        services.AddSingleton<IDistanceService, DistanceService>();
 
         return services;
     }

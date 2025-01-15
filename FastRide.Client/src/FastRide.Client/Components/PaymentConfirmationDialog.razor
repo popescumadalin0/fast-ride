@@ -30,7 +30,19 @@
                     }
                 </LabelTemplate>
                 <ChildContent>
-                    <MudStep Title="Confirm the ride">todo: confirm + show the price</MudStep>
+                    <MudStep Title="Confirm the ride">
+                        @if (_price == 0)
+                        {
+                            <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
+                                               Color="Color.Success"
+                                               Class="progress-bar"/>
+                        }
+                        else
+                        {
+                            <p>The ride costs: $@_price</p>
+                            <p>Do you want to contSinue?</p>
+                        }
+                    </MudStep>
                     <MudStep Title="Payment" @bind-Completed="_completed">todo: trigger stripe
                     </MudStep>
                 </ChildContent>
@@ -47,7 +59,8 @@
                 <ActionContent Context="stepper">
                     @if (!_completed)
                     {
-                        <MudIconButton OnClick="@(() => stepper.NextStepAsync())"
+                        <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
+                                       Disabled="_disabled"
                                        Icon="@Icons.Material.Filled.ArrowForward"
                                        Color="Color.Primary"/>
                     }

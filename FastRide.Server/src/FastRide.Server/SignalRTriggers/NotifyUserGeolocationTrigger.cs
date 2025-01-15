@@ -7,16 +7,16 @@ using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.SignalRTriggers;
 
-public class NotifyUserGeolocationFunction
+public class NotifyUserGeolocationTrigger
 {
-    private readonly ILogger<NotifyUserGeolocationFunction> _logger;
+    private readonly ILogger<NotifyUserGeolocationTrigger> _logger;
 
-    public NotifyUserGeolocationFunction(ILogger<NotifyUserGeolocationFunction> logger)
+    public NotifyUserGeolocationTrigger(ILogger<NotifyUserGeolocationTrigger> logger)
     {
         _logger = logger;
     }
 
-    [Function(SignalRConstants.ClientNotifyUserGeolocation)]
+    [Function(nameof(NotifyUserGeolocationTrigger))]
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public SignalRMessageAction NotifyUserGeolocation(
         [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientNotifyUserGeolocation, "userId",

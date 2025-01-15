@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using FastRide.Client.Contracts;
+using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace FastRide.Client.Components;
 
 //todo: payment confirmation
-public partial class PaymentConfirmationDialog : ComponentBase
+public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 {
     private string _buttonName = string.Empty;
     private bool _completed;
@@ -13,7 +16,13 @@ public partial class PaymentConfirmationDialog : ComponentBase
     private int _index;
 
     private string _paymentTitle = string.Empty;
+
+    private decimal _price;
+    private bool _disabled = true;
+
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+    [Inject] private ISignalRService SignalRService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -21,7 +30,18 @@ public partial class PaymentConfirmationDialog : ComponentBase
 
         _buttonName = "Go pay";
 
+        SignalRService.SendPriceCalculated += PriceReceivedAsync;
+
         StateHasChanged();
+    }
+
+    private Task PriceReceivedAsync(PriceCalculated arg)
+    {
+        _disabled = false;
+        _price = arg.Price;
+        StateHasChanged();
+
+        return Task.CompletedTask;
     }
 
     private async Task Submit()
@@ -73,5 +93,18 @@ public partial class PaymentConfirmationDialog : ComponentBase
         MudDialog.Close(DialogResult.Ok(true));
     }
 
+    private async Task NextStepperAsync(MudStepper stepper)
+    {
+        /*if (stepper.IsCompleted)
+        {*/
+            await stepper.NextStepAsync();
+        //}
+    }
+
     private void Cancel() => MudDialog.Cancel();
+
+    public void Dispose()
+    {
+        SignalRService.SendPriceCalculated -= PriceReceivedAsync;
+    }
 }

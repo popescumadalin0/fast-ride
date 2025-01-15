@@ -43,7 +43,7 @@ public class SendPriceCalculationActivity
                     InstanceId = input.InstanceId,
                 }
             ],
-            UserId = input.UserId
+            /*UserId = input.UserId*/
         });
     }
 }
