@@ -1,4 +1,4 @@
-﻿namespace FastRide.Client.Contracts;
+namespace FastRide.Server.Services.Contracts;
 
 public interface IDistanceService
 {

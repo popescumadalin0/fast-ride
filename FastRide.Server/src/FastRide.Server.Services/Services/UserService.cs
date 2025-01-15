@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
+using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 using FastRide.Server.Services.Models;

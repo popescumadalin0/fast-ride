@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
+using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Orchestrations;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
@@ -8,19 +9,19 @@ using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.SignalRTriggers;
 
-public class StartRideTrigger
+public class CreateNewRideTrigger
 {
-    private readonly ILogger<StartRideTrigger> _logger;
+    private readonly ILogger<CreateNewRideTrigger> _logger;
 
-    public StartRideTrigger(ILogger<StartRideTrigger> logger)
+    public CreateNewRideTrigger(ILogger<CreateNewRideTrigger> logger)
     {
         _logger = logger;
     }
 
-    [Function(nameof(StartRideTrigger))]
+    [Function(nameof(CreateNewRideTrigger))]
     [SignalROutput(HubName = SignalRConstants.HubName)]
-    public async Task<SignalRMessageAction> StartRide(
-        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.CreateNewRide, "groupName", "ride")]
+    public async Task<SignalRMessageAction> CreateRide(
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientCreateNewRide, "groupName", "ride")]
         SignalRInvocationContext invocationContext,
         [DurableClient] DurableTaskClient client,
         string groupName,
@@ -28,13 +29,12 @@ public class StartRideTrigger
     {
         var instance = await client.ScheduleNewOrchestrationInstanceAsync(nameof(NewRideOrchestration), input: ride);
 
-        return new SignalRMessageAction(SignalRConstants.RideCreated)
+        return new SignalRMessageAction(SignalRConstants.ServerCreateNewRide)
         {
             Arguments =
             [
-                new { InstanceId = instance }
+                new RideCreated() { InstanceId = instance }
             ],
-            GroupName = groupName,
             UserId = invocationContext.UserId,
         };
     }

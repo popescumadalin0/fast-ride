@@ -1,0 +1,19 @@
+.completed-bullet {
+    height: 10px;
+    width: 10px;
+    background-color: var(--mud-palette-success);
+    border-radius: 50%;
+}
+
+.incomplete-bullet {
+    height: 10px;
+    width: 10px;
+    background-color: #d4ddeb;
+    border-radius: 50%;
+}
+
+.progress-bar {
+    height: 2px;
+    background-color: #d4ddeb;
+    border-radius: 2px;
+}

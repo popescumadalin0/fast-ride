@@ -2,21 +2,28 @@ using System;
 using System.Threading.Tasks;
 using FastRide.Client.Models;
 using FastRide.Server.Contracts.Models;
-using Geolocation = FastRide.Client.Models.Geolocation;
+using FastRide.Server.Contracts.SignalRModels;
 
 namespace FastRide.Client.Contracts;
 
 public interface ISignalRService : IAsyncDisposable
 {
-    event Func<string, Geolocation, Task> NotifyDriverGeolocation;
+    event Func<NotifyUserGeolocation, Task> NotifyDriverGeolocation;
 
-    event Func<string, Task> RideCreated;
+    event Func<RideCreated, Task> RideCreated;
+    
+    event Func<PriceCalculated, Task> SendPriceCalculated;
+    
+    event Func<Task> SendPriceCalculatedResponseReceived;
 
     ValueTask StartConnectionAsync();
 
     ValueTask InitiateSignalRSubscribersAsync();
 
     Task RemoveUserFromGroupAsync(string userId, string groupName);
+    
+    Task ConfirmPriceCalculated(string instanceId, bool isConfirmed);
+    
 
     Task JoinUserInGroupAsync(string userId, string groupName);
 

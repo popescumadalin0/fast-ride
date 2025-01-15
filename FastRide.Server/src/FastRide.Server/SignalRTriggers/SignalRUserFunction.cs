@@ -15,10 +15,10 @@ public class SignalRUserFunction
         _logger = logger;
     }
 
-    [Function(SignalRConstants.JoinUserToGroup)]  
+    [Function(SignalRConstants.ClientJoinUserToGroup)]  
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public SignalRGroupAction JoinUserToGroup(
-        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.JoinUserToGroup, "userId", "groupName")]
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientJoinUserToGroup, "userId", "groupName")]
         SignalRInvocationContext invocationContext, string userId, string groupName)
     {
         return new SignalRGroupAction(SignalRGroupActionType.Add)
@@ -28,10 +28,10 @@ public class SignalRUserFunction
         };
     }
 
-    [Function(SignalRConstants.LeaveUserFromGroup)]
+    [Function(SignalRConstants.ClientLeaveUserFromGroup)]
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public SignalRGroupAction LeaveUserFromGroup(
-        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.LeaveUserFromGroup, "userId", "groupName")]
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientLeaveUserFromGroup, "userId", "groupName")]
         SignalRInvocationContext invocationContext, string userId, string groupName)
     {
         return new SignalRGroupAction(SignalRGroupActionType.Remove)

@@ -1,5 +1,5 @@
 ﻿using System;
-using FastRide.Client.Models;
+using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.State;
 

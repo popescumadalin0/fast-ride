@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.Models;
 using FastRide.Client.State;
+using FastRide.Server.Contracts.Models;
+using FastRide.Server.Contracts.SignalRModels;
 using GoogleMapsComponents;
 using GoogleMapsComponents.Maps;
 using Microsoft.AspNetCore.Components;
@@ -70,12 +71,12 @@ public partial class Home : ComponentBase, IDisposable
         return ["test", "test1", "test2", "test3"];
     }
 
-    private Task NotifyDriverGeolocationAsync(string userId, Geolocation geolocation)
+    private Task NotifyDriverGeolocationAsync(NotifyUserGeolocation geolocation)
     {
-        _drivers[userId] = new Geolocation()
+        _drivers[geolocation.UserId] = new Geolocation()
         {
-            Longitude = geolocation.Longitude,
-            Latitude = geolocation.Latitude,
+            Longitude = geolocation.Geolocation.Longitude,
+            Latitude = geolocation.Geolocation.Latitude,
         };
         return Task.CompletedTask;
     }

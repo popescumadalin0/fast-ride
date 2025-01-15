@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using FastRide.Client.Contracts;
+using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Timer = System.Timers.Timer;
 
@@ -48,7 +50,7 @@ public class DriverSendCurrentGeolocationService : IDisposable
     {
         if (_running) return;
         _timer = new Timer();
-        _timer.Interval = 1000;
+        _timer.Interval = 5000;
         _timer.Elapsed += HandleTimer;
         _timer.AutoReset = true;
         _timer.Enabled = true;
@@ -58,17 +60,21 @@ public class DriverSendCurrentGeolocationService : IDisposable
 
     private void HandleTimer(object source, ElapsedEventArgs e)
     {
-        var auth = _authenticationStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult();
+        _geolocationService.CoordinatesChanged += OnCoordinatesChanged;
+        _geolocationService.RequestGeoLocationAsync().GetAwaiter().GetResult();
+    }
+
+    private async ValueTask OnCoordinatesChanged(Geolocation geolocation)
+    {
+        var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
-        var groupName = _userGroupService.GetCurrentUserGroupNameAsync().GetAwaiter().GetResult();
+        var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
 
-        var geolocation = _geolocationService.GetCoordonatesAsync().GetAwaiter().GetResult();
-        _signalRService.NotifyUserGeolocationAsync(userId,
-                groupName,
-                geolocation)
-            .GetAwaiter()
-            .GetResult();
-
+        await _signalRService.NotifyUserGeolocationAsync(userId,
+            groupName,
+            geolocation);
+        
+        _geolocationService.CoordinatesChanged -= OnCoordinatesChanged;
         OnJobExecuted();
     }
 }

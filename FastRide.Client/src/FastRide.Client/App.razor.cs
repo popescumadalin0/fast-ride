@@ -27,7 +27,7 @@ public partial class App : IAsyncDisposable
     {
         await SignalRService.StartConnectionAsync();
         await SignalRService.InitiateSignalRSubscribersAsync();
-        
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var groupName = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid)?.Value;
         var userId = authState.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;

@@ -1,6 +1,7 @@
 ﻿using FastRide.Server.Contracts;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
+using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -15,16 +16,23 @@ public class NotifyUserGeolocationFunction
         _logger = logger;
     }
 
-    [Function(SignalRConstants.NotifyUserGeolocation)]
+    [Function(SignalRConstants.ClientNotifyUserGeolocation)]
     [SignalROutput(HubName = SignalRConstants.HubName)]
-    public SignalRMessageAction JoinUserToGroup(
-        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.NotifyUserGeolocation, "userId",
+    public SignalRMessageAction NotifyUserGeolocation(
+        [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientNotifyUserGeolocation, "userId",
             "groupName", "geolocation")]
         SignalRInvocationContext invocationContext, string userId, string groupName, Geolocation geolocation)
     {
-        return new SignalRMessageAction(SignalRConstants.NotifyUserGeolocation)
+        return new SignalRMessageAction(SignalRConstants.ServerNotifyUserGeolocation)
         {
-            Arguments = invocationContext.Arguments,
+            Arguments =
+            [
+                new NotifyUserGeolocation()
+                {
+                    UserId = userId,
+                    Geolocation = geolocation
+                }
+            ],
             GroupName = groupName
         };
     }

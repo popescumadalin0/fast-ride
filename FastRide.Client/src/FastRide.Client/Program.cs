@@ -42,9 +42,9 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<DriverSendCurrentGeolocationService>();
 
-builder.Services.AddScoped<IGeolocationService, GeolocationService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 
-builder.Services.AddScoped<IDistanceService, DistanceService>();
+builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
 

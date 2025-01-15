@@ -111,7 +111,7 @@ code {
     margin-bottom: 2px;
 }
 
-.nav-item ::deep a {
+.nav-item a {
     color: black;
     border-radius: 50px;
     display: flex;
@@ -121,16 +121,12 @@ code {
     background-color: white;
 }
 
-.nav-item ::deep a.active {
+.nav-item a.active {
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
     color: black;
 }
 
-.nav-item ::deep a:hover {
+.nav-item a:hover {
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
     color: black;
-}
-
-.nav-item .nav-link {
-    padding: 0;
 }

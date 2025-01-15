@@ -6,7 +6,10 @@
     "Proxy:BaseUrl": "https://localhost:7062",
     "Google:ClientId": "380926423162-qve7d250c6r1eji1o16hk94rjk5acd76.apps.googleusercontent.com",
     "Google:Api": "https://oauth2.googleapis.com/",
-    "AzureSignalRConnectionString": "Endpoint=http://localhost;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;"
+    "AzureSignalRConnectionString": "Endpoint=http://localhost;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;",
+    "Stripe:PricePerKm": 2,
+    "Stripe:PricePerMinute": 5,
+    "Stripe:BasePrice": 5
   },
   "Host": {
     "CORS": "*"

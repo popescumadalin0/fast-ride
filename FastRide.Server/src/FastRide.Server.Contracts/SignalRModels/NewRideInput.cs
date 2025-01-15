@@ -1,4 +1,6 @@
-﻿namespace FastRide.Server.Contracts.Models;
+﻿using FastRide.Server.Contracts.Models;
+
+namespace FastRide.Server.Contracts.SignalRModels;
 
 public class NewRideInput
 {

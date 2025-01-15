@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.Service;
 
@@ -7,20 +9,40 @@ public class UserGroupService : IUserGroupService
 {
     private readonly IGeolocationService _geolocationService;
 
-    public UserGroupService(IGeolocationService geolocationService)
+    private readonly ILocationService _locationService;
+
+    public UserGroupService(IGeolocationService geolocationService, ILocationService locationService)
     {
         _geolocationService = geolocationService;
+        _locationService = locationService;
     }
 
     public async Task<string> GetCurrentUserGroupNameAsync()
     {
-        var geolocation = await _geolocationService.GetCoordonatesAsync();
-        var locatlity =
-            await _geolocationService.GetLocalityByLatLongAsync(geolocation.Latitude, geolocation.Longitude);
-        var country = await _geolocationService.GetCountryByLatLongAsync(geolocation.Latitude, geolocation.Longitude);
-        var county = await _geolocationService.GetCountyByLatLongAsync(geolocation.Latitude, geolocation.Longitude);
+        var tcs = new TaskCompletionSource<Geolocation>();
 
-        var groupName = $"{country}-{county}-{locatlity}";
+        Func<Geolocation, ValueTask> coordinatesChangedHandler = null;
+        coordinatesChangedHandler = (geolocation) =>
+        {
+            tcs.SetResult(geolocation);
+
+            _geolocationService.CoordinatesChanged -= coordinatesChangedHandler;
+
+            return ValueTask.CompletedTask;
+        };
+
+        _geolocationService.CoordinatesChanged += coordinatesChangedHandler;
+
+        await _geolocationService.RequestGeoLocationAsync();
+
+        var geolocation = await tcs.Task;
+
+        var locality =
+            await _locationService.GetLocalityByLatLongAsync(geolocation.Latitude, geolocation.Longitude);
+        var country = await _locationService.GetCountryByLatLongAsync(geolocation.Latitude, geolocation.Longitude);
+        var county = await _locationService.GetCountyByLatLongAsync(geolocation.Latitude, geolocation.Longitude);
+
+        var groupName = $"{country}-{county}-{locality}";
 
         return groupName;
     }

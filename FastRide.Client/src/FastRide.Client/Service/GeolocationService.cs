@@ -1,89 +1,63 @@
 ﻿using System;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using FastRide.Server.Contracts.Models;
 using Microsoft.JSInterop;
-using Newtonsoft.Json;
 
 namespace FastRide.Client.Service;
 
 public class GeolocationService : IGeolocationService
 {
-    private readonly IConfiguration _configuration;
     private readonly IJSRuntime _jsRuntime;
+    private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
+    private readonly DotNetObjectReference<GeolocationService> _dotNetObjectReference;
 
-    private readonly ILogger<GeolocationService> _logger;
-
-    public GeolocationService(IJSRuntime jsRuntime, IConfiguration configuration, ILogger<GeolocationService> logger)
+    public GeolocationService(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
-        _configuration = configuration;
-        _logger = logger;
+
+        /*
+        _moduleTask = new Lazy<Task<IJSObjectReference>>(() => _jsRuntime!
+            .InvokeAsync<IJSObjectReference>("window.getGeolocation")
+            .AsTask());
+            */
+
+        _dotNetObjectReference = DotNetObjectReference.Create(this);
     }
 
-    public async Task<Geolocation> GetCoordonatesAsync()
+    public async ValueTask RequestGeoLocationAsync(bool enableHighAccuracy, int maximumAgeInMilliseconds)
     {
-        return await _jsRuntime.InvokeAsync<Geolocation>("window.getGeolocation");
+        await _jsRuntime.InvokeVoidAsync("window.getGeolocation",
+            _dotNetObjectReference,
+            enableHighAccuracy,
+            maximumAgeInMilliseconds);
     }
 
-    public async Task<string> GetAddressByLatLongAsync(double latitude, double longitude)
+    public async ValueTask RequestGeoLocationAsync()
     {
-        var result = await GetInformationByLatLong(latitude, longitude);
-
-        var formattedAddress = result.results[0].formatted_address;
-
-        return formattedAddress;
+        await RequestGeoLocationAsync(enableHighAccuracy: true, maximumAgeInMilliseconds: 0);
     }
 
-    public async Task<string> GetLocalityByLatLongAsync(double latitude, double longitude)
+    public event Func<Geolocation, ValueTask> CoordinatesChanged = default!;
+
+    public event Func<GeolocationError, ValueTask> OnGeolocationPositionError = default!;
+
+    [JSInvokable]
+    public async Task OnSuccessAsync(Geolocation coordinates)
     {
-        var result = await GetInformationByLatLong(latitude, longitude);
-
-        var locality =
-            result.results[0].address_components
-                .Single(x => x.types.Contains("locality")).long_name;
-
-        return locality;
+        if (CoordinatesChanged != null!)
+        {
+            await CoordinatesChanged.Invoke(coordinates);
+        }
     }
 
-    public async Task<string> GetCountryByLatLongAsync(double latitude, double longitude)
+    [JSInvokable]
+    public async Task OnErrorAsync(GeolocationError error)
     {
-        var result = await GetInformationByLatLong(latitude, longitude);
-
-        var locality =
-            result.results[0].address_components
-                .Single(x => x.types.Contains("country")).long_name;
-
-        return locality;
-    }
-
-    public async Task<string> GetCountyByLatLongAsync(double latitude, double longitude)
-    {
-        var result = await GetInformationByLatLong(latitude, longitude);
-
-        var locality =
-            result.results[0].address_components
-                .Single(x => x.types.Contains("administrative_area_level_1")).long_name;
-
-        return locality;
-    }
-
-    private async Task<GoogleLocationResponse> GetInformationByLatLong(double latitude, double longitude)
-    {
-        var googleMapsBaseUrl = _configuration.GetValue<string>("GoogleMaps:BaseUrl");
-        var googleMapsApiKey = _configuration.GetValue<string>("GoogleMaps:ApiKey");
-
-        using var httpClient = new HttpClient();
-        var response =
-            await httpClient.GetAsync(
-                new Uri($"{googleMapsBaseUrl}/geocode/json?latlng={latitude},{longitude}&key={googleMapsApiKey}"));
-        var json = await response.Content.ReadAsStringAsync();
-        dynamic result = JsonConvert.DeserializeObject<GoogleLocationResponse>(json);
-
-        return result;
+        if (OnGeolocationPositionError != null!)
+        {
+            await OnGeolocationPositionError.Invoke(error);
+        }
     }
 }

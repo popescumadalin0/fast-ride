@@ -1,4 +1,5 @@
 using System;
+using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.Models;
 
