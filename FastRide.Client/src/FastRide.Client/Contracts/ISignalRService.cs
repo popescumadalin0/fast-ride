@@ -11,19 +11,19 @@ public interface ISignalRService : IAsyncDisposable
     event Func<NotifyUserGeolocation, Task> NotifyDriverGeolocation;
 
     event Func<RideCreated, Task> RideCreated;
-    
+
     event Func<PriceCalculated, Task> SendPriceCalculated;
-    
-    event Func<Task> SendPriceCalculatedResponseReceived;
+
+    event Func<SendPaymentIntent, Task> SendPaymentIntentReceived;
 
     ValueTask StartConnectionAsync();
 
     ValueTask InitiateSignalRSubscribersAsync();
 
     Task RemoveUserFromGroupAsync(string userId, string groupName);
-    
+
     Task ConfirmPriceCalculated(string instanceId, bool isConfirmed);
-    
+
 
     Task JoinUserInGroupAsync(string userId, string groupName);
 

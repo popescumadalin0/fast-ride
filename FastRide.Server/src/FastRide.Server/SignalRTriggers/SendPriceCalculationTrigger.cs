@@ -16,8 +16,7 @@ public class SendPriceCalculationTrigger
     }
 
     [Function(nameof(SendPriceCalculationTrigger))]
-    [SignalROutput(HubName = SignalRConstants.HubName)]
-    public async Task<SignalRMessageAction> CreateRide(
+    public async Task CreateRide(
         [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientSendPriceCalculation, "instanceId",
             "isConfirmed")]
         SignalRInvocationContext invocationContext,
@@ -26,11 +25,5 @@ public class SendPriceCalculationTrigger
         bool isConfirmed)
     {
         await client.RaiseEventAsync(instanceId, SignalRConstants.ClientSendPriceCalculation, isConfirmed);
-
-        return new SignalRMessageAction(SignalRConstants.ServerSendPriceCalculationResponseReceived)
-        {
-            Arguments = [],
-            UserId = invocationContext.UserId,
-        };
     }
 }

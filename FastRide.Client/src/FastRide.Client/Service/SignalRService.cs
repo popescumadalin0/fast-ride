@@ -24,7 +24,7 @@ public class SignalRService : ISignalRService
     public event Func<PriceCalculated, Task> SendPriceCalculated;
 
     /// <inheritdoc />
-    public event Func<Task> SendPriceCalculatedResponseReceived;
+    public event Func<SendPaymentIntent, Task> SendPaymentIntentReceived;
 
     /// <inheritdoc />
     public event Func<NotifyUserGeolocation, Task> NotifyDriverGeolocation = null!;
@@ -68,21 +68,21 @@ public class SignalRService : ISignalRService
                 }
             });
 
-        _connection.On(SignalRConstants.ServerSendPriceCalculationResponseReceived,
-            async () =>
-            {
-                if (SendPriceCalculatedResponseReceived != null!)
-                {
-                    await SendPriceCalculatedResponseReceived();
-                }
-            });
-
         _connection.On<PriceCalculated>(SignalRConstants.ServerSendPriceCalculation,
             async (payload) =>
             {
                 if (SendPriceCalculated != null!)
                 {
                     await SendPriceCalculated(payload);
+                }
+            });
+
+        _connection.On<SendPaymentIntent>(SignalRConstants.ServerSendPaymentIntent,
+            async (payload) =>
+            {
+                if (SendPaymentIntentReceived != null!)
+                {
+                    await SendPaymentIntentReceived(payload);
                 }
             });
         return ValueTask.CompletedTask;
@@ -124,6 +124,12 @@ public class SignalRService : ISignalRService
         await _connection.SendAsync(SignalRConstants.ClientJoinUserToGroup, userId, groupName);
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        await _connection.StopAsync();
+        await _connection.DisposeAsync();
+    }
+
     private async Task Connect()
     {
         try
@@ -156,11 +162,5 @@ public class SignalRService : ISignalRService
         {
             Console.WriteLine($"FAILED to connect SignalR {ex.Message}");
         }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _connection.StopAsync();
-        await _connection.DisposeAsync();
     }
 }

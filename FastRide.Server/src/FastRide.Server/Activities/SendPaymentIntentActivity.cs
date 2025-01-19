@@ -31,7 +31,7 @@ public class SendPaymentIntentActivity
             PaymentMethodTypes = ["card"],
         });
 
-        return new SignalRMessageAction(SignalRConstants.ServerSendPriceCalculation)
+        return new SignalRMessageAction(SignalRConstants.ServerSendPaymentIntent)
         {
             Arguments =
             [

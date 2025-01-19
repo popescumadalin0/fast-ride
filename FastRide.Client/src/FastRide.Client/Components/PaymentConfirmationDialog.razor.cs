@@ -13,9 +13,9 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     private bool _completed;
 
     private int _index;
+    private bool _nextDisabled = true;
 
     private decimal _price;
-    private bool _nextDisabled = true;
     private bool _stepperLoading = true;
 
 
@@ -25,9 +25,16 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 
     [Inject] private ISnackbar Snackbar { get; set; }
 
+    public void Dispose()
+    {
+        SignalRService.SendPriceCalculated -= PriceReceivedAsync;
+        SignalRService.SendPaymentIntentReceived -= PaymentIntentReceivedAsync;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         SignalRService.SendPriceCalculated += PriceReceivedAsync;
+        SignalRService.SendPaymentIntentReceived += PaymentIntentReceivedAsync;
 
         StateHasChanged();
     }
@@ -42,23 +49,23 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         return Task.CompletedTask;
     }
 
-    private async Task PaymentIntentReceivedAsync()
+    private Task PriceCalculatedResponseReceivedAsync()
     {
-        //OverlayState.DataLoading = true;
+        _nextDisabled = false;
 
-        // Obține PaymentIntent din API
-        var response = await Http.PostAsJsonAsync("https://yourfunctionapp.azurewebsites.net/api/CreatePaymentIntent",
-            new { Amount = totalAmount });
+        StateHasChanged();
 
-        var paymentData = await response.Content.ReadFromJsonAsync<PaymentResponse>();
+        return Task.CompletedTask;
+    }
 
-        // Stripe.js
+    private async Task PaymentIntentReceivedAsync(SendPaymentIntent message)
+    {
         var stripe = Stripe("your-stripe-publishable-key");
         var elements = stripe.elements();
-        var cardElement = elements.create("card"); 
+        var cardElement = elements.create("card");
         cardElement.mount("#card-element");
 
-        var result = await stripe.confirmCardPayment(paymentData.ClientSecret, new
+        var result = await stripe.confirmCardPayment(message.ClientSecret, new
         {
             payment_method = new
             {
@@ -70,29 +77,19 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         {
             // Plată reușită
         }
-
-        //OverlayState.DataLoading = false;
-
-        if (!response.Success)
+        else
         {
-            Snackbar.Add(response.ResponseMessage, Severity.Error);
-            return;
+            //Snackbar.Add(result.ResponseMessage, Severity.Error);
         }
-
-        MudDialog.Close(DialogResult.Ok(true));
     }
 
     private async Task NextStepperAsync(MudStepper stepper)
     {
+        //todo: get current step and make a switch to trigger the client response
         await stepper.NextStepAsync();
         _nextDisabled = true;
         _stepperLoading = true;
     }
 
     private void Cancel() => MudDialog.Cancel();
-
-    public void Dispose()
-    {
-        SignalRService.SendPriceCalculated -= PriceReceivedAsync;
-    }
 }

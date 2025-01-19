@@ -21,8 +21,6 @@ public class SignalRConstants
 
     public const string ClientSendPriceCalculation = "client.send-price-calculation";
 
-    public const string ServerSendPriceCalculationResponseReceived = "server.send-price-calculation-response-received";
-
     public const string ServerSendPaymentIntent = "server.send-payment-intent";
 
     public const string ClientPaymentConfirmation = "client.payment-confirmation";
