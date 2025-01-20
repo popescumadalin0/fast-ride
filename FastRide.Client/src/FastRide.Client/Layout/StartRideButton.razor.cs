@@ -126,6 +126,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
             CloseOnEscapeKey = true,
             Position = DialogPosition.Center,
             NoHeader = true,
+            BackdropClick = false
         };
 
         if (_width <= 641)

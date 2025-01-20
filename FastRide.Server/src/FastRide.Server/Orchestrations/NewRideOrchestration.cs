@@ -51,7 +51,7 @@ public class NewRideOrchestration
 
     private async Task<(bool, decimal)> PriceCalculationStep(TaskOrchestrationContext context, NewRideInput input)
     {
-        var response = await context.CallActivityAsync<Task<SignalRMessageAction>>(nameof(SendPriceCalculationActivity),
+        var response = await context.CallActivityAsync<SignalRMessageAction>(nameof(SendPriceCalculationActivity),
             new SendPriceCalculationActivityInput
             {
                 Destination = input.Destination,
@@ -60,10 +60,10 @@ public class NewRideOrchestration
                 UserId = input.User.NameIdentifier
             });
 
-        var price = await response;
+        var price = response;
 
         var accepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
-
+        
         return (accepted, (price.Arguments![0] as PriceCalculated)!.Price);
     }
 
@@ -76,7 +76,7 @@ public class NewRideOrchestration
             Price = price,
         });
 
-        var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientPaymentConfirmation);
+        var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPaymentIntent);
 
         return acccepted;
     }

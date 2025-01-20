@@ -7,9 +7,14 @@ using MudBlazor;
 
 namespace FastRide.Client.Components;
 
-//todo: payment confirmation
 public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+    [Inject] private ISignalRService SignalRService { get; set; }
+
+    [Inject] private ISnackbar Snackbar { get; set; }
+    
     private bool _completed;
 
     private int _index;
@@ -17,13 +22,8 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 
     private decimal _price;
     private bool _stepperLoading = true;
-
-
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-
-    [Inject] private ISignalRService SignalRService { get; set; }
-
-    [Inject] private ISnackbar Snackbar { get; set; }
+    
+    private string _instanceId = string.Empty;
 
     public void Dispose()
     {
@@ -44,23 +44,17 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         _nextDisabled = false;
         _stepperLoading = false;
         _price = arg.Price;
-        StateHasChanged();
-
-        return Task.CompletedTask;
-    }
-
-    private Task PriceCalculatedResponseReceivedAsync()
-    {
-        _nextDisabled = false;
+        
+        _instanceId = arg.InstanceId;
 
         StateHasChanged();
-
+        
         return Task.CompletedTask;
     }
 
     private async Task PaymentIntentReceivedAsync(SendPaymentIntent message)
     {
-        var stripe = Stripe("your-stripe-publishable-key");
+        /*var stripe = Stripe("your-stripe-publishable-key");
         var elements = stripe.elements();
         var cardElement = elements.create("card");
         cardElement.mount("#card-element");
@@ -80,16 +74,44 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         else
         {
             //Snackbar.Add(result.ResponseMessage, Severity.Error);
-        }
+        }*/
     }
 
     private async Task NextStepperAsync(MudStepper stepper)
     {
-        //todo: get current step and make a switch to trigger the client response
+        switch (stepper.ActiveIndex)
+        {
+            case 0:
+            {
+                await SignalRService.ConfirmPriceCalculated(_instanceId, true);
+                break;
+            }
+            case 1:
+            {
+                
+                break;
+            }
+        }
         await stepper.NextStepAsync();
         _nextDisabled = true;
         _stepperLoading = true;
     }
 
-    private void Cancel() => MudDialog.Cancel();
+    private async Task CancelAsync(MudStepper stepper)
+    {
+        switch (stepper.ActiveIndex)
+        {
+            case 0:
+            {
+                await SignalRService.ConfirmPriceCalculated(_instanceId, false);
+                break;
+            }
+            case 1:
+            {
+                
+                break;
+            }
+        }
+        MudDialog.Cancel();
+    }
 }

@@ -23,7 +23,7 @@ public class SignalRConstants
 
     public const string ServerSendPaymentIntent = "server.send-payment-intent";
 
-    public const string ClientPaymentConfirmation = "client.payment-confirmation";
+    public const string ClientSendPaymentIntent = "client.send-payment-intent";
 
     public const string ClientNotifyUserGeolocation = "client.notify-user-geolocation";
 

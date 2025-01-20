@@ -67,13 +67,18 @@
                 </MudStack>
             </CompletedContent>
             <ActionContent Context="stepper">
-                @if (!_completed)
-                {
-                    <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
-                                   Disabled="_nextDisabled"
-                                   Icon="@Icons.Material.Filled.ArrowForward"
-                                   Color="Color.Primary"/>
-                }
+                <div class="d-flex flex-row align-content-between">
+                    <MudIconButton OnClick="@(async () => await CancelAsync(stepper))"
+                                   Icon="@Icons.Material.Filled.Cancel"
+                                   Color="Color.Secondary"/>
+                    @if (!_completed)
+                    {
+                        <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
+                                       Disabled="_nextDisabled"
+                                       Icon="@Icons.Material.Filled.ArrowForward"
+                                       Color="Color.Primary"/>
+                    }
+                </div>
             </ActionContent>
         </MudStepper>
     </DialogContent>
