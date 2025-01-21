@@ -28,30 +28,30 @@ public class NewRideOrchestration
 
         var input = context.GetInput<NewRideInput>();
 
-        var priceCalculated = await PriceCalculationStep(context, input);
+        var priceCalculated = await PriceCalculationStepAsync(context, input);
 
-        if (!priceCalculated.Item1)
+        if (!priceCalculated)
         {
             _logger.LogInformation($"The ride was canceled!");
             return;
         }
-        
-        var paymentConfirmed = await PaymentStep(context, input, priceCalculated.Item2);
+
+        var paymentConfirmed = await PaymentStepAsync(context, input, priceCalculated.Item2);
 
         if (!paymentConfirmed)
         {
             _logger.LogInformation($"The ride was canceled!");
             return;
         }
-        
-        
+
 
         //todo: search a rider
     }
 
-    private async Task<(bool, decimal)> PriceCalculationStep(TaskOrchestrationContext context, NewRideInput input)
+    private async Task<bool> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
     {
-        var response = await context.CallActivityAsync<SignalRMessageAction>(nameof(SendPriceCalculationActivity),
+        await context.CallActivityAsync(
+            nameof(SendPriceCalculationActivity),
             new SendPriceCalculationActivityInput
             {
                 Destination = input.Destination,
@@ -59,17 +59,15 @@ public class NewRideOrchestration
                 StartPoint = input.StartPoint,
                 UserId = input.User.NameIdentifier
             });
-
-        var price = response;
-
-        var accepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
         
-        return (accepted, (price.Arguments![0] as PriceCalculated)!.Price);
+        var accepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
+
+        return accepted;
     }
 
-    private async Task<bool> PaymentStep(TaskOrchestrationContext context, NewRideInput input, decimal price)
+    private async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input, decimal price)
     {
-        await context.CallActivityAsync<object>(nameof(SendPaymentIntentActivity), new SendPaymentIntentActivityInput()
+        await context.CallActivityAsync(nameof(SendPaymentIntentActivity), new SendPaymentIntentActivityInput()
         {
             InstanceId = context.InstanceId,
             UserId = input.User.NameIdentifier,

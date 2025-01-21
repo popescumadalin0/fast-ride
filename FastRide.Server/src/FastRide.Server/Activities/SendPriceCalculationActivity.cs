@@ -21,9 +21,8 @@ public class SendPriceCalculationActivity
         _distanceService = distanceService;
     }
 
-    [Function(nameof(SendPriceCalculationActivity))]
-    [SignalROutput(HubName = SignalRConstants.HubName)]
-    public Task<SignalRMessageAction> RunAsync(
+    [FunctionName(nameof(SendPriceCalculationActivity))]
+    public Task<SendPriceCalculationActivityOutput> RunAsync(
         [ActivityTrigger] SendPriceCalculationActivityInput input)
     {
         _logger.LogInformation("Saying hello to {name}.", input);
@@ -33,17 +32,31 @@ public class SendPriceCalculationActivity
         //todo: using google, calculate the distance and the duration
         var price = _distanceService.CalculatePricePerDistance(distance, duration);
 
-        return Task.FromResult(new SignalRMessageAction(SignalRConstants.ServerSendPriceCalculation)
+        var calculatedPrice = new PriceCalculated()
         {
-            Arguments =
-            [
-                new PriceCalculated()
+            Price = price,
+            InstanceId = input.InstanceId,
+        };
+        return Task.FromResult(
+            new SendPriceCalculationActivityOutput()
+            {
+                SignalRMessageAction = new SignalRMessageAction(SignalRConstants.ServerSendPriceCalculation)
                 {
-                    Price = price,
-                    InstanceId = input.InstanceId,
-                }
-            ],
-            /*UserId = input.UserId*/
-        });
+                    Arguments =
+                    [
+                        calculatedPrice
+                    ],
+                    /*UserId = input.UserId*/
+                },
+                PriceCalculated = calculatedPrice
+            });
+    }
+
+    public class SendPriceCalculationActivityOutput
+    {
+        [SignalROutput(HubName = SignalRConstants.HubName)]
+        public SignalRMessageAction SignalRMessageAction { get; set; }
+
+        public PriceCalculated PriceCalculated { get; set; }
     }
 }
