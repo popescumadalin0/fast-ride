@@ -30,13 +30,13 @@ public class NewRideOrchestration
 
         var priceCalculated = await PriceCalculationStepAsync(context, input);
 
-        if (!priceCalculated)
+        if (priceCalculated == 0)
         {
             _logger.LogInformation($"The ride was canceled!");
             return;
         }
 
-        var paymentConfirmed = await PaymentStepAsync(context, input, priceCalculated.Item2);
+        var paymentConfirmed = await PaymentStepAsync(context, input, priceCalculated);
 
         if (!paymentConfirmed)
         {
@@ -44,11 +44,10 @@ public class NewRideOrchestration
             return;
         }
 
-
         //todo: search a rider
     }
 
-    private async Task<bool> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
+    private async Task<decimal> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
     {
         await context.CallActivityAsync(
             nameof(SendPriceCalculationActivity),
@@ -60,7 +59,7 @@ public class NewRideOrchestration
                 UserId = input.User.NameIdentifier
             });
         
-        var accepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPriceCalculation);
+        var accepted = await context.WaitForExternalEvent<decimal>(SignalRConstants.ClientSendPriceCalculation);
 
         return accepted;
     }

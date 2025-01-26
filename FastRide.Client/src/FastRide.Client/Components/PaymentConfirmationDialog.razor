@@ -43,6 +43,21 @@
                         <MudText>Do you want to continue?</MudText>
                     }
                 </MudStep>
+                <MudStep Title="Payment">
+                    @if (_stepperLoading)
+                    {
+                        <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
+                                           Color="Color.Success"
+                                           Class="progress-bar"/>
+                    }
+                    else
+                    {
+                        <div id="payment-element">
+                            <!--Stripe.js injects the Payment Element-->
+                        </div>
+                    }
+                </MudStep>
+
                 <MudStep Title="Payment" @bind-Completed="_completed">
                     @if (_stepperLoading)
                     {
@@ -52,7 +67,9 @@
                     }
                     else
                     {
-                        //todo
+                        <div>
+                            Payment successfully
+                        </div>
                     }
                 </MudStep>
             </ChildContent>

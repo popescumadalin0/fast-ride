@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
 using MudBlazor;
 
 namespace FastRide.Client.Components;
@@ -14,6 +15,10 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     [Inject] private ISignalRService SignalRService { get; set; }
 
     [Inject] private ISnackbar Snackbar { get; set; }
+    
+    [Inject] private IStripeService StripeService { get; set; }
+    
+    [Inject] private IConfiguration Configuration { get; set; }
     
     private bool _completed;
 
@@ -54,27 +59,14 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 
     private async Task PaymentIntentReceivedAsync(SendPaymentIntent message)
     {
-        /*var stripe = Stripe("your-stripe-publishable-key");
-        var elements = stripe.elements();
-        var cardElement = elements.create("card");
-        cardElement.mount("#card-element");
+        _stepperLoading = false;
+        StateHasChanged();
 
-        var result = await stripe.confirmCardPayment(message.ClientSecret, new
-        {
-            payment_method = new
-            {
-                card = cardElement
-            }
-        });
+        await StripeService.StripeInitializeAsync(message.ClientSecret, Configuration["Stripe:PublishKey"]);
+        
+        _nextDisabled = false;
+        StateHasChanged();
 
-        if (result.paymentIntent.status == "succeeded")
-        {
-            // Plată reușită
-        }
-        else
-        {
-            //Snackbar.Add(result.ResponseMessage, Severity.Error);
-        }*/
     }
 
     private async Task NextStepperAsync(MudStepper stepper)
@@ -83,12 +75,12 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         {
             case 0:
             {
-                await SignalRService.ConfirmPriceCalculated(_instanceId, true);
+                await SignalRService.ConfirmPriceCalculatedAsync(_instanceId, _price);
                 break;
             }
             case 1:
             {
-                
+                await StripeService.StripeCheckoutAsync();
                 break;
             }
         }
@@ -103,12 +95,12 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         {
             case 0:
             {
-                await SignalRService.ConfirmPriceCalculated(_instanceId, false);
+                await SignalRService.ConfirmPriceCalculatedAsync(_instanceId, 0);
                 break;
             }
             case 1:
             {
-                
+                await SignalRService.ConfirmPaymentAsync(_instanceId, false);
                 break;
             }
         }

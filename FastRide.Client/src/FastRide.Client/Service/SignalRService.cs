@@ -114,9 +114,14 @@ public class SignalRService : ISignalRService
         await _connection.SendAsync(SignalRConstants.ClientLeaveUserFromGroup, userId, groupName);
     }
 
-    public async Task ConfirmPriceCalculated(string instanceId, bool isConfirmed)
+    public async Task ConfirmPriceCalculatedAsync(string instanceId, decimal priceConfirmed)
     {
-        await _connection.SendAsync(SignalRConstants.ClientSendPriceCalculation, instanceId, isConfirmed);
+        await _connection.SendAsync(SignalRConstants.ClientSendPriceCalculation, instanceId, priceConfirmed);
+    }
+
+    public async Task ConfirmPaymentAsync(string instanceId, bool paymentSuccess)
+    {
+        await _connection.SendAsync(SignalRConstants.ClientSendPaymentIntent, instanceId, paymentSuccess);
     }
 
     public async Task JoinUserInGroupAsync(string userId, string groupName)

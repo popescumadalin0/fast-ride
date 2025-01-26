@@ -10,18 +10,11 @@ namespace FastRide.Client.Service;
 public class GeolocationService : IGeolocationService
 {
     private readonly IJSRuntime _jsRuntime;
-    private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
     private readonly DotNetObjectReference<GeolocationService> _dotNetObjectReference;
 
     public GeolocationService(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
-
-        /*
-        _moduleTask = new Lazy<Task<IJSObjectReference>>(() => _jsRuntime!
-            .InvokeAsync<IJSObjectReference>("window.getGeolocation")
-            .AsTask());
-            */
 
         _dotNetObjectReference = DotNetObjectReference.Create(this);
     }

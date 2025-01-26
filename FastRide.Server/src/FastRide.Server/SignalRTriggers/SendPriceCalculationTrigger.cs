@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
@@ -16,14 +17,16 @@ public class SendPriceCalculationTrigger
     }
 
     [Function(nameof(SendPriceCalculationTrigger))]
-    public async Task CreateRide(
+    public async Task SendPriceCalculation(
         [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientSendPriceCalculation, "instanceId",
-            "isConfirmed")]
+            "priceConfirmed")]
         SignalRInvocationContext invocationContext,
         [DurableClient] DurableTaskClient client,
         string instanceId,
-        bool isConfirmed)
+        decimal priceConfirmed)
     {
-        await client.RaiseEventAsync(instanceId, SignalRConstants.ClientSendPriceCalculation, isConfirmed);
+        _logger.LogInformation($"{nameof(SendPriceCalculationTrigger)} function executed");
+
+        await client.RaiseEventAsync(instanceId, SignalRConstants.ClientSendPriceCalculation, priceConfirmed);
     }
 }

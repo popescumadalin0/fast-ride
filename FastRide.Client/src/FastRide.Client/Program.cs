@@ -46,6 +46,8 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
+builder.Services.AddScoped<IStripeService, StripeService>();
+
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
 
 builder.Services.AddSingleton<ISignalRService, SignalRService>();

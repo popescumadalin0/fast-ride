@@ -22,9 +22,10 @@ public interface ISignalRService : IAsyncDisposable
 
     Task RemoveUserFromGroupAsync(string userId, string groupName);
 
-    Task ConfirmPriceCalculated(string instanceId, bool isConfirmed);
+    Task ConfirmPriceCalculatedAsync(string instanceId, decimal priceConfirmed);
 
-
+    Task ConfirmPaymentAsync(string instanceId, bool paymentSuccess);
+    
     Task JoinUserInGroupAsync(string userId, string groupName);
 
     Task NotifyUserGeolocationAsync(string userId, string groupName, Geolocation geolocation);
