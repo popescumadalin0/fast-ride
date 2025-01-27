@@ -157,3 +157,12 @@ code {
     min-height: 541px;
     min-width: 552px;
 }
+
+@media (min-width: 641px) {
+    .dialog-size {
+        min-height: 0;
+        min-width: 0;
+        max-height: 541px;
+        max-width: 552px;
+    }
+}

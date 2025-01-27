@@ -43,7 +43,7 @@
                         <MudText>Do you want to continue?</MudText>
                     }
                 </MudStep>
-                <MudStep Title="Payment">
+                <MudStep Title="Payment" @bind-Completed="_completed">
                     @if (_stepperLoading)
                     {
                         <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
@@ -57,43 +57,44 @@
                         </div>
                     }
                 </MudStep>
-
-                <MudStep Title="Payment" @bind-Completed="_completed">
-                    @if (_stepperLoading)
+            </ChildContent>
+            <CompletedContent>
+                <MudStack Class="ma-3">
+                    @if (string.IsNullOrEmpty(_paymentConfirmation))
                     {
-                        <MudProgressLinear Indeterminate Striped Value="0" Min="0" Max="100"
-                                           Color="Color.Success"
-                                           Class="progress-bar"/>
+                        <MudStack>
+                            <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Warning"/>
+                            <MudText>
+                                Payment is completed! Search a rider is in progress...
+                            </MudText>
+                        </MudStack>
                     }
                     else
                     {
-                        <div>
-                            Payment successfully
-                        </div>
+                        <MudStack>
+                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Success"/>
+                            <MudText>
+                                @("Payment failed: " + _paymentConfirmation)
+                            </MudText>
+                        </MudStack>
                     }
-                </MudStep>
-            </ChildContent>
-            <CompletedContent>
-                <MudStack Row Class="ma-3">
-                    <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success"/>
-                    <MudText>
-                        Payment is completed! Search a rider is in progress...
-                    </MudText>
                     <MudButton Color="Color.Primary" OnClick="@(() => MudDialog.Close(DialogResult.Ok(true)))">Ok
                     </MudButton>
                 </MudStack>
             </CompletedContent>
             <ActionContent Context="stepper">
                 <div class="d-flex flex-row justify-content-between">
-                    <MudIconButton OnClick="@(async () => await CancelAsync(stepper))"
-                                   Icon="@Icons.Material.Filled.Cancel"
-                                   Color="Color.Secondary"/>
                     @if (!_completed)
                     {
-                        <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
-                                       Disabled="_nextDisabled"
-                                       Icon="@Icons.Material.Filled.ArrowForward"
-                                       Color="Color.Primary"/>
+                        <MudStack Row Justify="Justify.SpaceBetween">
+                            <MudIconButton OnClick="@(async () => await CancelAsync(stepper))"
+                                           Icon="@Icons.Material.Filled.Close"
+                                           Color="Color.Secondary"/>
+                            <MudIconButton OnClick="@(async () => await NextStepperAsync(stepper))"
+                                           Disabled="_nextDisabled"
+                                           Icon="@Icons.Material.Filled.ArrowForward"
+                                           Color="Color.Primary"/>
+                        </MudStack>
                     }
                 </div>
             </ActionContent>

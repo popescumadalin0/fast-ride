@@ -10,36 +10,39 @@ namespace FastRide.Client.Components;
 
 public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 {
+    private bool _completed;
+
+    private int _index;
+
+    private string _instanceId = string.Empty;
+    private bool _nextDisabled = true;
+
+    private string _paymentConfirmation = string.Empty;
+
+    private decimal _price;
+    private bool _stepperLoading = true;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
     [Inject] private ISignalRService SignalRService { get; set; }
 
     [Inject] private ISnackbar Snackbar { get; set; }
-    
+
     [Inject] private IStripeService StripeService { get; set; }
-    
+
     [Inject] private IConfiguration Configuration { get; set; }
-    
-    private bool _completed;
-
-    private int _index;
-    private bool _nextDisabled = true;
-
-    private decimal _price;
-    private bool _stepperLoading = true;
-    
-    private string _instanceId = string.Empty;
 
     public void Dispose()
     {
         SignalRService.SendPriceCalculated -= PriceReceivedAsync;
         SignalRService.SendPaymentIntentReceived -= PaymentIntentReceivedAsync;
+        StripeService.OnValidationChanged -= OnValidationCallback;
     }
 
     protected override async Task OnInitializedAsync()
     {
         SignalRService.SendPriceCalculated += PriceReceivedAsync;
         SignalRService.SendPaymentIntentReceived += PaymentIntentReceivedAsync;
+        StripeService.OnValidationChanged += OnValidationCallback;
 
         StateHasChanged();
     }
@@ -49,11 +52,11 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         _nextDisabled = false;
         _stepperLoading = false;
         _price = arg.Price;
-        
+
         _instanceId = arg.InstanceId;
 
         StateHasChanged();
-        
+
         return Task.CompletedTask;
     }
 
@@ -63,10 +66,9 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         StateHasChanged();
 
         await StripeService.StripeInitializeAsync(message.ClientSecret, Configuration["Stripe:PublishKey"]);
-        
+
         _nextDisabled = false;
         StateHasChanged();
-
     }
 
     private async Task NextStepperAsync(MudStepper stepper)
@@ -80,13 +82,19 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
             }
             case 1:
             {
-                await StripeService.StripeCheckoutAsync();
+                var response = await StripeService.StripeCheckoutAsync();
+                var isSuccess = string.IsNullOrEmpty(response);
+
+                await SignalRService.ConfirmPaymentAsync(_instanceId, isSuccess);
+                _paymentConfirmation = response;
+
                 break;
             }
         }
-        await stepper.NextStepAsync();
+
         _nextDisabled = true;
         _stepperLoading = true;
+        await stepper.NextStepAsync();
     }
 
     private async Task CancelAsync(MudStepper stepper)
@@ -104,6 +112,14 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
                 break;
             }
         }
+
         MudDialog.Cancel();
+    }
+
+    private Task OnValidationCallback(bool isValid)
+    {
+        _nextDisabled = isValid;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }

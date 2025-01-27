@@ -1,10 +1,10 @@
 let elements = null;
 let stripe = null;
 
-window.initializeStripe = (clientSecret, publishKey) => {
+window.initializeStripe = (dotNetInstance, clientSecret, publishKey, validationChangedCallback) => {
     stripe = Stripe(publishKey);
-    
-    elements = stripe.elements({ clientSecret });
+
+    elements = stripe.elements({clientSecret});
 
     const paymentElementOptions = {
         layout: "tabs",
@@ -12,17 +12,29 @@ window.initializeStripe = (clientSecret, publishKey) => {
 
     const paymentElement = elements.create("payment", paymentElementOptions);
     paymentElement.mount("#payment-element");
+
+    dotNetInstance.invokeMethodAsync(validationChangedCallback, false);
+
+    paymentElement.on('change', function (event) {
+        var result = event.complete;
+
+        dotNetInstance.invokeMethodAsync(validationChangedCallback, result);
+    });
 }
 
 window.checkoutStripe = async () => {
-    
-    const { error } = await stripe.confirmPayment({
-        elements
+
+    const {error} = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+            return_url: 'https://www.google.com',
+        },
+        redirect: "if_required"
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
-        return error.message;
-    }
-    
-    return "";
+    /* if (error.type === "card_error" || error.type === "validation_error") {
+         return error.message;
+     }*/
+
+    return error.message;
 }
