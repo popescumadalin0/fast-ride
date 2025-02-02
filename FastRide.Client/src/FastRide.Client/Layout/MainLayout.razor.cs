@@ -14,11 +14,7 @@ namespace FastRide.Client.Layout;
 public partial class MainLayout : IDisposable
 {
     [Inject] private OverlayState OverlayState { get; set; }
-
-    [Inject] private DriverSendCurrentGeolocationService DriverSendCurrentGeolocationService { get; set; }
-
-    [Inject] private ISignalRService SignalRService { get; set; }
-
+    
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     public void Dispose()
@@ -29,12 +25,5 @@ public partial class MainLayout : IDisposable
     protected override async Task OnInitializedAsync()
     {
         OverlayState.OnChange += StateHasChanged;
-
-        var authState = await AuthenticationStateTask;
-
-        if (authState.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
-        {
-            DriverSendCurrentGeolocationService.StartExecuting();
-        }
     }
 }

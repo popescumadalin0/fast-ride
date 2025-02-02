@@ -18,6 +18,8 @@ public partial class App : IAsyncDisposable
 
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
+    [Inject] private IUserGroupService UserGroupService { get; set; }
+
     public async ValueTask DisposeAsync()
     {
         await SignalRService.DisposeAsync();
@@ -29,11 +31,17 @@ public partial class App : IAsyncDisposable
         await SignalRService.InitiateSignalRSubscribersAsync();
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var groupName = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GroupSid)?.Value;
-        var userId = authState.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+        var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
+
+        var userId = authState.User.Identity!.IsAuthenticated
+            ? authState.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value
+            : Constants.Constants.Guest;
+
         await SignalRService.JoinUserInGroupAsync(userId, groupName);
 
-        if (authState.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
+        if (authState.User.Identity!.IsAuthenticated &&
+            authState.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
         {
             DriverSendCurrentGeolocationService.StartExecuting();
         }

@@ -22,8 +22,7 @@ window.initializeStripe = (dotNetInstance, clientSecret, publishKey, validationC
     });
 }
 
-window.checkoutStripe = async () => {
-
+async function sendCheckout() {
     const {error} = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -37,4 +36,8 @@ window.checkoutStripe = async () => {
      }*/
 
     return error.message;
+}
+
+window.checkoutStripe = () => {
+    var string
 }

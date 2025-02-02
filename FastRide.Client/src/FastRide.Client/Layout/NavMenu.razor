@@ -16,7 +16,7 @@
                 <UserSettingsPopover Context="@context"/>
             </div>
             <div class="nav-item px-1">
-                <NavLink class="nav-link btn btn-link bg-danger text-white" @onclick="LogOut">
+                <NavLink class="nav-link btn btn-link bg-danger text-white" @onclick="@LogOutAsync">
                     <i class="bi bi-box-arrow-right "></i>
                 </NavLink>
             </div>
@@ -31,7 +31,7 @@
         </Authorized>
         <NotAuthorized>
             <div class="nav-item px-1">
-                <NavLink class="nav-link" href="authentication/login">
+                <NavLink class="nav-link" @onclick="@LogInAsync">
                     <i class="bi bi-box-arrow-in-right"></i>
                 </NavLink>
             </div>

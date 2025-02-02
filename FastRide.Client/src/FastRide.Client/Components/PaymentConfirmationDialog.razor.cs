@@ -118,7 +118,7 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 
     private Task OnValidationCallback(bool isValid)
     {
-        _nextDisabled = isValid;
+        _nextDisabled = !isValid;
         StateHasChanged();
         return Task.CompletedTask;
     }
