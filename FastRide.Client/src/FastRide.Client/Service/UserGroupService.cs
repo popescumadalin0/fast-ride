@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.Service;
 
@@ -19,23 +17,7 @@ public class UserGroupService : IUserGroupService
 
     public async Task<string> GetCurrentUserGroupNameAsync()
     {
-        var tcs = new TaskCompletionSource<Geolocation>();
-
-        Func<Geolocation, ValueTask> coordinatesChangedHandler = null;
-        coordinatesChangedHandler = (geolocation) =>
-        {
-            tcs.SetResult(geolocation);
-
-            _geolocationService.CoordinatesChanged -= coordinatesChangedHandler;
-
-            return ValueTask.CompletedTask;
-        };
-
-        _geolocationService.CoordinatesChanged += coordinatesChangedHandler;
-
-        await _geolocationService.RequestGeoLocationAsync();
-
-        var geolocation = await tcs.Task;
+        var geolocation = await _geolocationService.GetGeolocationAsync();
 
         var locality =
             await _locationService.GetLocalityByLatLongAsync(geolocation.Latitude, geolocation.Longitude);

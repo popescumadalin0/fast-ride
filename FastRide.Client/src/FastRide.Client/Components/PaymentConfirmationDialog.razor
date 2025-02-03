@@ -63,7 +63,7 @@
                     @if (string.IsNullOrEmpty(_paymentConfirmation))
                     {
                         <MudStack>
-                            <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Warning"/>
+                            <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success"/>
                             <MudText>
                                 Payment is completed! Search a rider is in progress...
                             </MudText>
@@ -72,7 +72,7 @@
                     else
                     {
                         <MudStack>
-                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Success"/>
+                            <MudIcon Icon="@Icons.Material.Filled.Cancel" Color="Color.Warning"/>
                             <MudText>
                                 @("Payment failed: " + _paymentConfirmation)
                             </MudText>

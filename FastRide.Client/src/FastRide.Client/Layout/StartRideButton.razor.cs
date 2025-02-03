@@ -76,23 +76,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
         var email = authState.User.Claims.First(c => c.Type == "email").Value;
         var userId = authState.User.Claims.First(c => c.Type == "sub").Value;
 
-        var tcs = new TaskCompletionSource<Geolocation>();
-
-        Func<Geolocation, ValueTask> coordinatesChangedHandler = null;
-        coordinatesChangedHandler = (geolocation) =>
-        {
-            tcs.SetResult(geolocation);
-
-            GeolocationService.CoordinatesChanged -= coordinatesChangedHandler;
-
-            return ValueTask.CompletedTask;
-        };
-
-        GeolocationService.CoordinatesChanged += coordinatesChangedHandler;
-
-        await GeolocationService.RequestGeoLocationAsync();
-
-        var currentLocation = await tcs.Task;
+        var currentLocation = await GeolocationService.GetGeolocationAsync();
 
         await SignalRService.CreateNewRideAsync(groupName, new NewRideInput()
         {

@@ -22,22 +22,21 @@ window.initializeStripe = (dotNetInstance, clientSecret, publishKey, validationC
     });
 }
 
-async function sendCheckout() {
-    const {error} = await stripe.confirmPayment({
+window.checkoutStripe = (dotNetHelper) => {
+    stripe.confirmPayment({
         elements,
         confirmParams: {
             return_url: 'https://www.google.com',
         },
         redirect: "if_required"
+    }).then((payload) => {
+        success(payload);
     });
 
-    /* if (error.type === "card_error" || error.type === "validation_error") {
-         return error.message;
-     }*/
-
-    return error.message;
-}
-
-window.checkoutStripe = () => {
-    var string
+    function success(payload) {
+        /* if (error.type === "card_error" || error.type === "validation_error") {
+            return error.message;
+        }*/
+        dotNetHelper.invokeMethodAsync('OnPaymentChangedAsync', payload.message);
+    }
 }

@@ -12,6 +12,10 @@ public class GeolocationService : IGeolocationService
     private readonly IJSRuntime _jsRuntime;
     private readonly DotNetObjectReference<GeolocationService> _dotNetObjectReference;
 
+    private event Func<Geolocation, ValueTask> CoordinatesChanged = default!;
+
+    private event Func<GeolocationError, ValueTask> OnGeolocationPositionError = default!;
+
     public GeolocationService(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
@@ -19,22 +23,28 @@ public class GeolocationService : IGeolocationService
         _dotNetObjectReference = DotNetObjectReference.Create(this);
     }
 
-    public async ValueTask RequestGeoLocationAsync(bool enableHighAccuracy, int maximumAgeInMilliseconds)
+    public async ValueTask<Geolocation> GetGeolocationAsync()
     {
-        await _jsRuntime.InvokeVoidAsync("window.getGeolocation",
-            _dotNetObjectReference,
-            enableHighAccuracy,
-            maximumAgeInMilliseconds);
+        var tcs = new TaskCompletionSource<Geolocation>();
+
+        Func<Geolocation, ValueTask> coordinatesChangedHandler = null;
+        coordinatesChangedHandler = (geolocation) =>
+        {
+            tcs.SetResult(geolocation);
+
+            CoordinatesChanged -= coordinatesChangedHandler;
+
+            return ValueTask.CompletedTask;
+        };
+
+        CoordinatesChanged += coordinatesChangedHandler;
+
+        await RequestGeoLocationAsync();
+
+        var geolocation = await tcs.Task;
+
+        return geolocation;
     }
-
-    public async ValueTask RequestGeoLocationAsync()
-    {
-        await RequestGeoLocationAsync(enableHighAccuracy: true, maximumAgeInMilliseconds: 0);
-    }
-
-    public event Func<Geolocation, ValueTask> CoordinatesChanged = default!;
-
-    public event Func<GeolocationError, ValueTask> OnGeolocationPositionError = default!;
 
     [JSInvokable]
     public async Task OnSuccessAsync(Geolocation coordinates)
@@ -52,5 +62,18 @@ public class GeolocationService : IGeolocationService
         {
             await OnGeolocationPositionError.Invoke(error);
         }
+    }
+
+    private async ValueTask RequestGeoLocationAsync(bool enableHighAccuracy, int maximumAgeInMilliseconds)
+    {
+        await _jsRuntime.InvokeVoidAsync("window.getGeolocation",
+            _dotNetObjectReference,
+            enableHighAccuracy,
+            maximumAgeInMilliseconds);
+    }
+
+    private async ValueTask RequestGeoLocationAsync()
+    {
+        await RequestGeoLocationAsync(enableHighAccuracy: true, maximumAgeInMilliseconds: 0);
     }
 }

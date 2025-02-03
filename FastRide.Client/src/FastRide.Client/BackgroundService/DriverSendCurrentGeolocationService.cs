@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using FastRide.Client.Contracts;
-using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Timer = System.Timers.Timer;
 
@@ -60,21 +59,21 @@ public class DriverSendCurrentGeolocationService : IDisposable
 
     private void HandleTimer(object source, ElapsedEventArgs e)
     {
-        _geolocationService.CoordinatesChanged += OnCoordinatesChanged;
-        _geolocationService.RequestGeoLocationAsync().GetAwaiter().GetResult();
+        RequestCurrentGeolocation().GetAwaiter().GetResult();
     }
 
-    private async ValueTask OnCoordinatesChanged(Geolocation geolocation)
+    private async ValueTask RequestCurrentGeolocation()
     {
         var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
         var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
 
+        var geolocation = await _geolocationService.GetGeolocationAsync();
+
         await _signalRService.NotifyUserGeolocationAsync(userId,
             groupName,
             geolocation);
-        
-        _geolocationService.CoordinatesChanged -= OnCoordinatesChanged;
+
         OnJobExecuted();
     }
 }

@@ -10,6 +10,8 @@ public class StripeService : IStripeService
     private readonly DotNetObjectReference<StripeService> _dotNetObjectReference;
     private readonly IJSRuntime _jsRuntime;
 
+    private event Func<string, ValueTask> PaymentConfirmed = default!;
+
     public StripeService(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
@@ -30,7 +32,25 @@ public class StripeService : IStripeService
 
     public async ValueTask<string> StripeCheckoutAsync()
     {
-        return await _jsRuntime.InvokeAsync<string>("window.checkoutStripe");
+        var tcs = new TaskCompletionSource<string>();
+
+        Func<string, ValueTask> paymentConfirmed = null;
+        paymentConfirmed = (message) =>
+        {
+            tcs.SetResult(message);
+
+            PaymentConfirmed -= paymentConfirmed;
+
+            return ValueTask.CompletedTask;
+        };
+
+        PaymentConfirmed += paymentConfirmed;
+
+        await _jsRuntime.InvokeAsync<string>("window.checkoutStripe", _dotNetObjectReference);
+
+        var message = await tcs.Task;
+
+        return message;
     }
 
     [JSInvokable]
@@ -38,5 +58,14 @@ public class StripeService : IStripeService
     {
         OnValidationChanged?.Invoke(isValid);
         return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public async Task OnPaymentChangedAsync(string message)
+    {
+        if (PaymentConfirmed != null!)
+        {
+            await PaymentConfirmed.Invoke(message);
+        }
     }
 }
