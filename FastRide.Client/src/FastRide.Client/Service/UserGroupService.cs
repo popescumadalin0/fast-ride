@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using Majorsoft.Blazor.Components.Common.JsInterop.Geo;
+using IGeolocationService = FastRide.Client.Contracts.IGeolocationService;
 
 namespace FastRide.Client.Service;
 
