@@ -35,4 +35,15 @@
     <ItemGroup>
         <ProjectReference Include="..\FastRide.Server.Services\FastRide.Server.Services.csproj"/>
     </ItemGroup>
+
+    <!--> For MacOs <-->
+    <ItemGroup Condition="'$(OS)' == 'Unix'">
+        <PackageReference Include="Contrib.Grpc.Core.M1" Version="2.41.0" />
+    </ItemGroup>
+    <Target Name="CopyGrpcNativeAssetsToOutDir" AfterTargets="Build" Condition="'$(OS)' == 'Unix'">
+        <ItemGroup>
+            <NativeAssetToCopy Condition="$([MSBuild]::IsOSPlatform('OSX'))" Include="$(OutDir)runtimes/osx-arm64/native/*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(NativeAssetToCopy)" DestinationFolder="$(OutDir).azurefunctions/runtimes/osx-arm64/native" />`
+    </Target>
 </Project>
