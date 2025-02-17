@@ -8,7 +8,6 @@ using FastRide.Client.Models;
 using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Sdk;
-using Majorsoft.Blazor.Components.Maps;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -46,18 +45,11 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 
 builder.Services.AddScoped<IGeolocationService, GeolocationService>();
 
-builder.Services
-    .AddScoped<Majorsoft.Blazor.Components.Common.JsInterop.Geo.IGeolocationService,
-        Majorsoft.Blazor.Components.Common.JsInterop.Geo.GeolocationService>();
-
 builder.Services.AddScoped<IStripeService, StripeService>();
 
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
 
 builder.Services.AddSingleton<ISignalRService, SignalRService>();
-
-//builder.Services.AddBlazorGoogleMaps(builder.Configuration["GoogleMaps:ApiKey"]!);
-builder.Services.AddMapExtensions();
 
 builder.Services.AddMudServices();
 
