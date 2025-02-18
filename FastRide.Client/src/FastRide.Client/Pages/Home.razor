@@ -6,10 +6,10 @@
 <div class="search-destination">
     <MudGrid>
         <MudItem xs="12">
-            <MudAutocomplete T="string" Label="US States" @bind-Value="_state" SearchFunc="@Search" Variant="Variant.Outlined" ShowProgressIndicator="true" />
+            <MudAutocomplete T="string" Label="US States" @bind-Value="_state" SearchFunc="@Search"
+                             Variant="Variant.Outlined" ShowProgressIndicator="true"/>
         </MudItem>
     </MudGrid>
 </div>
-<div style="height:100dvh; width: 100dvw;">
-    <RealTimeMap></RealTimeMap>
-</div>
+<RealTimeMap @ref="_realTimeMap" height="100dvh" Parameters="@_parameters"
+             width="100dvw" OnAfterMapLoaded="MapLoaded"></RealTimeMap>

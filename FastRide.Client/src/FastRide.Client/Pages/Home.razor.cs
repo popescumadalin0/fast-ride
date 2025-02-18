@@ -6,6 +6,9 @@ using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
+using LeafletForBlazor;
+using LeafletForBlazor.Components;
+using LeafletForBlazor.RealTime.geometry;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using MudBlazor;
@@ -13,10 +16,8 @@ using MudBlazor.Services;
 
 namespace FastRide.Client.Pages;
 
-public partial class Home : ComponentBase, IDisposable, IBrowserViewportObserver
+public partial class Home : ComponentBase, IDisposable
 {
-    private Dictionary<string, Geolocation> _drivers = new Dictionary<string, Geolocation>();
-
     [Inject] private ISignalRService SignalRService { get; set; } = default!;
 
     [Inject] private DestinationState DestinationState { get; set; }
@@ -29,10 +30,16 @@ public partial class Home : ComponentBase, IDisposable, IBrowserViewportObserver
 
     private string _state;
 
-    ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
+    private readonly Dictionary<string, Geolocation> _drivers = new();
+
+    private RealTimeMap _realTimeMap;
+
+    private Geolocation _currentPosition;
+
+    private readonly RealTimeMap.LoadParameters _parameters = new()
     {
-        ReportRate = 50,
-        NotifyOnBreakpointOnly = false
+        zoomLevel = 18,
+        basemap = new RealTimeMap.Basemap(),
     };
 
     public void Dispose()
@@ -43,7 +50,15 @@ public partial class Home : ComponentBase, IDisposable, IBrowserViewportObserver
 
     protected override async Task OnInitializedAsync()
     {
-        var currentPosition = await GeolocationService.GetGeolocationAsync();
+        _currentPosition = await GeolocationService.GetGeolocationAsync();
+
+        _realTimeMap.Parameters.location = new RealTimeMap.Location()
+        {
+            latitude = _currentPosition.Latitude,
+            longitude = _currentPosition.Longitude,
+        };
+
+        _realTimeMap.initialization();
 
         DestinationState.OnChange += StateHasChanged;
 
@@ -67,8 +82,19 @@ public partial class Home : ComponentBase, IDisposable, IBrowserViewportObserver
         return Task.CompletedTask;
     }
 
-    public Task NotifyBrowserViewportChangeAsync(BrowserViewportEventArgs browserViewportEventArgs)
+    private void MapLoaded(RealTimeMap.MapEventArgs obj)
     {
-        return InvokeAsync(StateHasChanged);
+        obj.centerOfView = new RealTimeMap.Location()
+        {
+            latitude = _currentPosition.Latitude,
+            longitude = _currentPosition.Longitude
+        };
+
+        obj.sender.onPointStreamAdd([_currentPosition.Latitude, _currentPosition.Longitude], new RealTimeMap.PointTooltip()
+        {
+            content = "test",
+            opacity = 1,
+            permanent = true
+        });
     }
 }
