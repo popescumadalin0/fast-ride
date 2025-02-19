@@ -82,19 +82,30 @@ public partial class Home : ComponentBase, IDisposable
         return Task.CompletedTask;
     }
 
-    private void MapLoaded(RealTimeMap.MapEventArgs obj)
+    private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
     {
-        obj.centerOfView = new RealTimeMap.Location()
+        var realTimeMap = obj.sender as RealTimeMap;
+        realTimeMap.Geometric.Points.Appearance(item => item.type == "current user").pattern =
+            new RealTimeMap.PointIcon()
+            {
+                shadowSize = [1,1,0,0],
+                iconUrl = "car",
+            };
+        realTimeMap.Geometric.Points.Appearance(item => item.type != "asked for help").pattern =
+            new RealTimeMap.PointTooltip()
+            {
+                content = "<b>${type}</b><br><b>Vehicle type: </b>${value.vehicleType}"
+            };
+        await realTimeMap.Geometric.Points.upload(new List<RealTimeMap.StreamPoint>()
         {
-            latitude = _currentPosition.Latitude,
-            longitude = _currentPosition.Longitude
-        };
-
-        obj.sender.onPointStreamAdd([_currentPosition.Latitude, _currentPosition.Longitude], new RealTimeMap.PointTooltip()
-        {
-            content = "test",
-            opacity = 1,
-            permanent = true
+            new()
+            {
+                guid = Guid.NewGuid(),
+                latitude = _currentPosition.Latitude,
+                longitude = _currentPosition.Longitude,
+                type = "current user",
+                value = "current user",
+            }
         });
     }
 }
