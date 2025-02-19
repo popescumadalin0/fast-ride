@@ -82,30 +82,45 @@ public partial class Home : ComponentBase, IDisposable
         return Task.CompletedTask;
     }
 
-    private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
+    private async Task MapClickedAsync(RealTimeMap.ClicksMapArgs obj)
     {
-        var realTimeMap = obj.sender as RealTimeMap;
-        realTimeMap.Geometric.Points.Appearance(item => item.type == "current user").pattern =
-            new RealTimeMap.PointIcon()
-            {
-                shadowSize = [1,1,0,0],
-                iconUrl = "car",
-            };
-        realTimeMap.Geometric.Points.Appearance(item => item.type != "asked for help").pattern =
-            new RealTimeMap.PointTooltip()
-            {
-                content = "<b>${type}</b><br><b>Vehicle type: </b>${value.vehicleType}"
-            };
+        var realTimeMap = obj.sender;
+
         await realTimeMap.Geometric.Points.upload(new List<RealTimeMap.StreamPoint>()
         {
             new()
             {
+                guid = Guid.Parse(Configuration["Map:PinGuid"]!),
+                latitude = obj.location.latitude,
+                longitude = obj.location.longitude,
+                type = "pin"
+            },
+        });
+    }
+
+    private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
+    {
+        var realTimeMap = obj.sender;
+        realTimeMap.Geometric.Points.Appearance(item => item.type == "current").pattern =
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/currentCar.png", iconSize = [32, 32] };
+
+        realTimeMap.Geometric.Points.Appearance(item => item.type == "pin").pattern =
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/pin.png", iconSize = [32, 32] };
+
+        realTimeMap.Geometric.Points.Appearance(item => item.type == "human").pattern =
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/human.png", iconSize = [32, 32] };
+
+        realTimeMap.Geometric.Points.Appearance(item => item.type == "driver").pattern =
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [32, 32] };
+
+        await realTimeMap.Geometric.Points.upload([
+            new RealTimeMap.StreamPoint
+            {
                 guid = Guid.NewGuid(),
                 latitude = _currentPosition.Latitude,
                 longitude = _currentPosition.Longitude,
-                type = "current user",
-                value = "current user",
+                type = "human"
             }
-        });
+        ]);
     }
 }
