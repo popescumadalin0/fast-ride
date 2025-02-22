@@ -37,10 +37,6 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
                 throw new Exception($"Failed to get user roles: {user.ResponseMessage}");
             }
 
-            var userGroupService = _serviceProvider.GetRequiredService<IUserGroupService>();
-            var userGroup = await userGroupService.GetCurrentUserGroupNameAsync();
-
-            userIdentity.AddClaim(new Claim(ClaimTypes.GroupSid, userGroup));
             userIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Response.UserType.ToString()));
         }
 

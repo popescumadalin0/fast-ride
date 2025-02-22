@@ -25,6 +25,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
     [Inject] private IGeolocationService GeolocationService { get; set; }
 
+    [Inject] private IUserGroupService UserGroupService { get; set; }
+
     [Inject] private IBrowserViewportService BrowserViewportService { get; set; }
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
@@ -72,7 +74,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
     private async Task RideAsync()
     {
         var authState = await AuthenticationStateTask;
-        var groupName = authState.User.Claims.First(c => c.Type == ClaimTypes.GroupSid).Value;
+        var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
         var email = authState.User.Claims.First(c => c.Type == "email").Value;
         var userId = authState.User.Claims.First(c => c.Type == "sub").Value;
 

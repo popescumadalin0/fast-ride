@@ -38,9 +38,9 @@ public partial class NavMenu : IDisposable
         var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         DestinationState.Geolocation = null;
         var userId = auth.User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-        var userGroup = auth.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
-        await SignalRService.RemoveUserFromGroupAsync(userId, userGroup);
-        await SignalRService.JoinUserInGroupAsync(Constants.Constants.Guest, userGroup);
+        var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
+        await SignalRService.RemoveUserFromGroupAsync(userId, groupName);
+        await SignalRService.JoinUserInGroupAsync(Constants.Constants.Guest, groupName);
         Navigation.NavigateToLogout("authentication/logout");
     }
 
