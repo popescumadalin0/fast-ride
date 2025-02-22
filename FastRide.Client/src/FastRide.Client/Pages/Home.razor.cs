@@ -86,6 +86,8 @@ public partial class Home : ComponentBase, IDisposable
     {
         var realTimeMap = obj.sender;
 
+        await realTimeMap.Geometric.Points.delete(Configuration["Map:PinGuid"]!);
+
         await realTimeMap.Geometric.Points.upload(new List<RealTimeMap.StreamPoint>()
         {
             new()

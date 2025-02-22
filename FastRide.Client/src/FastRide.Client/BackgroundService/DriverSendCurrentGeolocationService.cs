@@ -59,10 +59,10 @@ public class DriverSendCurrentGeolocationService : IDisposable
 
     private void HandleTimer(object source, ElapsedEventArgs e)
     {
-        RequestCurrentGeolocation().GetAwaiter().GetResult();
+        SaveCurrentGeolocationAsync().GetAwaiter().GetResult();
     }
 
-    private async ValueTask RequestCurrentGeolocation()
+    private async Task SaveCurrentGeolocationAsync()
     {
         var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
