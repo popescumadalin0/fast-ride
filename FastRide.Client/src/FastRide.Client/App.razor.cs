@@ -14,7 +14,7 @@ public partial class App : IAsyncDisposable
 {
     [Inject] private ISignalRService SignalRService { get; set; }
 
-    [Inject] private DriverSendCurrentGeolocationService DriverSendCurrentGeolocationService { get; set; }
+    [Inject] private CalculateCurrentGeolocationService CalculateCurrentGeolocationService { get; set; }
 
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
@@ -43,7 +43,7 @@ public partial class App : IAsyncDisposable
         if (authState.User.Identity!.IsAuthenticated &&
             authState.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
         {
-            DriverSendCurrentGeolocationService.StartExecuting();
+            CalculateCurrentGeolocationService.StartExecuting();
         }
     }
 }

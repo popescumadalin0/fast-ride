@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Azure;
+using FastRide.Client;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 
@@ -16,17 +18,23 @@ public class UserRepository : IUserRepository
     
     public async Task<UserEntity> GetUserAsync(string nameIdentifier, string email)
     {
-        var user = await _userTable.GetAsync(email, nameIdentifier);
-        if (user is not { HasValue: true })
+        if (!Guid.TryParse(nameIdentifier, out var id))
         {
-            return null;
+            id = nameIdentifier.GenerateGuidFromString();
         }
-        
-        return user.Value;
+        var user = await _userTable.GetAsync(email, id.ToString());
+        return user is not { HasValue: true } ? null : user.Value;
     }
 
     public async Task<Response> AddOrUpdateUserAsync(UserEntity user)
     {
+        if (!Guid.TryParse(user.RowKey, out var id))
+        {
+            id = user.RowKey.GenerateGuidFromString();
+        }
+
+        user.RowKey = id.ToString();
+
         var response = await _userTable.AddOrUpdateAsync(user);
 
         return response;

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Timers;
 using FastRide.Client.Contracts;
+using FastRide.Server.Contracts.Enums;
 using Microsoft.AspNetCore.Components.Authorization;
 using Timer = System.Timers.Timer;
 
@@ -10,7 +12,7 @@ namespace FastRide.Client.BackgroundService;
 
 public class JobExecutedEventArgs : EventArgs;
 
-public class DriverSendCurrentGeolocationService : IDisposable
+public class CalculateCurrentGeolocationService : IDisposable
 {
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly IGeolocationService _geolocationService;
@@ -20,7 +22,7 @@ public class DriverSendCurrentGeolocationService : IDisposable
 
     private Timer _timer;
 
-    public DriverSendCurrentGeolocationService(ISignalRService signalRService,
+    public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
         AuthenticationStateProvider authenticationStateProvider)
     {
@@ -65,14 +67,20 @@ public class DriverSendCurrentGeolocationService : IDisposable
     private async Task SaveCurrentGeolocationAsync()
     {
         var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
-        var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
-
         var geolocation = await _geolocationService.GetGeolocationAsync();
 
-        await _signalRService.NotifyUserGeolocationAsync(userId,
-            groupName,
-            geolocation);
+        if (auth.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
+        {
+            var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
+            var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
+
+
+            await _signalRService.NotifyUserGeolocationAsync(userId,
+                groupName,
+                geolocation);
+        }
+
+        //todo: save geolocation in state
 
         OnJobExecuted();
     }

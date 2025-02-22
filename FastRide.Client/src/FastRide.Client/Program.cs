@@ -41,7 +41,7 @@ builder.Services.AddOidcAuthentication<RemoteAuthenticationState,
 
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddScoped<DriverSendCurrentGeolocationService>();
+builder.Services.AddScoped<CalculateCurrentGeolocationService>();
 
 builder.Services.AddScoped<ILocationService, LocationService>();
 
