@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Timers;
 using FastRide.Client.Contracts;
+using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using Microsoft.AspNetCore.Components.Authorization;
 using Timer = System.Timers.Timer;
@@ -18,17 +19,19 @@ public class CalculateCurrentGeolocationService : IDisposable
     private readonly IGeolocationService _geolocationService;
     private readonly ISignalRService _signalRService;
     private readonly IUserGroupService _userGroupService;
+    private readonly CurrentPositionState _currentPositionState;
     private bool _running;
 
     private Timer _timer;
 
     public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
-        AuthenticationStateProvider authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider, CurrentPositionState currentPositionState)
     {
         _geolocationService = geolocationService;
         _userGroupService = userGroupService;
         _authenticationStateProvider = authenticationStateProvider;
+        _currentPositionState = currentPositionState;
         _signalRService = signalRService;
     }
 
@@ -80,7 +83,7 @@ public class CalculateCurrentGeolocationService : IDisposable
                 geolocation);
         }
 
-        //todo: save geolocation in state
+        _currentPositionState.Geolocation = geolocation;
 
         OnJobExecuted();
     }

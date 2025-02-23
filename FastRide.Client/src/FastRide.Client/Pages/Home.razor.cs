@@ -18,15 +18,15 @@ namespace FastRide.Client.Pages;
 
 public partial class Home : ComponentBase, IDisposable
 {
-    [Inject] private ISignalRService SignalRService { get; set; } = default!;
+    [Inject] private ISignalRService SignalRService { get; set; }
 
     [Inject] private DestinationState DestinationState { get; set; }
 
-    [Inject] private IGeolocationService GeolocationService { get; set; } = default!;
+    [Inject] private CurrentPositionState CurrentPositionState { get; set; }
 
-    [Inject] private IConfiguration Configuration { get; set; } = default!;
+    [Inject] private IGeolocationService GeolocationService { get; set; }
 
-    public Guid Id { get; } = Guid.NewGuid();
+    [Inject] private IConfiguration Configuration { get; set; }
 
     private string _state;
 
@@ -124,5 +124,22 @@ public partial class Home : ComponentBase, IDisposable
                 type = "human"
             }
         ]);
+    }
+
+    private async Task LoadDriversAsync()
+    {
+        if()
+        foreach (var driver in _drivers)
+        {
+            await _realTimeMap.Geometric.Points.upload([
+                new RealTimeMap.StreamPoint()
+                {
+                    guid = Guid.Parse(driver.Key),
+                    latitude = driver.Value.Latitude,
+                    longitude = driver.Value.Longitude,
+                    type = "driver"
+                }
+            ]);
+        }
     }
 }
