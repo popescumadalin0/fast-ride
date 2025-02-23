@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
@@ -34,10 +35,16 @@ public class CustomUserFactory : AccountClaimsPrincipalFactory<CustomUserAccount
 
             if (!user.Success)
             {
-                throw new Exception($"Failed to get user roles: {user.ResponseMessage}");
+                return new ClaimsPrincipal();
             }
 
             userIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Response.UserType.ToString()));
+            if (
+                userIdentity.TryRemoveClaim(userIdentity.Claims.SingleOrDefault(x => x.Type == "sub"))
+            )
+            {
+                userIdentity.AddClaim(new Claim("sub", user.Response.Identifier.NameIdentifier));
+            }
         }
 
         return initialUser;
