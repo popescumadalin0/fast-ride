@@ -72,11 +72,11 @@ public class CalculateCurrentGeolocationService : IDisposable
         var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var geolocation = await _geolocationService.GetGeolocationAsync();
 
-        if (auth.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
+        if (auth.User.Identity!.IsAuthenticated &&
+            auth.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
         {
             var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
             var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
-
 
             await _signalRService.NotifyUserGeolocationAsync(userId,
                 groupName,

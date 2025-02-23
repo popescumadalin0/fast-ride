@@ -34,6 +34,8 @@ public partial class Home : ComponentBase, IDisposable
 
     private string _state;
 
+    private Geolocation _currentGeolocation;
+
     private readonly Dictionary<string, Geolocation> _drivers = new();
 
     private RealTimeMap _realTimeMap = new RealTimeMap();
@@ -53,6 +55,16 @@ public partial class Home : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        _currentGeolocation = await GeolocationService.GetGeolocationAsync();
+
+        _realTimeMap.Parameters.location = new RealTimeMap.Location()
+        {
+            latitude = _currentGeolocation.Latitude,
+            longitude = _currentGeolocation.Longitude,
+        };
+
+        _realTimeMap.initialization();
+
         DestinationState.OnChange += StateHasChanged;
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
@@ -80,6 +92,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private void CurrentPositionStateOnChange()
     {
+        _currentGeolocation = CurrentPositionState.Geolocation;
         LoadCurrentUser().GetAwaiter().GetResult();
     }
 
@@ -111,16 +124,6 @@ public partial class Home : ComponentBase, IDisposable
     {
         var realTimeMap = obj.sender;
 
-        _realTimeMap = realTimeMap;
-
-        _realTimeMap.Parameters.location = new RealTimeMap.Location()
-        {
-            latitude = CurrentPositionState.Geolocation.Latitude,
-            longitude = CurrentPositionState.Geolocation.Longitude,
-        };
-
-        _realTimeMap.initialization();
-
         await PredefineMapContentAsync(realTimeMap);
 
         await LoadCurrentUser();
@@ -128,7 +131,7 @@ public partial class Home : ComponentBase, IDisposable
         await LoadDriversAsync();
     }
 
-    private Task PredefineMapContentAsync(RealTimeMap realTimeMap)
+    private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
     {
         realTimeMap.Geometric.Points.Appearance(item => item.type == "current").pattern =
             new RealTimeMap.PointIcon() { iconUrl = $"icons/currentCar.png", iconSize = [32, 32] };
@@ -154,7 +157,7 @@ public partial class Home : ComponentBase, IDisposable
 
         var id = authState.User.Identity!.IsAuthenticated
             ? authState.User.Claims.Single(x => x.Type == "sub").Value
-            : Guid.Empty.ToString();
+            : "d7727b92-d18f-4f87-a286-001ad6b54d5a";
 
         await _realTimeMap.Geometric.Points.delete(id);
 
@@ -162,8 +165,8 @@ public partial class Home : ComponentBase, IDisposable
             new RealTimeMap.StreamPoint
             {
                 guid = Guid.Parse(id),
-                latitude = CurrentPositionState.Geolocation.Latitude,
-                longitude = CurrentPositionState.Geolocation.Longitude,
+                latitude = _currentGeolocation.Latitude,
+                longitude = _currentGeolocation.Longitude,
                 type = type
             }
         ]);

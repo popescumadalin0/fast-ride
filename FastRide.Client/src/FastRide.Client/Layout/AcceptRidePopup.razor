@@ -5,20 +5,15 @@
 </div>
 <MudPopover Open="@_opened" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
     <MudPaper Width="300px">
-        <MudList T="string">
-            <MudListItem Text="@_ride.Destination" Icon="@Icons.Material.Filled.CarRental">
-                <div class="d-flex flex-row justify-content-between">
-                    <div class="d-flex flex-column">
+        <div class="d-flex flex-row justify-content-between">
+            <div class="d-flex flex-column">
                         <span class="ellipsis-text destination-width"
                               title="@_ride.Destination">@_ride.Destination</span>
-                        <span class="text-muted">4.5 KM</span>
-                    </div>
-                    <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
-                                   OnClick="@AcceptRideAsync"></MudIconButton>
-                </div>
-            </MudListItem>
-            <MudDivider/>
-        </MudList>
+                <span class="text-muted">4.5 KM</span>
+            </div>
+            <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
+                           OnClick="@AcceptRideAsync"></MudIconButton>
+        </div>
     </MudPaper>
 </MudPopover>
 @*todo: something that represents reloading: time to respond to the request*@

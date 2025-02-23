@@ -18,11 +18,12 @@ public partial class AcceptRidePopup : IDisposable
 
     [Inject] private ISignalRService SignalRService { get; set; }
 
+    [Inject] private ILocationService LocationService { get; set; }
+
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
     }
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,17 +32,23 @@ public partial class AcceptRidePopup : IDisposable
         await base.OnInitializedAsync();
     }
 
-    private Task OpenRideAsync()
+    private async Task OpenRideAsync()
     {
         _openAvailableRide = !_openAvailableRide;
-        _ride =
-            new RideInformation()
-            {
-                Destination = "tsetasdfasdf asdfasdfasd fasdfasdfasdf asdfasdfas dfasdf"
-            };
-        StateHasChanged();
 
-        return Task.CompletedTask;
+        if (!_openAvailableRide)
+        {
+            var locationText = await LocationService.GetAddressByLatLongAsync(DestinationState.Geolocation.Latitude,
+                DestinationState.Geolocation.Longitude);
+
+            _ride =
+                new RideInformation()
+                {
+                    Destination = locationText,
+                };
+        }
+
+        StateHasChanged();
     }
 
     private async Task AcceptRideAsync()

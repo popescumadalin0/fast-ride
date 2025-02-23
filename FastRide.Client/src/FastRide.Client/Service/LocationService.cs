@@ -29,7 +29,7 @@ public class LocationService : ILocationService
     {
         var result = await GetInformationByLatLong(latitude, longitude);
 
-        var formattedAddress = result.results[0].formatted_address;
+        var formattedAddress = result.display_name;
 
         return formattedAddress;
     }
@@ -39,8 +39,7 @@ public class LocationService : ILocationService
         var result = await GetInformationByLatLong(latitude, longitude);
 
         var locality =
-            result.results[0].address_components
-                .Single(x => x.types.Contains("locality")).long_name;
+            result.Address.City;
 
         return locality;
     }
@@ -50,8 +49,7 @@ public class LocationService : ILocationService
         var result = await GetInformationByLatLong(latitude, longitude);
 
         var locality =
-            result.results[0].address_components
-                .Single(x => x.types.Contains("country")).long_name;
+            result.Address.Country;
 
         return locality;
     }
@@ -61,23 +59,21 @@ public class LocationService : ILocationService
         var result = await GetInformationByLatLong(latitude, longitude);
 
         var locality =
-            result.results[0].address_components
-                .Single(x => x.types.Contains("administrative_area_level_1")).long_name;
+            result.Address.County;
 
         return locality;
     }
 
-    private async Task<GoogleLocationResponse> GetInformationByLatLong(double latitude, double longitude)
+    private async Task<OpenStreetMapResponse> GetInformationByLatLong(double latitude, double longitude)
     {
-        var googleMapsBaseUrl = _configuration.GetValue<string>("GoogleMaps:BaseUrl");
-        var googleMapsApiKey = _configuration.GetValue<string>("GoogleMaps:ApiKey");
+        var mapBaseUrl = _configuration.GetValue<string>("Map:BaseUrl");
 
         using var httpClient = new HttpClient();
         var response =
             await httpClient.GetAsync(
-                new Uri($"{googleMapsBaseUrl}/geocode/json?latlng={latitude},{longitude}&key={googleMapsApiKey}"));
+                new Uri($"{mapBaseUrl}/reverse?lat={latitude}&lon={longitude}&format=json"));
         var json = await response.Content.ReadAsStringAsync();
-        dynamic result = JsonConvert.DeserializeObject<GoogleLocationResponse>(json);
+        dynamic result = JsonConvert.DeserializeObject<OpenStreetMapResponse>(json);
 
         return result;
     }

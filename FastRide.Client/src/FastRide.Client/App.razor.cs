@@ -40,10 +40,6 @@ public partial class App : IAsyncDisposable
 
         await SignalRService.JoinUserInGroupAsync(userId, groupName);
 
-        if (authState.User.Identity!.IsAuthenticated &&
-            authState.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
-        {
-            CalculateCurrentGeolocationService.StartExecuting();
-        }
+        CalculateCurrentGeolocationService.StartExecuting();
     }
 }

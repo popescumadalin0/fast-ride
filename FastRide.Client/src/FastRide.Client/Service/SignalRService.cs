@@ -98,10 +98,10 @@ public class SignalRService : ISignalRService
             });
     }
 
-    public Task AcceptRideAsync(RideInformation rideInformation)
+    public async Task AcceptRideAsync(RideInformation rideInformation)
     {
-        return Task.CompletedTask;
-        //await _connection.SendAsync(SignalRConstants.AcceptRide, userId, groupName);
+        //todo
+        await _connection.SendAsync(SignalRConstants.ClientAcceptRide);
     }
 
     public async Task CreateNewRideAsync(string groupName, NewRideInput rideInput)
