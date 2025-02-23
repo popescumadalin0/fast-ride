@@ -23,7 +23,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
     [Inject] private DestinationState DestinationState { get; set; }
 
-    [Inject] private IGeolocationService GeolocationService { get; set; }
+    [Inject] private CurrentPositionState CurrentPositionState { get; set; }
 
     [Inject] private IUserGroupService UserGroupService { get; set; }
 
@@ -78,7 +78,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
         var email = authState.User.Claims.First(c => c.Type == "email").Value;
         var userId = authState.User.Claims.First(c => c.Type == "sub").Value;
 
-        var currentLocation = await GeolocationService.GetGeolocationAsync();
+        var currentLocation = CurrentPositionState.Geolocation;
 
         await SignalRService.CreateNewRideAsync(groupName, new NewRideInput()
         {

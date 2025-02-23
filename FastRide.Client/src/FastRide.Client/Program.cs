@@ -51,7 +51,7 @@ builder.Services.AddScoped<IStripeService, StripeService>();
 
 builder.Services.AddScoped<IUserGroupService, UserGroupService>();
 
-builder.Services.AddSingleton<ISignalRService, SignalRService>();
+builder.Services.AddScoped<ISignalRService, SignalRService>();
 
 builder.Services.AddMudServices();
 

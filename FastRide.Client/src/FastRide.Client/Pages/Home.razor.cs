@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
@@ -10,6 +11,7 @@ using LeafletForBlazor;
 using LeafletForBlazor.Components;
 using LeafletForBlazor.RealTime.geometry;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using MudBlazor;
 using MudBlazor.Services;
@@ -28,13 +30,13 @@ public partial class Home : ComponentBase, IDisposable
 
     [Inject] private IConfiguration Configuration { get; set; }
 
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
     private string _state;
 
     private readonly Dictionary<string, Geolocation> _drivers = new();
 
-    private RealTimeMap _realTimeMap;
-
-    private Geolocation _currentPosition;
+    private RealTimeMap _realTimeMap = new RealTimeMap();
 
     private readonly RealTimeMap.LoadParameters _parameters = new()
     {
@@ -46,23 +48,16 @@ public partial class Home : ComponentBase, IDisposable
     {
         DestinationState.OnChange -= StateHasChanged;
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
+        CurrentPositionState.OnChange -= CurrentPositionStateOnChange;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        _currentPosition = await GeolocationService.GetGeolocationAsync();
-
-        _realTimeMap.Parameters.location = new RealTimeMap.Location()
-        {
-            latitude = _currentPosition.Latitude,
-            longitude = _currentPosition.Longitude,
-        };
-
-        _realTimeMap.initialization();
-
         DestinationState.OnChange += StateHasChanged;
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
+
+        CurrentPositionState.OnChange += CurrentPositionStateOnChange;
 
         StateHasChanged();
     }
@@ -72,14 +67,20 @@ public partial class Home : ComponentBase, IDisposable
         return ["test", "test1", "test2", "test3"];
     }
 
-    private Task NotifyDriverGeolocationAsync(NotifyUserGeolocation geolocation)
+    private async Task NotifyDriverGeolocationAsync(NotifyUserGeolocation geolocation)
     {
         _drivers[geolocation.UserId] = new Geolocation()
         {
             Longitude = geolocation.Geolocation.Longitude,
             Latitude = geolocation.Geolocation.Latitude,
         };
-        return Task.CompletedTask;
+
+        await LoadDriversAsync();
+    }
+
+    private void CurrentPositionStateOnChange()
+    {
+        LoadCurrentUser().GetAwaiter().GetResult();
     }
 
     private async Task MapClickedAsync(RealTimeMap.ClicksMapArgs obj)
@@ -98,11 +99,37 @@ public partial class Home : ComponentBase, IDisposable
                 type = "pin"
             },
         });
+
+        DestinationState.Geolocation = new Geolocation()
+        {
+            Longitude = obj.location.longitude,
+            Latitude = obj.location.latitude,
+        };
     }
 
     private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
     {
         var realTimeMap = obj.sender;
+
+        _realTimeMap = realTimeMap;
+
+        _realTimeMap.Parameters.location = new RealTimeMap.Location()
+        {
+            latitude = CurrentPositionState.Geolocation.Latitude,
+            longitude = CurrentPositionState.Geolocation.Longitude,
+        };
+
+        _realTimeMap.initialization();
+
+        await PredefineMapContentAsync(realTimeMap);
+
+        await LoadCurrentUser();
+
+        await LoadDriversAsync();
+    }
+
+    private Task PredefineMapContentAsync(RealTimeMap realTimeMap)
+    {
         realTimeMap.Geometric.Points.Appearance(item => item.type == "current").pattern =
             new RealTimeMap.PointIcon() { iconUrl = $"icons/currentCar.png", iconSize = [32, 32] };
 
@@ -115,22 +142,45 @@ public partial class Home : ComponentBase, IDisposable
         realTimeMap.Geometric.Points.Appearance(item => item.type == "driver").pattern =
             new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [32, 32] };
 
-        await realTimeMap.Geometric.Points.upload([
+        return Task.CompletedTask;
+    }
+
+    private async Task LoadCurrentUser()
+    {
+        //todo: if in ride
+        var type = true ? "human" : "currentCar";
+
+        var authState = await AuthenticationState;
+
+        var id = authState.User.Identity!.IsAuthenticated
+            ? authState.User.Claims.Single(x => x.Type == "sub").Value
+            : Guid.Empty.ToString();
+
+        await _realTimeMap.Geometric.Points.delete(id);
+
+        await _realTimeMap.Geometric.Points.upload([
             new RealTimeMap.StreamPoint
             {
-                guid = Guid.NewGuid(),
-                latitude = _currentPosition.Latitude,
-                longitude = _currentPosition.Longitude,
-                type = "human"
+                guid = Guid.Parse(id),
+                latitude = CurrentPositionState.Geolocation.Latitude,
+                longitude = CurrentPositionState.Geolocation.Longitude,
+                type = type
             }
         ]);
     }
 
     private async Task LoadDriversAsync()
     {
-        if()
+        //todo: if in ride
+        if (false)
+        {
+            return;
+        }
+
         foreach (var driver in _drivers)
         {
+            await _realTimeMap.Geometric.Points.delete(driver.Key);
+
             await _realTimeMap.Geometric.Points.upload([
                 new RealTimeMap.StreamPoint()
                 {
