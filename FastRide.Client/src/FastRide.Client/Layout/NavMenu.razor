@@ -20,29 +20,20 @@
                     <i class="bi bi-box-arrow-right "></i>
                 </NavLink>
             </div>
-            @if (DestinationState.Geolocation != null)
+            @if (context.User.Identity!.IsAuthenticated)
             {
-                if (context.User.Identity!.IsAuthenticated)
+                if (DestinationState.Geolocation != null)
                 {
                     if (context.User.IsInRole(UserType.User.ToString()))
                     {
                         <StartRideButton/>
                     }
                 }
-                else
+
+                if (context.User.IsInRole(UserType.Driver.ToString()))
                 {
-                    <MudPopover Open="@true" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
-                        <MudPaper Width="300px">
-                            <NavLink class="nav-link" @onclick="@LogInAsync">
-                                <i class="bi bi-box-arrow-in-right"></i>
-                            </NavLink>
-                        </MudPaper>
-                    </MudPopover>
+                    <AcceptRidePopup/>
                 }
-            }
-            @if (context.User.IsInRole(UserType.Driver.ToString()))
-            {
-                <AcceptRidePopup/>
             }
         </Authorized>
         <NotAuthorized>

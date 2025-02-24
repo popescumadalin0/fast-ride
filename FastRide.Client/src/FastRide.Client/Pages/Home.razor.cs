@@ -40,12 +40,6 @@ public partial class Home : ComponentBase, IDisposable
 
     private RealTimeMap _realTimeMap = new RealTimeMap();
 
-    private readonly RealTimeMap.LoadParameters _parameters = new()
-    {
-        zoomLevel = 18,
-        basemap = new RealTimeMap.Basemap(),
-    };
-
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
@@ -56,14 +50,6 @@ public partial class Home : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         _currentGeolocation = await GeolocationService.GetGeolocationAsync();
-
-        _realTimeMap.Parameters.location = new RealTimeMap.Location()
-        {
-            latitude = _currentGeolocation.Latitude,
-            longitude = _currentGeolocation.Longitude,
-        };
-
-        _realTimeMap.initialization();
 
         DestinationState.OnChange += StateHasChanged;
 
@@ -100,17 +86,9 @@ public partial class Home : ComponentBase, IDisposable
     {
         var realTimeMap = obj.sender;
 
-        await realTimeMap.Geometric.Points.delete(Configuration["Map:PinGuid"]!);
-
-        await realTimeMap.Geometric.Points.upload(new List<RealTimeMap.StreamPoint>()
+        await UpdatePointPositionAsync(realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
         {
-            new()
-            {
-                guid = Guid.Parse(Configuration["Map:PinGuid"]!),
-                latitude = obj.location.latitude,
-                longitude = obj.location.longitude,
-                type = "pin"
-            },
+            Longitude = obj.location.longitude, Latitude = obj.location.latitude
         });
 
         DestinationState.Geolocation = new Geolocation()
@@ -123,6 +101,18 @@ public partial class Home : ComponentBase, IDisposable
     private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
     {
         var realTimeMap = obj.sender;
+
+        realTimeMap.Options.keyboardNavigationOptions = new RealTimeMap.KeyboardNavigationOptions()
+        {
+            keyboard = false,
+        };
+        realTimeMap.Options.interactionOptions = new RealTimeMap.InteractionOptions()
+        {
+            dragging = false,
+            trackResize = false,
+            doubleClickZoom = true,
+            shiftBoxZoom = false
+        };
 
         await PredefineMapContentAsync(realTimeMap);
 
@@ -157,19 +147,9 @@ public partial class Home : ComponentBase, IDisposable
 
         var id = authState.User.Identity!.IsAuthenticated
             ? authState.User.Claims.Single(x => x.Type == "sub").Value
-            : "d7727b92-d18f-4f87-a286-001ad6b54d5a";
+            : Guid.Empty.ToString();
 
-        await _realTimeMap.Geometric.Points.delete(id);
-
-        await _realTimeMap.Geometric.Points.upload([
-            new RealTimeMap.StreamPoint
-            {
-                guid = Guid.Parse(id),
-                latitude = _currentGeolocation.Latitude,
-                longitude = _currentGeolocation.Longitude,
-                type = type
-            }
-        ]);
+        await UpdatePointPositionAsync(_realTimeMap, id, type, _currentGeolocation);
     }
 
     private async Task LoadDriversAsync()
@@ -182,15 +162,29 @@ public partial class Home : ComponentBase, IDisposable
 
         foreach (var driver in _drivers)
         {
-            await _realTimeMap.Geometric.Points.delete(driver.Key);
+            await UpdatePointPositionAsync(_realTimeMap, driver.Key, "driver", driver.Value);
+        }
+    }
+
+    private async Task UpdatePointPositionAsync(RealTimeMap realTimeMap, string id, string type,
+        Geolocation geolocation)
+    {
+        var points = realTimeMap.Geometric.Points.getItems(x =>
+            x.guid == Guid.Parse(id) && x.type == type &&
+            x.latitude == geolocation.Latitude &&
+            x.longitude == geolocation.Longitude);
+
+        if (points.Count == 0)
+        {
+            await _realTimeMap.Geometric.Points.delete(id);
 
             await _realTimeMap.Geometric.Points.upload([
-                new RealTimeMap.StreamPoint()
+                new RealTimeMap.StreamPoint
                 {
-                    guid = Guid.Parse(driver.Key),
-                    latitude = driver.Value.Latitude,
-                    longitude = driver.Value.Longitude,
-                    type = "driver"
+                    guid = Guid.Parse(id),
+                    latitude = geolocation.Latitude,
+                    longitude = geolocation.Longitude,
+                    type = type
                 }
             ]);
         }

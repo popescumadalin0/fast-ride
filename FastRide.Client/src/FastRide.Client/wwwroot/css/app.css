@@ -153,7 +153,7 @@ code {
     border-radius: 2px;
 }
 
-.dialog-size{
+.dialog-size {
     min-height: 541px;
     min-width: 552px;
 }
@@ -165,4 +165,8 @@ code {
         max-height: 541px;
         max-width: 552px;
     }
+}
+
+div.leaflet-control-layers.leaflet-control {
+    display: none;
 }
