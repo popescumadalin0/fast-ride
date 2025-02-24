@@ -124,16 +124,16 @@ public partial class Home : ComponentBase, IDisposable
     private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
     {
         realTimeMap.Geometric.Points.Appearance(item => item.type == "current").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/currentCar.png", iconSize = [32, 32] };
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/currentCar.png", iconSize = [40, 40] };
 
         realTimeMap.Geometric.Points.Appearance(item => item.type == "pin").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/pin.png", iconSize = [32, 32] };
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/pin.png", iconSize = [40, 40] };
 
         realTimeMap.Geometric.Points.Appearance(item => item.type == "human").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/human.png", iconSize = [32, 32] };
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/human.png", iconSize = [40, 40] };
 
         realTimeMap.Geometric.Points.Appearance(item => item.type == "driver").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [32, 32] };
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [40, 40] };
 
         return Task.CompletedTask;
     }
