@@ -17,9 +17,10 @@ public class FindDriverActivity
 
     private readonly IOnlineDriversService _onlineDriversService;
 
-    public FindDriverActivity(ILogger<FindDriverActivity> logger)
+    public FindDriverActivity(ILogger<FindDriverActivity> logger, IOnlineDriversService onlineDriversService)
     {
         _logger = logger;
+        _onlineDriversService = onlineDriversService;
     }
 
     [Function(nameof(FindDriverActivity))]
