@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace FastRide.Client;
+namespace FastRide.Server.Services;
 
 public static class IdentifierExtension
 {

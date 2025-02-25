@@ -7,6 +7,6 @@ namespace FastRide.Server.Services.Contracts;
 
 public interface IRideRepository
 {
-    Task<List<RideEntity>> GetRidesByUser(string email);
-    Task<Response> AddRideForUser(RideEntity ride);
+    Task<List<RideEntity>> GetRidesByUserAsync(string email);
+    Task<Response> AddRideForUserAsync(RideEntity ride);
 }

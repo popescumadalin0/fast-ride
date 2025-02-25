@@ -13,9 +13,9 @@ public class SignalRConstants
 
     public const string ServerCreateNewRide = "server.create-new-ride";
 
-    public const string ClientAcceptRide = "client.accept-ride";
+    public const string ClientDriverAcceptRide = "client.driver-accept-ride";
 
-    public const string ServerAcceptRide = "server.accept-ride";
+    public const string ServerDriverAcceptRide = "server.driver-accept-ride";
 
     public const string ServerSendPriceCalculation = "server.send-price-calculation";
 

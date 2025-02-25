@@ -7,8 +7,9 @@
     "Google:ClientId": "380926423162-qve7d250c6r1eji1o16hk94rjk5acd76.apps.googleusercontent.com",
     "Google:Api": "https://oauth2.googleapis.com/",
     "AzureSignalRConnectionString": "Endpoint=http://localhost;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;",
-    "Stripe:PricePerKm": 2,
-    "Stripe:PricePerMinute": 5,
+    "Distance:PricePerKm": 2,
+    "Distance:PricePerMinute": 5,
+    "Distance:AverageSpeed": 5,
     "Stripe:BasePrice": 5,
     "Stripe:SecretKey" : "sk_test_51QCJV1CpLPiMeksm1mNX4ODYVvS8Q1vcatMsZQpXv16JWGVxvYAll0oFOgtt3AwYEkKFmlMMi0Xc2qtbUZXNF49T00H3kxqzHm"
   },

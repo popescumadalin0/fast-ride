@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
@@ -28,9 +29,10 @@ public class SendPriceCalculationActivity
     {
         _logger.LogInformation("Saying hello to {name}.", input);
 
-        var distance = 0;
-        var duration = 0;
-        //todo: using google, calculate the distance and the duration
+        var distance = _distanceService.GetDistanceBetweenLocations(input.StartPoint, input.Destination);
+        var duration = _distanceService.EstimateTimeInHours(distance,
+            double.Parse(Environment.GetEnvironmentVariable("Distance:AverageSpeed")!));
+
         var price = _distanceService.CalculatePricePerDistance(distance, duration);
 
         var calculatedPrice = new PriceCalculated()

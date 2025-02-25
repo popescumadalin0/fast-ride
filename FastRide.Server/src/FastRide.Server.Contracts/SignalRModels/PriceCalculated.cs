@@ -4,5 +4,5 @@ public class PriceCalculated
 {
     public string InstanceId { get; set; }
     
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FastRide.Server.Activities;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
@@ -45,6 +46,10 @@ public class NewRideOrchestration
         }
 
         //todo: search a rider
+
+        var driverFound = FindDriver(context, input.StartPoint, input.Destination);
+
+
     }
 
     private async Task<decimal> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
@@ -76,5 +81,34 @@ public class NewRideOrchestration
         var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientSendPaymentIntent);
 
         return acccepted;
+    }
+
+    private async Task<bool> FindDriver(TaskOrchestrationContext context, Geolocation userPosition,
+        Geolocation userDestination)
+    {
+        var retries = 10;
+        //todo: if driver refuse the ride
+        var excludeDriver = new List<string>();
+        do
+        {
+            await context.CallActivityAsync(nameof(FindDriverActivity), new FindDriverActivityInput()
+            {
+                InstanceId = context.InstanceId,
+                UserGeolocation = userPosition,
+                Destination = userDestination,
+            });
+
+            var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverAcceptRide);
+
+            if (acccepted)
+            {
+                return true;
+            }
+
+            excludeDriver.Add(context.InstanceId);
+        }
+        while(retries-- > 0);
+
+        return false;
     }
 }

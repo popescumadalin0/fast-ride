@@ -15,14 +15,14 @@ public class RideRepository : IRideRepository
         this._rideTable = rideTable;
     }
 
-    public Task<List<RideEntity>> GetRidesByUser(string email)
+    public Task<List<RideEntity>> GetRidesByUserAsync(string email)
     {
         var rides = _rideTable.GetBy(x => x.PartitionKey == email);
 
         return Task.FromResult(rides);
     }
 
-    public async Task<Response> AddRideForUser(RideEntity ride)
+    public async Task<Response> AddRideForUserAsync(RideEntity ride)
     {
         var response = await _rideTable.AddOrUpdateAsync(ride);
 

@@ -26,7 +26,7 @@ public class RideService : IRideService
     {
         try
         {
-            var rides = await _rideRepository.GetRidesByUser(email);
+            var rides = await _rideRepository.GetRidesByUserAsync(email);
 
             return new ServiceResponse<List<Ride>>(rides.Select(x => new Ride
             {
@@ -61,7 +61,7 @@ public class RideService : IRideService
     {
         try
         {
-            await _rideRepository.AddRideForUser(new RideEntity()
+            await _rideRepository.AddRideForUserAsync(new RideEntity()
             {
                 Cost = ride.Cost,
                 StartPointLat = ride.StartPointLat,
@@ -70,7 +70,7 @@ public class RideService : IRideService
                 DestinationLng = ride.DestinationLng,
                 PartitionKey = ride.User.Email,
                 RowKey = Guid.NewGuid().ToString(),
-                Timestamp = ride.TimeStamp,
+                Timestamp = DateTime.UtcNow,
                 DriverEmail = ride.Driver.Email,
                 DriverId = ride.Driver.NameIdentifier,
                 UserId = ride.User.NameIdentifier,

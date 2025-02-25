@@ -18,11 +18,15 @@ public static class DependencyInjection
         services.AddSingleton<IUserRepository, UserRepository>();
 
         services.AddSingleton<IRideRepository, RideRepository>();
+
+        services.AddSingleton<IOnlineDriverRepository, OnlineDriverRepository>();
         
         services.AddSingleton<IUserService, UserService>();
 
         services.AddSingleton<IRideService, RideService>();
-        
+
+        services.AddSingleton<IOnlineDriversService, OnlineDriversService>();
+
         services.AddSingleton<IDistanceService, DistanceService>();
 
         return services;

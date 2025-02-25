@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Azure;
-using FastRide.Client;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Entities;
 
