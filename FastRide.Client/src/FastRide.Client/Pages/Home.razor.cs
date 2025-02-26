@@ -8,13 +8,9 @@ using FastRide.Client.State;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using LeafletForBlazor;
-using LeafletForBlazor.Components;
-using LeafletForBlazor.RealTime.geometry;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
-using MudBlazor;
-using MudBlazor.Services;
 
 namespace FastRide.Client.Pages;
 

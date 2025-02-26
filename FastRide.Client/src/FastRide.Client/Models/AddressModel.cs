@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FastRide.Client.Models;
+﻿namespace FastRide.Client.Models;
 
 public class AddressModel
 {

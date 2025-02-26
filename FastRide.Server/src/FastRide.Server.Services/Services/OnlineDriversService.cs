@@ -25,14 +25,14 @@ public class OnlineDriversService : IOnlineDriversService
         _distanceService = distanceService;
     }
 
-    public async Task<ServiceResponse<OnlineDriver>> GetClosestDriverByUserAsync(string groupName,
+    public async Task<ServiceResponse<List<OnlineDriver>>> GetClosestDriversByUserAsync(string groupName,
         Geolocation geolocation)
     {
         try
         {
             var onlineDrivers = await _onlineDriverRepository.GetOnlineDriversByGroupNameAsync(groupName);
 
-            var nearestDriver = onlineDrivers
+            var nearestDrivers = onlineDrivers
                 .Select(driver => new
                 {
                     Driver = driver,
@@ -40,9 +40,9 @@ public class OnlineDriversService : IOnlineDriversService
                         new Geolocation() { Latitude = driver.Latitude, Longitude = driver.Longitude })
                 })
                 .OrderBy(d => d.Distance)
-                .First().Driver;
+                .Select(x => x.Driver).ToList();
 
-            return new ServiceResponse<OnlineDriver>(new OnlineDriver
+            return new ServiceResponse<List<OnlineDriver>>(nearestDrivers.Select(nearestDriver => new OnlineDriver
             {
                 GroupName = nearestDriver.PartitionKey,
                 Identifier = new UserIdentifier()
@@ -55,12 +55,12 @@ public class OnlineDriversService : IOnlineDriversService
                     Latitude = nearestDriver.Latitude,
                     Longitude = nearestDriver.Longitude
                 }
-            });
+            }).ToList());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message);
-            return new ServiceResponse<OnlineDriver>(ex);
+            return new ServiceResponse<List<OnlineDriver>>(ex);
         }
     }
 

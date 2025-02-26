@@ -5,7 +5,6 @@ using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
-using FastRide.Server.Services.Contracts;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
@@ -45,31 +44,47 @@ public class NewRideOrchestration
             return;
         }
 
-        //todo: search a rider
+        var driverId = await FindDriverAsync(context, input.StartPoint, input.Destination, input.GroupName);
 
-        var driverFound = FindDriver(context, input.StartPoint, input.Destination);
+        if (!string.IsNullOrEmpty(driverId))
+        {
+            await context.CallActivityAsync(
+                nameof(CancelRideActivity),
+                new CancelRideActivityInput()
+                {
+                    InstanceId = context.InstanceId,
+                    UserId = input.User.NameIdentifier
+                });
 
+            _logger.LogInformation($"The ride was canceled!");
+            return;
+        }
 
+        //todo: when driver arrives to the user destination
+
+        //todo: when user arrives at driver car
+
+        //todo: when driver + users arrives at destination
+
+        //todo: when user provide a note to the driver
     }
 
-    private async Task<decimal> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
+    private static async Task<decimal> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
     {
         await context.CallActivityAsync(
-            nameof(SendPriceCalculationActivity),
-            new SendPriceCalculationActivityInput
+            nameof(CancelRideActivity),
+            new CancelRideActivityInput
             {
-                Destination = input.Destination,
                 InstanceId = context.InstanceId,
-                StartPoint = input.StartPoint,
                 UserId = input.User.NameIdentifier
             });
-        
+
         var accepted = await context.WaitForExternalEvent<decimal>(SignalRConstants.ClientSendPriceCalculation);
 
         return accepted;
     }
 
-    private async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input, decimal price)
+    private static async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input, decimal price)
     {
         await context.CallActivityAsync(nameof(SendPaymentIntentActivity), new SendPaymentIntentActivityInput()
         {
@@ -83,11 +98,11 @@ public class NewRideOrchestration
         return acccepted;
     }
 
-    private async Task<bool> FindDriver(TaskOrchestrationContext context, Geolocation userPosition,
-        Geolocation userDestination)
+    private static async Task<string> FindDriverAsync(TaskOrchestrationContext context, Geolocation userPosition,
+        Geolocation userDestination, string groupName)
     {
         var retries = 10;
-        //todo: if driver refuse the ride
+
         var excludeDriver = new List<string>();
         do
         {
@@ -96,19 +111,20 @@ public class NewRideOrchestration
                 InstanceId = context.InstanceId,
                 UserGeolocation = userPosition,
                 Destination = userDestination,
+                GroupName = groupName,
+                ExcludeDrivers = excludeDriver
             });
 
-            var acccepted = await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverAcceptRide);
+            var accepted = await context.WaitForExternalEvent<string>(SignalRConstants.ClientDriverAcceptRide);
 
-            if (acccepted)
+            if (!string.IsNullOrEmpty(accepted))
             {
-                return true;
+                return accepted;
             }
 
             excludeDriver.Add(context.InstanceId);
-        }
-        while(retries-- > 0);
+        } while (retries-- > 0);
 
-        return false;
+        return string.Empty;
     }
 }

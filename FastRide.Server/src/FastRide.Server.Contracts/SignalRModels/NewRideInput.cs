@@ -9,4 +9,6 @@ public class NewRideInput
     public Geolocation StartPoint { get; set; }
 
     public UserIdentifier User { get; set; }
+
+    public string GroupName { get; set; }
 }

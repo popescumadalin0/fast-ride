@@ -15,6 +15,8 @@ public class SignalRConstants
 
     public const string ClientDriverAcceptRide = "client.driver-accept-ride";
 
+    public const string ServerDriverRideAccepted = "server.driver-ride-accepted";
+
     public const string ServerDriverAcceptRide = "server.driver-accept-ride";
 
     public const string ServerSendPriceCalculation = "server.send-price-calculation";
@@ -28,4 +30,7 @@ public class SignalRConstants
     public const string ClientNotifyUserGeolocation = "client.notify-user-geolocation";
 
     public const string ServerNotifyUserGeolocation = "server.notify-user-geolocation";
+
+    public const string ServerCancelRide = "server.cancel-ride";
+
 }

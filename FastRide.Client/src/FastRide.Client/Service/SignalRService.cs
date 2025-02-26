@@ -27,6 +27,13 @@ public class SignalRService : ISignalRService
     public event Func<SendPaymentIntent, Task> SendPaymentIntentReceived;
 
     /// <inheritdoc />
+    public event Func<DriverAcceptRide, Task> DriverAcceptRide;
+
+    /// <inheritdoc />
+    public event Func<Task> DriverRideAccepted;
+
+
+    /// <inheritdoc />
     public event Func<NotifyUserGeolocation, Task> NotifyDriverGeolocation = null!;
 
     /// <inheritdoc />
@@ -85,6 +92,25 @@ public class SignalRService : ISignalRService
                     await SendPaymentIntentReceived(payload);
                 }
             });
+
+        _connection.On<DriverAcceptRide>(SignalRConstants.ServerDriverAcceptRide,
+            async (payload) =>
+            {
+                if (DriverAcceptRide != null!)
+                {
+                    await DriverAcceptRide(payload);
+                }
+            });
+
+        _connection.On(SignalRConstants.ServerDriverRideAccepted,
+            async () =>
+            {
+                if (DriverRideAccepted != null!)
+                {
+                    await DriverRideAccepted();
+                }
+            });
+
         return ValueTask.CompletedTask;
     }
 
@@ -101,7 +127,7 @@ public class SignalRService : ISignalRService
     public async Task AcceptRideAsync(RideInformation rideInformation)
     {
         //todo
-        await _connection.SendAsync(SignalRConstants.ClientAcceptRide);
+        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide);
     }
 
     public async Task CreateNewRideAsync(string groupName, NewRideInput rideInput)

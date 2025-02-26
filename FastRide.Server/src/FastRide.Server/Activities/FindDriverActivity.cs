@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.SignalRModels;
@@ -29,20 +30,47 @@ public class FindDriverActivity
     {
         _logger.LogInformation($"{nameof(FindDriverActivity)} was triggered!");
 
-        var driver = await _onlineDriversService.GetOnlineDriversByGroupName(input.GroupName);
+        var driversResponse =
+            await _onlineDriversService.GetClosestDriversByUserAsync(input.GroupName, input.UserGeolocation);
 
-        return new SignalRMessageAction(SignalRConstants.ServerDriverAcceptRide)
+        if (!driversResponse.Success)
+        {
+            _logger.LogError(driversResponse.ErrorMessage);
+            throw new Exception($"Unable to get closest driver for {input.GroupName}: {driversResponse.ErrorMessage}");
+        }
+
+        var drivers = driversResponse.Response;
+
+        var driver = drivers.FirstOrDefault(d => !input.ExcludeDrivers.Contains(d.Identifier.NameIdentifier));
+
+        if (driver != null)
+        {
+            return new SignalRMessageAction(SignalRConstants.ServerDriverAcceptRide)
+            {
+                Arguments =
+                [
+                    new DriverAcceptRide()
+                    {
+                        InstanceId = input.InstanceId,
+                        DestinationGeolocation = input.Destination,
+                        UserGeolocation = input.UserGeolocation,
+                    }
+                ],
+                UserId = driver.Identifier.NameIdentifier
+            };
+        }
+
+        _logger.LogWarning($"Unable to find closest driver for {input.GroupName}! The ride is closed!");
+        return new SignalRMessageAction(SignalRConstants.ServerCancelRide)
         {
             Arguments =
             [
-                new DriverAcceptRide()
+                new CancelRide()
                 {
                     InstanceId = input.InstanceId,
-                    DestinationGeolocation = input.Destination,
-                    UserGeolocation = input.UserGeolocation,
                 }
             ],
-            /*UserId = input.UserId*/
+            GroupName = input.GroupName
         };
     }
 }

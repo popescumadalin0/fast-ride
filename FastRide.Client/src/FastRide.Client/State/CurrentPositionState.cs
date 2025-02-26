@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.State;

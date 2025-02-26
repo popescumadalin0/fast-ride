@@ -7,7 +7,7 @@ namespace FastRide.Server.Services.Contracts;
 
 public interface IOnlineDriversService
 {
-    Task<ServiceResponse<OnlineDriver>> GetClosestDriverByUserAsync(string groupName,
+    Task<ServiceResponse<List<OnlineDriver>>> GetClosestDriversByUserAsync(string groupName,
         Geolocation geolocation);
 
     Task<ServiceResponse<List<OnlineDriver>>> GetOnlineDriversByGroupName(string groupName);

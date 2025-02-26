@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.BackgroundService;
 using FastRide.Client.Contracts;
-using FastRide.Server.Contracts.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
