@@ -19,7 +19,7 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 
     private string _paymentConfirmation = string.Empty;
 
-    private decimal _price;
+    private double _price;
     private bool _stepperLoading = true;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 

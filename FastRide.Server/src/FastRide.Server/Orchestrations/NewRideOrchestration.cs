@@ -69,7 +69,7 @@ public class NewRideOrchestration
         //todo: when user provide a note to the driver
     }
 
-    private static async Task<decimal> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
+    private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
     {
         await context.CallActivityAsync(
             nameof(CancelRideActivity),
@@ -79,12 +79,12 @@ public class NewRideOrchestration
                 UserId = input.User.NameIdentifier
             });
 
-        var accepted = await context.WaitForExternalEvent<decimal>(SignalRConstants.ClientSendPriceCalculation);
+        var accepted = await context.WaitForExternalEvent<double>(SignalRConstants.ClientSendPriceCalculation);
 
         return accepted;
     }
 
-    private static async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input, decimal price)
+    private static async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input, double price)
     {
         await context.CallActivityAsync(nameof(SendPaymentIntentActivity), new SendPaymentIntentActivityInput()
         {

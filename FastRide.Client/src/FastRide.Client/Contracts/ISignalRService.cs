@@ -26,7 +26,7 @@ public interface ISignalRService : IAsyncDisposable
 
     Task RemoveUserFromGroupAsync(string userId, string groupName);
 
-    Task ConfirmPriceCalculatedAsync(string instanceId, decimal priceConfirmed);
+    Task ConfirmPriceCalculatedAsync(string instanceId, double priceConfirmed);
 
     Task ConfirmPaymentAsync(string instanceId, bool paymentSuccess);
     
