@@ -46,7 +46,7 @@ public class SendPriceCalculationActivity
             [
                 calculatedPrice
             ],
-            /*UserId = input.UserId*/
+            UserId = input.UserId
         });
     }
 }

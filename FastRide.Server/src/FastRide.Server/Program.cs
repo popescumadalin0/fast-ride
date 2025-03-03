@@ -1,5 +1,6 @@
 ﻿using FastRide.Server.Authentication;
 using FastRide.Server.Services;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +20,12 @@ var host = new HostBuilder()
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        
+
         services.AddLogging();
 
         services.AddServices();
+
+        services.AddSingleton<IUserIdProvider, UserIdProvider>();
     })
     .ConfigureLogging((context, b) =>
     {

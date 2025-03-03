@@ -1,4 +1,5 @@
-﻿using FastRide.Server.Contracts.Constants;
+﻿using System.Security.Claims;
+using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ public class SignalRConfigurationFunction
         _logger.LogInformation("Negotiate request received");
         return new ObjectResult(connectionInfo);
     }
-    
+
     [Function("onconnected")]
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public static SignalRMessage OnConnected(
@@ -39,7 +40,7 @@ public class SignalRConfigurationFunction
             Arguments = [$"Client with connection ID {context.ConnectionId} has connected."]
         };
     }
-    
+
     [Function("ondisconnected")]
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public static SignalRMessage OnDisconnected(

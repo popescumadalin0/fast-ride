@@ -44,7 +44,7 @@ public class SendPaymentIntentActivity
                     ClientSecret = paymentIntent.ClientSecret,
                 }
             ],
-            /*UserId = input.UserId*/
+            UserId = input.UserId
         };
     }
 }
