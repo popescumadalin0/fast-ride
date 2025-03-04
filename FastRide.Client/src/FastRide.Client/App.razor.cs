@@ -32,7 +32,7 @@ public partial class App : IAsyncDisposable
 
         var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
 
-        var userId = authState.User.Identity!.IsAuthenticated
+        var userId = authState.User.Identity?.IsAuthenticated ?? false
             ? authState.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value
             : Constants.Constants.Guest;
 
