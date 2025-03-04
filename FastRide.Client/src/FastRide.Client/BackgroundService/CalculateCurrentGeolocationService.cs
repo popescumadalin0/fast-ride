@@ -54,7 +54,7 @@ public class CalculateCurrentGeolocationService : IDisposable
     {
         if (_running) return;
         _timer = new Timer();
-        _timer.Interval = 5000;
+        _timer.Interval = 1000;
         _timer.Elapsed += HandleTimer;
         _timer.AutoReset = true;
         _timer.Enabled = true;
@@ -62,7 +62,7 @@ public class CalculateCurrentGeolocationService : IDisposable
         _running = true;
     }
 
-    private void HandleTimer(object source, ElapsedEventArgs e)
+    private void HandleTimer(object source = null, ElapsedEventArgs e = null)
     {
         SaveCurrentGeolocationAsync().GetAwaiter().GetResult();
     }
@@ -72,7 +72,7 @@ public class CalculateCurrentGeolocationService : IDisposable
         var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var geolocation = await _geolocationService.GetGeolocationAsync();
 
-        if (auth.User.Identity!.IsAuthenticated &&
+        if ((auth.User.Identity?.IsAuthenticated ?? false) &&
             auth.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
         {
             var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;

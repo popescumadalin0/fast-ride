@@ -141,7 +141,7 @@ public partial class Home : ComponentBase, IDisposable
 
         var authState = await AuthenticationState;
 
-        var id = authState.User.Identity!.IsAuthenticated
+        var id = authState.User.Identity?.IsAuthenticated ?? false
             ? authState.User.Claims.Single(x => x.Type == "sub").Value
             : Guid.Empty.ToString();
 

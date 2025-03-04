@@ -20,7 +20,7 @@
                     <i class="bi bi-box-arrow-right "></i>
                 </NavLink>
             </div>
-            @if (context.User.Identity!.IsAuthenticated)
+            @if (context.User.Identity?.IsAuthenticated ?? false)
             {
                 if (DestinationState.Geolocation != null)
                 {

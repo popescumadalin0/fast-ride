@@ -53,6 +53,11 @@ public class HttpAuthenticationHandler : DelegatingHandler
         request.Headers.Add("Authentication", $"Bearer {tokenId}");
         request.Headers.Add("Authorization", $"Bearer {accessToken.Value}");
 
+        if (request.RequestUri.AbsoluteUri.Contains(".app/api"))
+        {
+            request.Headers.Add("ngrok-skip-browser-warning", "true");
+        }
+
         return await base.SendAsync(request, cancellationToken);
     }
 }

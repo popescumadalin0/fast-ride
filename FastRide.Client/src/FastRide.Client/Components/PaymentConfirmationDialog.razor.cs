@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Server.Contracts.SignalRModels;
@@ -77,7 +78,8 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         {
             case 0:
             {
-                await SignalRService.ConfirmPriceCalculatedAsync(_instanceId, _price);
+                await SignalRService.ConfirmPriceCalculatedAsync(_instanceId,
+                    _price.ToString(CultureInfo.InvariantCulture));
                 break;
             }
             case 1:
@@ -103,7 +105,7 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         {
             case 0:
             {
-                await SignalRService.ConfirmPriceCalculatedAsync(_instanceId, 0);
+                await SignalRService.ConfirmPriceCalculatedAsync(_instanceId, "0");
                 break;
             }
             case 1:

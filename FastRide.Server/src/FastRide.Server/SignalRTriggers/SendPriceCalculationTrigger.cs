@@ -22,7 +22,7 @@ public class SendPriceCalculationTrigger
         SignalRInvocationContext invocationContext,
         [DurableClient] DurableTaskClient client,
         string instanceId,
-        double priceConfirmed)
+        string priceConfirmed)
     {
         _logger.LogInformation($"{nameof(SendPriceCalculationTrigger)} function executed");
 

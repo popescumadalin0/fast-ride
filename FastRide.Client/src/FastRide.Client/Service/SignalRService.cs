@@ -152,7 +152,7 @@ public class SignalRService : ISignalRService
         await _connection.SendAsync(SignalRConstants.ClientLeaveUserFromGroup, userId, groupName);
     }
 
-    public async Task ConfirmPriceCalculatedAsync(string instanceId, double priceConfirmed)
+    public async Task ConfirmPriceCalculatedAsync(string instanceId, string priceConfirmed)
     {
         await _connection.SendAsync(SignalRConstants.ClientSendPriceCalculation, instanceId, priceConfirmed);
     }
