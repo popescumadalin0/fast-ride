@@ -1,5 +1,4 @@
-﻿using FastRide.Server.Contracts;
-using FastRide.Server.Contracts.Constants;
+﻿using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.Azure.Functions.Worker;

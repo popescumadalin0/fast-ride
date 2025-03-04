@@ -5,7 +5,6 @@ using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
 using FastRide.Server.Services.Contracts;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.Activities;

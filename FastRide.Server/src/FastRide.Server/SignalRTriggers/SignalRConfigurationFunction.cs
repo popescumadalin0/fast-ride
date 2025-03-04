@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using FastRide.Server.Contracts.Constants;
+﻿using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

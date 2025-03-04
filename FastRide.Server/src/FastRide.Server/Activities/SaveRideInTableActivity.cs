@@ -1,12 +1,7 @@
 ﻿using System.Threading.Tasks;
-using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
-using FastRide.Server.Contracts.SignalRModels;
-using FastRide.Server.Models;
 using FastRide.Server.Services.Contracts;
-using FastRide.Server.Services.Services;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace FastRide.Server.Activities;

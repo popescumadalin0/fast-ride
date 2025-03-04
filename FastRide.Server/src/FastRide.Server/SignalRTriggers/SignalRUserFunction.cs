@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using FastRide.Server.Contracts;
-using FastRide.Server.Contracts.Constants;
+﻿using FastRide.Server.Contracts.Constants;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 

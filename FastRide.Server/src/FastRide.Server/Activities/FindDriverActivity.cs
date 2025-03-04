@@ -6,9 +6,7 @@ using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
 using FastRide.Server.Services.Contracts;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Stripe;
 
 namespace FastRide.Server.Activities;
 

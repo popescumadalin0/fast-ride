@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
-using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;

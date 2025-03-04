@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
-using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Orchestrations;
 using Microsoft.Azure.Functions.Worker;
