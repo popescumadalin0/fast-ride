@@ -24,8 +24,6 @@ var host = new HostBuilder()
         services.AddLogging();
 
         services.AddServices();
-
-        services.AddSingleton<IUserIdProvider, UserIdProvider>();
     })
     .ConfigureLogging((context, b) =>
     {

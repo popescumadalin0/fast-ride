@@ -8,14 +8,14 @@ namespace FastRide.Server.Services.Services;
 public class DistanceService(ILogger<DistanceService> logger)
     : IDistanceService
 {
-    private readonly double _basePrice = double.Parse(Environment.GetEnvironmentVariable("Stripe:BasePrice")!);
+    private readonly double _basePrice = double.Parse(Environment.GetEnvironmentVariable("Distance:BasePrice")!);
 
-    private readonly double _pricePerKm = double.Parse(Environment.GetEnvironmentVariable("Stripe:PricePerKm")!);
+    private readonly double _pricePerKm = double.Parse(Environment.GetEnvironmentVariable("Distance:PricePerKm")!);
 
     private const double EarthRadiusKm = 6371;
 
     private readonly double _pricePerMinute =
-        double.Parse(Environment.GetEnvironmentVariable("Stripe:PricePerMinute")!);
+        double.Parse(Environment.GetEnvironmentVariable("Distance:PricePerMinute")!);
 
     public double CalculatePricePerDistance(double distanceInKm, double durationInMinutes)
     {

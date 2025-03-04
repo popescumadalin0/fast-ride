@@ -10,7 +10,7 @@
     "Distance:PricePerKm": 2,
     "Distance:PricePerMinute": 5,
     "Distance:AverageSpeed": 5,
-    "Stripe:BasePrice": 5,
+    "Distance:BasePrice": 5,
     "Stripe:SecretKey" : "sk_test_51QCJV1CpLPiMeksm1mNX4ODYVvS8Q1vcatMsZQpXv16JWGVxvYAll0oFOgtt3AwYEkKFmlMMi0Xc2qtbUZXNF49T00H3kxqzHm"
   },
   "Host": {

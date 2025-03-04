@@ -1,4 +1,4 @@
-  using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -21,19 +21,12 @@ public class SignalRService : ISignalRService
 
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    private readonly IAccessTokenProvider _accessTokenProvider;
-
-    private readonly ISessionStorageService _sessionStorage;
-
     private HubConnection _connection;
 
-    public SignalRService(IConfiguration configuration, AuthenticationStateProvider authenticationStateProvider,
-        IAccessTokenProvider accessTokenProvider, ISessionStorageService sessionStorage)
+    public SignalRService(IConfiguration configuration, AuthenticationStateProvider authenticationStateProvider)
     {
         _configuration = configuration;
         _authenticationStateProvider = authenticationStateProvider;
-        _accessTokenProvider = accessTokenProvider;
-        _sessionStorage = sessionStorage;
     }
 
     /// <inheritdoc />
@@ -61,22 +54,7 @@ public class SignalRService : ISignalRService
         var userId = authState.User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value ?? Constants.Constants.Guest;
 
         _connection = new HubConnectionBuilder()
-            .WithUrl($"{_configuration["FastRide:BaseUrl"]!}/api", o =>
-            {
-                o.AccessTokenProvider =
-                    async () =>
-                    {
-                        var baseUri = _configuration["Google:Authority"];
-                        var clientId = _configuration["Google:ClientId"] ??
-                                       throw new ArgumentNullException($"{_configuration["Google:ClientId"]}");
-                        var key = $"oidc.user:{baseUri}:{clientId}";
-                        return _sessionStorage.GetItem<TokenSession>(key).id_token;
-                        var accessTokenResult = await _accessTokenProvider.RequestAccessToken();
-                        accessTokenResult.TryGetToken(out var accessToken);
-                        return accessToken.Value;
-                    };
-                o.Headers.Add("sub", userId);
-            })
+            .WithUrl($"{_configuration["FastRide:BaseUrl"]!}/api/?userId={userId}")
             .WithAutomaticReconnect()
             .Build();
 

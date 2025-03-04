@@ -72,11 +72,13 @@ public class NewRideOrchestration
     private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
     {
         await context.CallActivityAsync(
-            nameof(CancelRideActivity),
-            new CancelRideActivityInput
+            nameof(SendPriceCalculationActivity),
+            new SendPriceCalculationActivityInput
             {
                 InstanceId = context.InstanceId,
-                UserId = input.User.NameIdentifier
+                UserId = input.User.NameIdentifier,
+                Destination = input.Destination,
+                StartPoint = input.StartPoint,
             });
 
         var accepted = await context.WaitForExternalEvent<double>(SignalRConstants.ClientSendPriceCalculation);
