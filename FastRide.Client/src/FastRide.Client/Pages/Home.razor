@@ -3,14 +3,17 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="search-destination">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudAutocomplete T="string" Label="US States" @bind-Value="_state" SearchFunc="@Search"
-                             Variant="Variant.Outlined" ShowProgressIndicator="true"/>
-        </MudItem>
-    </MudGrid>
-</div>
+@if (false)
+{
+    <div class="search-destination">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudAutocomplete T="string" Label="US States" @bind-Value="_state" SearchFunc="@Search"
+                                 Variant="Variant.Outlined" ShowProgressIndicator="true"/>
+            </MudItem>
+        </MudGrid>
+    </div>
+}
 <RealTimeMap @ref="@_realTimeMap" height="100dvh"
              width="100dvw" OnAfterMapLoaded="@MapLoadedAsync" OnClickMap="@MapClickedAsync">
 </RealTimeMap>

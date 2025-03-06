@@ -61,15 +61,18 @@ public partial class Home : ComponentBase, IDisposable
         return ["test", "test1", "test2", "test3"];
     }
 
-    private async Task NotifyDriverGeolocationAsync(NotifyUserGeolocation geolocation)
+    private async Task NotifyDriverGeolocationAsync(NotifyUserGeolocation input)
     {
-        _drivers[geolocation.UserId] = new Geolocation()
+        var authState = await AuthenticationState;
+        if (input.UserId != authState.User?.Claims?.FirstOrDefault(x => x.Type == "sub")?.Value)
         {
-            Longitude = geolocation.Geolocation.Longitude,
-            Latitude = geolocation.Geolocation.Latitude,
-        };
-
-        await LoadDriversAsync();
+            _drivers[input.UserId] = new Geolocation()
+            {
+                Longitude = input.Geolocation.Longitude,
+                Latitude = input.Geolocation.Latitude,
+            };
+            await LoadDriversAsync();
+        }
     }
 
     private void CurrentPositionStateOnChange()

@@ -32,7 +32,7 @@ public class NotifyUserGeolocationTrigger
                     Geolocation = geolocation
                 }
             ],
-            GroupName = groupName
+            GroupName = groupName,
         };
     }
 }
