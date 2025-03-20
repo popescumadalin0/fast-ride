@@ -53,7 +53,7 @@ public class HttpAuthenticationHandler : DelegatingHandler
         request.Headers.Add("Authentication", $"Bearer {tokenId}");
         request.Headers.Add("Authorization", $"Bearer {accessToken.Value}");
 
-        if (request.RequestUri.AbsoluteUri.Contains(".app/api"))
+        if (request.RequestUri.AbsoluteUri.Contains("ngrok-free.app"))
         {
             request.Headers.Add("ngrok-skip-browser-warning", "true");
         }

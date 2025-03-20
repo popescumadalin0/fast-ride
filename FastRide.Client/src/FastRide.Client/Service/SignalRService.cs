@@ -54,7 +54,13 @@ public class SignalRService : ISignalRService
         var userId = authState.User.Claims.SingleOrDefault(c => c.Type == "sub")?.Value ?? Constants.Constants.Guest;
 
         _connection = new HubConnectionBuilder()
-            .WithUrl($"{_configuration["FastRide:BaseUrl"]!}/api/?userId={userId}")
+            .WithUrl($"{_configuration["FastRide:BaseUrl"]!}/api/?userId={userId}", options =>
+            {
+                if (_configuration["FastRide:BaseUrl"]!.Contains("ngrok-free.app"))
+                {
+                    options.Headers.Add("ngrok-skip-browser-warning", "true");
+                }
+            })
             .WithAutomaticReconnect()
             .Build();
 
