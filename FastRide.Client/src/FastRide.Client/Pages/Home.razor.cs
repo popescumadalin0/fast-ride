@@ -81,6 +81,33 @@ public partial class Home : ComponentBase, IDisposable
         LoadCurrentUser().GetAwaiter().GetResult();
     }
 
+    private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
+    {
+        var realTimeMap = obj.sender;
+
+        realTimeMap.Geometric.Points.changeExtentWhenAddPoints = false;
+        realTimeMap.Geometric.Points.changeExtentWhenMovingPoints = false;
+        realTimeMap.Parameters.zoomLevel = 18;
+        
+        realTimeMap.Options.keyboardNavigationOptions = new RealTimeMap.KeyboardNavigationOptions()
+        {
+            keyboard = false,
+        };
+        realTimeMap.Options.interactionOptions = new RealTimeMap.InteractionOptions()
+        {
+            dragging = false,
+            trackResize = false,
+            doubleClickZoom = true,
+            shiftBoxZoom = false,
+        };
+
+        await PredefineMapContentAsync(realTimeMap);
+
+        await LoadCurrentUser();
+
+        await LoadDriversAsync();
+    }
+
     private async Task MapClickedAsync(RealTimeMap.ClicksMapArgs obj)
     {
         var realTimeMap = obj.sender;
@@ -95,29 +122,6 @@ public partial class Home : ComponentBase, IDisposable
             Longitude = obj.location.longitude,
             Latitude = obj.location.latitude,
         };
-    }
-
-    private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
-    {
-        var realTimeMap = obj.sender;
-
-        realTimeMap.Options.keyboardNavigationOptions = new RealTimeMap.KeyboardNavigationOptions()
-        {
-            keyboard = false,
-        };
-        realTimeMap.Options.interactionOptions = new RealTimeMap.InteractionOptions()
-        {
-            dragging = false,
-            trackResize = false,
-            doubleClickZoom = true,
-            shiftBoxZoom = false
-        };
-
-        await PredefineMapContentAsync(realTimeMap);
-
-        await LoadCurrentUser();
-
-        await LoadDriversAsync();
     }
 
     private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
@@ -168,16 +172,35 @@ public partial class Home : ComponentBase, IDisposable
     private async Task UpdatePointPositionAsync(RealTimeMap realTimeMap, string id, string type,
         Geolocation geolocation)
     {
-        var points = realTimeMap.Geometric.Points.getItems(x =>
-            x.guid == Guid.Parse(id) && x.type == type &&
-            x.latitude == geolocation.Latitude &&
-            x.longitude == geolocation.Longitude);
+        const double tolerance = 0.001;
+        var removePoints = realTimeMap.Geometric.Points.getItems(x =>
+            x.guid == Guid.Parse(id) && x.type == "pin" &&
+            Math.Abs(x.latitude - geolocation.Latitude) < tolerance &&
+            Math.Abs(x.longitude - geolocation.Longitude) < tolerance);
 
-        if (points.Count == 0)
+        if (removePoints.Count != 0)
         {
-            await _realTimeMap.Geometric.Points.delete(id);
+            await _realTimeMap.Geometric.Points.delete(removePoints.Select(x => x.guid.ToString()).ToArray());
+        }
 
-            await _realTimeMap.Geometric.Points.upload([
+        var points = realTimeMap.Geometric.Points.getItems(x =>
+            x.guid == Guid.Parse(id));
+
+        if (points.Count != 0)
+        {
+            await _realTimeMap.Geometric.Points.update(
+                new RealTimeMap.StreamPoint
+                {
+                    guid = Guid.Parse(id),
+                    latitude = geolocation.Latitude,
+                    longitude = geolocation.Longitude,
+                    type = type
+                }
+            );
+        }
+        else
+        {
+            await _realTimeMap.Geometric.Points.add([
                 new RealTimeMap.StreamPoint
                 {
                     guid = Guid.Parse(id),

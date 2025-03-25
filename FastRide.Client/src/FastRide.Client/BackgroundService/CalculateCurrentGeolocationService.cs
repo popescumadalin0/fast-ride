@@ -54,7 +54,7 @@ public class CalculateCurrentGeolocationService : IDisposable
     {
         if (_running) return;
         _timer = new Timer();
-        _timer.Interval = 1000;
+        _timer.Interval = 5000;
         _timer.Elapsed += HandleTimer;
         _timer.AutoReset = true;
         _timer.Enabled = true;
