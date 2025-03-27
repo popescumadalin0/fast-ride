@@ -1,5 +1,8 @@
-﻿using FastRide.Server.Contracts.Constants;
+﻿using System.Threading.Tasks;
+using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Models;
+using FastRide.Server.Services.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -12,9 +15,13 @@ public class SignalRConfigurationFunction
 {
     private readonly ILogger<SignalRConfigurationFunction> _logger;
 
-    public SignalRConfigurationFunction(ILogger<SignalRConfigurationFunction> logger)
+    private readonly IOnlineDriversService _driversService;
+
+    public SignalRConfigurationFunction(ILogger<SignalRConfigurationFunction> logger,
+        IOnlineDriversService driversService)
     {
         _logger = logger;
+        _driversService = driversService;
     }
 
     [Function("negotiate")]
@@ -31,7 +38,7 @@ public class SignalRConfigurationFunction
 
     [Function("onconnected")]
     [SignalROutput(HubName = SignalRConstants.HubName)]
-    public static SignalRMessage OnConnected(
+    public async Task<SignalRMessage> OnConnected(
         [SignalRTrigger(hubName: SignalRConstants.HubName, category: "connections", @event: "connected")]
         SignalRInvocationContext context)
     {
@@ -44,10 +51,12 @@ public class SignalRConfigurationFunction
 
     [Function("ondisconnected")]
     [SignalROutput(HubName = SignalRConstants.HubName)]
-    public static SignalRMessage OnDisconnected(
+    public async Task<SignalRMessage> OnDisconnected(
         [SignalRTrigger(hubName: SignalRConstants.HubName, category: "connections", @event: "disconnected")]
         SignalRInvocationContext context)
     {
+        await _driversService.DeleteOnlineDriverAsync(context.UserId);
+
         return new SignalRMessage
         {
             Target = "ReceiveMessage",

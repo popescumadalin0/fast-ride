@@ -63,6 +63,32 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<ServiceResponse<User>> GetUserByUserIdAsync(string userId)
+    {
+        try
+        {
+            var actualUser = await _userRepository.GetUserByUserNameIdentifierAsync(userId);
+            
+            return new ServiceResponse<User>(new User()
+            {
+                UserType = (Server.Contracts.Enums.UserType)actualUser.UserType,
+                Identifier = new UserIdentifier()
+                {
+                    NameIdentifier = actualUser.RowKey,
+                    Email = actualUser.PartitionKey,
+                },
+                Rating = actualUser.Rating,
+                PhoneNumber = actualUser.PhoneNumber,
+                PictureUrl = actualUser.PictureUrl,
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return new ServiceResponse<User>(ex);
+        }
+    }
+
     public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload,
         string pictureUrl)
     {
