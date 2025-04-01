@@ -1,8 +1,12 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
+using FastRide.Server.Contracts.Enums;
+using FastRide.Server.Contracts.SignalRModels;
+using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -16,20 +20,46 @@ public partial class NavMenu : IDisposable
     [Inject] private DestinationState DestinationState { get; set; }
 
     [Inject] private ISignalRService SignalRService { get; set; }
-    
+
     [Inject] private IUserGroupService UserGroupService { get; set; }
 
+    [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
+
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    [Inject] private CurrentRideState CurrentRideState { get; set; }
 
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated ?? false)
+        {
+            var rides = await FastRideApiClient.GetRidesByUserAsync();
+
+            if (!rides.Success)
+            {
+                throw new Exception($"{rides.ReasonPhrase}-{rides.ResponseMessage}-{rides.ClientError}");
+            }
+
+            CurrentRideState.InRide = rides.Response.Any(x => x.Status == RideStatus.InProgress);
+
+            SignalRService.DriverRideAccepted += InRideTriggered;
+        }
+
         DestinationState.OnChange += StateHasChanged;
-        base.OnInitialized();
+
+        await base.OnInitializedAsync();
+    }
+
+    private Task InRideTriggered()
+    {
+        CurrentRideState.InRide = true;
+        return Task.CompletedTask;
     }
 
     private async Task LogOutAsync()

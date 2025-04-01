@@ -9,4 +9,6 @@ public class DriverAcceptRide
     public Geolocation UserGeolocation { get; set; }
     
     public Geolocation DestinationGeolocation { get; set; }
+    
+    public double Cost { get; set; }
 }

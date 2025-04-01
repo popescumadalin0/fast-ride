@@ -1,6 +1,6 @@
 ﻿<div class="nav-item px-1">
     <NavLink class="@($"nav-link btn btn-link {(false ? "bg-body" : "bg-warning")} text-white")"
-             onclick="@OpenRideAsync">Ride
+             onclick="@OpenRide">Ride
     </NavLink>
 </div>
 <MudPopover Open="@_opened" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
@@ -9,7 +9,7 @@
             <div class="d-flex flex-column">
                         <span class="ellipsis-text destination-width"
                               title="@_ride.Destination">@_ride.Destination</span>
-                <span class="text-muted">4.5 KM</span>
+                <span class="text-muted">@_ride.</span>
             </div>
             <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
                            OnClick="@AcceptRideAsync"></MudIconButton>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
@@ -20,8 +21,6 @@ namespace FastRide.Client.Pages;
 public partial class Home : ComponentBase, IDisposable
 {
     [Inject] private ISignalRService SignalRService { get; set; }
-
-    [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
 
     [Inject] private DestinationState DestinationState { get; set; }
 
@@ -54,18 +53,7 @@ public partial class Home : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         _currentGeolocation = await GeolocationService.GetGeolocationAsync();
-
-        var rides = await FastRideApiClient.GetRidesByUserAsync();
-
-        if (!rides.Success)
-        {
-            throw new Exception($"{rides.ReasonPhrase}-{rides.ResponseMessage}-{rides.ClientError}");
-        }
-
-        CurrentRideState.InRide = rides.Response.Any(x => x.Status == RideStatus.InProgress);
-
-        SignalRService.DriverRideAccepted += InRideTriggered;
-
+        
         DestinationState.OnChange += StateHasChanged;
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
@@ -94,12 +82,6 @@ public partial class Home : ComponentBase, IDisposable
             };
             await LoadDriversAsync();
         }
-    }
-
-    private Task InRideTriggered()
-    {
-        CurrentRideState.InRide = true;
-        return Task.CompletedTask;
     }
 
     private void CurrentPositionStateOnChange()
