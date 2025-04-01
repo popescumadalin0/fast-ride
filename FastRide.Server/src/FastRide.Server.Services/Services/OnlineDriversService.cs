@@ -114,4 +114,21 @@ public class OnlineDriversService : IOnlineDriversService
             return new ServiceResponse(ex);
         }
     }
+
+    public async Task<ServiceResponse> DeleteOnlineDriverAsync(string userId)
+    {
+        try
+        {
+            var user = await _onlineDriverRepository.GetOnlineDriversByUserIdAsync(userId);
+            
+            await _onlineDriverRepository.DeleteOnlineDriverAsync(user.PartitionKey,  user.RowKey);
+
+            return new ServiceResponse();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return new ServiceResponse(ex);
+        }
+    }
 }

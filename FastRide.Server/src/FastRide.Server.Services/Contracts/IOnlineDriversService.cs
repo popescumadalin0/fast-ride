@@ -12,4 +12,6 @@ public interface IOnlineDriversService
 
     Task<ServiceResponse<List<OnlineDriver>>> GetOnlineDriversByGroupName(string groupName);
     Task<ServiceResponse> AddOnlineDriverAsync(OnlineDriver onlineDriver);
+    
+    Task<ServiceResponse> DeleteOnlineDriverAsync(string userId);
 }
