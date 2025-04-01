@@ -5,11 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
+using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
+using FastRide.Server.Sdk.Contracts;
 using LeafletForBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 
 namespace FastRide.Client.Pages;
@@ -18,7 +21,11 @@ public partial class Home : ComponentBase, IDisposable
 {
     [Inject] private ISignalRService SignalRService { get; set; }
 
+    [Inject] private IFastRideApiClient FastRideApiClient { get; set; }
+
     [Inject] private DestinationState DestinationState { get; set; }
+
+    [Inject] private CurrentRideState CurrentRideState { get; set; }
 
     [Inject] private CurrentPositionState CurrentPositionState { get; set; }
 
@@ -41,17 +48,31 @@ public partial class Home : ComponentBase, IDisposable
         DestinationState.OnChange -= StateHasChanged;
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
         CurrentPositionState.OnChange -= CurrentPositionStateOnChange;
+        CurrentRideState.OnChange -= StateHasChanged;
     }
 
     protected override async Task OnInitializedAsync()
     {
         _currentGeolocation = await GeolocationService.GetGeolocationAsync();
 
+        var rides = await FastRideApiClient.GetRidesByUserAsync();
+
+        if (!rides.Success)
+        {
+            throw new Exception($"{rides.ReasonPhrase}-{rides.ResponseMessage}-{rides.ClientError}");
+        }
+
+        CurrentRideState.InRide = rides.Response.Any(x => x.Status == RideStatus.InProgress);
+
+        SignalRService.DriverRideAccepted += InRideTriggered;
+
         DestinationState.OnChange += StateHasChanged;
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
 
         CurrentPositionState.OnChange += CurrentPositionStateOnChange;
+
+        CurrentRideState.OnChange += StateHasChanged;
 
         StateHasChanged();
     }
@@ -75,6 +96,12 @@ public partial class Home : ComponentBase, IDisposable
         }
     }
 
+    private Task InRideTriggered()
+    {
+        CurrentRideState.InRide = true;
+        return Task.CompletedTask;
+    }
+
     private void CurrentPositionStateOnChange()
     {
         _currentGeolocation = CurrentPositionState.Geolocation;
@@ -88,7 +115,7 @@ public partial class Home : ComponentBase, IDisposable
         realTimeMap.Geometric.Points.changeExtentWhenAddPoints = false;
         realTimeMap.Geometric.Points.changeExtentWhenMovingPoints = false;
         realTimeMap.Parameters.zoomLevel = 18;
-        
+
         realTimeMap.Options.keyboardNavigationOptions = new RealTimeMap.KeyboardNavigationOptions()
         {
             keyboard = false,
@@ -143,8 +170,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadCurrentUser()
     {
-        //todo: if in ride
-        var type = true ? "human" : "currentCar";
+        var type = !CurrentRideState.InRide ? "human" : "currentCar";
 
         var authState = await AuthenticationState;
 
@@ -157,8 +183,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadDriversAsync()
     {
-        //todo: if in ride
-        if (false)
+        if (CurrentRideState.InRide)
         {
             return;
         }

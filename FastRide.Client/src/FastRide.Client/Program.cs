@@ -25,6 +25,8 @@ builder.Services.AddScoped<DestinationState>();
 
 builder.Services.AddScoped<CurrentPositionState>();
 
+builder.Services.AddScoped<CurrentRideState>();
+
 builder.Services.AddScoped<OverlayState>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

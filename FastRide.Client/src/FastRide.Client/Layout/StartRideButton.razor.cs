@@ -101,11 +101,6 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
     private async Task RemoveUserFromGroups(RideCreated rideCreated)
     {
-        //todo: this when the payment is made
-        /*var groupName = AuthenticationState.User.Claims.First(c => c.Type == ClaimTypes.GroupSid).Value;
-        var userId = AuthenticationState.User.Claims.First(c => c.Type == "sub").Value;
-        await Sender.RemoveUserFromGroupAsync(userId, groupName);*/
-
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,
