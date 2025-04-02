@@ -9,5 +9,5 @@ public class DriverRideInformation
     
     public Geolocation DestinationLocation { get; set; }
     
-    public string Distance { get; set; }
+    public double Distance { get; set; }
 }

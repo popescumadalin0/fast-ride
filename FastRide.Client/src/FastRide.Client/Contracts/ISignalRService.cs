@@ -36,5 +36,5 @@ public interface ISignalRService : IAsyncDisposable
 
     Task AcceptRideAsync(RideInformation rideInformation);
 
-    Task CreateNewRideAsync(string groupName, NewRideInput rideInput);
+    Task CreateNewRideAsync(NewRideInput rideInput);
 }

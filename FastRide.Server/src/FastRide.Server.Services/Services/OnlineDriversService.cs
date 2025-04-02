@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Services.Contracts;
@@ -120,8 +121,11 @@ public class OnlineDriversService : IOnlineDriversService
         try
         {
             var user = await _onlineDriverRepository.GetOnlineDriversByUserIdAsync(userId);
-            
-            await _onlineDriverRepository.DeleteOnlineDriverAsync(user.PartitionKey,  user.RowKey);
+
+            if (user != null)
+            {
+                await _onlineDriverRepository.DeleteOnlineDriverAsync(user.PartitionKey, user.RowKey);
+            }
 
             return new ServiceResponse();
         }

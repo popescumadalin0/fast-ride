@@ -59,12 +59,10 @@ public partial class AcceptRidePopup : IDisposable
     {
         var locationText = await LocationService.GetAddressByLatLongAsync(arg.DestinationGeolocation.Latitude,
             arg.DestinationGeolocation.Longitude);
-        
-        var distance = await .GetAddressByLatLongAsync(arg.DestinationGeolocation.Latitude,
-            arg.DestinationGeolocation.Longitude);
+
         _ride = new DriverRideInformation()
         {
-            Distance = distance,
+            Distance = arg.Distance,
             Destination = locationText,
             DestinationLocation = arg.DestinationGeolocation
         };
@@ -74,12 +72,12 @@ public partial class AcceptRidePopup : IDisposable
     private async Task AcceptRideAsync()
     {
         _opened = false;
-        
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.AcceptRideAsync(new RideInformation()
         {
-            Destination =  _ride.Destination,
-            DestinationLocation =  _ride.DestinationLocation,
+            Destination = _ride.Destination,
+            DestinationLocation = _ride.DestinationLocation,
             DriverEmail = authState.User.Claims.SingleOrDefault(x => x.Type == "email")?.Value,
         });
     }

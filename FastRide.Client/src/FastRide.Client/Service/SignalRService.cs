@@ -144,13 +144,12 @@ public class SignalRService : ISignalRService
 
     public async Task AcceptRideAsync(RideInformation rideInformation)
     {
-        //todo
-        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide);
+        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, rideInformation);
     }
 
-    public async Task CreateNewRideAsync(string groupName, NewRideInput rideInput)
+    public async Task CreateNewRideAsync(NewRideInput rideInput)
     {
-        await _connection.SendAsync(SignalRConstants.ClientCreateNewRide, groupName, rideInput);
+        await _connection.SendAsync(SignalRConstants.ClientCreateNewRide, rideInput);
     }
 
     public async Task RemoveUserFromGroupAsync(string userId, string groupName)

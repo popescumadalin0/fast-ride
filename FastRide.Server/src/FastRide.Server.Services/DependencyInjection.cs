@@ -11,6 +11,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddSingleton<ITableClient<OnlineDriversEntity>, TableClient<OnlineDriversEntity>>();
+
         services.AddSingleton<ITableClient<UserEntity>, TableClient<UserEntity>>();
 
         services.AddSingleton<ITableClient<RideEntity>, TableClient<RideEntity>>();

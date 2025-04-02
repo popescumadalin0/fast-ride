@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
 using FastRide.Server.Services.Contracts;
@@ -14,12 +15,16 @@ public class FindDriverActivity
 {
     private readonly ILogger<FindDriverActivity> _logger;
 
+    private readonly IDistanceService _distanceService;
+
     private readonly IOnlineDriversService _onlineDriversService;
 
-    public FindDriverActivity(ILogger<FindDriverActivity> logger, IOnlineDriversService onlineDriversService)
+    public FindDriverActivity(ILogger<FindDriverActivity> logger, IOnlineDriversService onlineDriversService,
+        IDistanceService distanceService)
     {
-        _logger = logger;
+        _logger = logger; 
         _onlineDriversService = onlineDriversService;
+        _distanceService = distanceService;
     }
 
     [Function(nameof(FindDriverActivity))]
@@ -51,7 +56,8 @@ public class FindDriverActivity
                     {
                         InstanceId = input.InstanceId,
                         DestinationGeolocation = input.Destination,
-                        UserGeolocation = input.UserGeolocation,
+                        Distance = _distanceService.GetDistanceBetweenLocations(input.UserGeolocation,
+                            input.Destination)
                     }
                 ],
                 UserId = driver.Identifier.NameIdentifier

@@ -79,7 +79,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         var currentLocation = CurrentPositionState.Geolocation;
 
-        await SignalRService.CreateNewRideAsync(groupName, new NewRideInput()
+        await SignalRService.CreateNewRideAsync(new NewRideInput()
         {
             Destination = new Geolocation()
             {
@@ -95,7 +95,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
             {
                 Email = email,
                 NameIdentifier = userId
-            }
+            },
+            GroupName = groupName
         });
     }
 

@@ -28,6 +28,7 @@ public class NewRideOrchestration
 
         var input = context.GetInput<NewRideInput>();
 
+
         var priceCalculated = await PriceCalculationStepAsync(context, input);
 
         if (priceCalculated == 0)

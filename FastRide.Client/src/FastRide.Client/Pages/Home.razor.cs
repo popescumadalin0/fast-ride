@@ -53,7 +53,7 @@ public partial class Home : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         _currentGeolocation = await GeolocationService.GetGeolocationAsync();
-        
+
         DestinationState.OnChange += StateHasChanged;
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
@@ -94,7 +94,7 @@ public partial class Home : ComponentBase, IDisposable
     {
         var realTimeMap = obj.sender;
 
-        realTimeMap.Geometric.Points.changeExtentWhenAddPoints = false;
+        realTimeMap.Geometric.Points.changeExtentWhenAddPoints = true;
         realTimeMap.Geometric.Points.changeExtentWhenMovingPoints = false;
         realTimeMap.Parameters.zoomLevel = 18;
 
@@ -121,16 +121,16 @@ public partial class Home : ComponentBase, IDisposable
     {
         var realTimeMap = obj.sender;
 
-        await UpdatePointPositionAsync(realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
-        {
-            Longitude = obj.location.longitude, Latitude = obj.location.latitude
-        });
-
         DestinationState.Geolocation = new Geolocation()
         {
             Longitude = obj.location.longitude,
             Latitude = obj.location.latitude,
         };
+
+        await UpdatePointPositionAsync(realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
+        {
+            Longitude = obj.location.longitude, Latitude = obj.location.latitude
+        });
     }
 
     private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
@@ -179,43 +179,47 @@ public partial class Home : ComponentBase, IDisposable
     private async Task UpdatePointPositionAsync(RealTimeMap realTimeMap, string id, string type,
         Geolocation geolocation)
     {
-        const double tolerance = 0.001;
+        const double tolerance = 0.00005;
         var removePoints = realTimeMap.Geometric.Points.getItems(x =>
             x.guid == Guid.Parse(id) && x.type == "pin" &&
-            Math.Abs(x.latitude - geolocation.Latitude) < tolerance &&
-            Math.Abs(x.longitude - geolocation.Longitude) < tolerance);
+            Math.Abs(geolocation.Latitude - x.latitude) < tolerance &&
+            Math.Abs(geolocation.Longitude - x.longitude) < tolerance);
 
         if (removePoints.Count != 0)
         {
             await _realTimeMap.Geometric.Points.delete(removePoints.Select(x => x.guid.ToString()).ToArray());
         }
-
-        var points = realTimeMap.Geometric.Points.getItems(x =>
-            x.guid == Guid.Parse(id));
-
-        if (points.Count != 0)
-        {
-            await _realTimeMap.Geometric.Points.update(
-                new RealTimeMap.StreamPoint
-                {
-                    guid = Guid.Parse(id),
-                    latitude = geolocation.Latitude,
-                    longitude = geolocation.Longitude,
-                    type = type
-                }
-            );
-        }
         else
         {
-            await _realTimeMap.Geometric.Points.add([
-                new RealTimeMap.StreamPoint
-                {
-                    guid = Guid.Parse(id),
-                    latitude = geolocation.Latitude,
-                    longitude = geolocation.Longitude,
-                    type = type
-                }
-            ]);
+            var points = realTimeMap.Geometric.Points.getItems(x =>
+                x.guid == Guid.Parse(id));
+
+            if (points.Count != 0)
+            {
+                await _realTimeMap.Geometric.Points.moveTo(
+                    new RealTimeMap.StreamPoint
+                    {
+                        guid = Guid.Parse(id),
+                        latitude = geolocation.Latitude,
+                        longitude = geolocation.Longitude,
+                        type = type
+                    }
+                );
+            }
+            else
+            {
+                await _realTimeMap.Geometric.Points.add([
+                    new RealTimeMap.StreamPoint
+                    {
+                        guid = Guid.Parse(id),
+                        latitude = geolocation.Latitude,
+                        longitude = geolocation.Longitude,
+                        type = type
+                    }
+                ]);
+            }
         }
+
+        realTimeMap.Geometric.Points.changeExtentWhenAddPoints = false;
     }
 }
