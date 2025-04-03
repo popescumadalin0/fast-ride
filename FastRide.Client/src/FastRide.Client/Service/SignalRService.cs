@@ -42,6 +42,9 @@ public class SignalRService : ISignalRService
     public event Func<Task> DriverRideAccepted;
 
     /// <inheritdoc />
+    public event Func<Task> CancelRide;
+
+    /// <inheritdoc />
     public event Func<NotifyUserGeolocation, Task> NotifyDriverGeolocation = null!;
 
     /// <inheritdoc />
@@ -126,6 +129,15 @@ public class SignalRService : ISignalRService
                 if (DriverRideAccepted != null!)
                 {
                     await DriverRideAccepted();
+                }
+            });
+
+        _connection.On(SignalRConstants.ServerCancelRide,
+            async () =>
+            {
+                if (CancelRide != null!)
+                {
+                    await CancelRide();
                 }
             });
 

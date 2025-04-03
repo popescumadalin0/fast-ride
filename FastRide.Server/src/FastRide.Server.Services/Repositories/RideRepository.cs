@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Threading.Tasks;
 using Azure;
 using FastRide.Server.Services.Contracts;
@@ -28,4 +28,4 @@ public class RideRepository : IRideRepository
 
         return response;
     }
-}
+}*/

@@ -19,6 +19,8 @@ public interface ISignalRService : IAsyncDisposable
     event Func<DriverAcceptRide, Task> DriverAcceptRide;
 
     event Func<Task> DriverRideAccepted;
+    
+    event Func<Task> CancelRide;
 
     ValueTask StartConnectionAsync();
 

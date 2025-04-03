@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using Azure;
 using Azure.Data.Tables;
 using FastRide.Server.Services.Attributes;
@@ -44,4 +44,4 @@ public class RideEntity : ITableEntity
     public string DriverId { get; set; }
     
     public string UserId { get; set; }
-}
+}*/

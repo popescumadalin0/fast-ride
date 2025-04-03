@@ -1,0 +1,12 @@
+﻿@if (CurrentRideState.InRide)
+{
+    <nav class="d-flex flex-row align-items-center justify-content-center">
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-1">
+                    @CurrentRideState.State
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </nav>
+}

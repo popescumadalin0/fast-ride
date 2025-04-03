@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿/*using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Services.Contracts;
 using Microsoft.Azure.Functions.Worker;
@@ -26,6 +26,6 @@ public class SaveRideInTableActivity
 
         var serviceResponse = await _rideService.AddRideAsync(input);
 
-        /*UserId = input.UserId*/
+        /*UserId = input.UserId#1#
     }
-}
+}*/

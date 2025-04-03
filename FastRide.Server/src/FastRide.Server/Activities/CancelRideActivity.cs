@@ -23,7 +23,7 @@ public class CancelRideActivity
     {
         _logger.LogInformation("Saying hello to {name}.", input);
 
-        return Task.FromResult(new SignalRMessageAction(SignalRConstants.ServerDriverAcceptRide)
+        return Task.FromResult(new SignalRMessageAction(SignalRConstants.ServerCancelRide)
         {
             Arguments =
             [

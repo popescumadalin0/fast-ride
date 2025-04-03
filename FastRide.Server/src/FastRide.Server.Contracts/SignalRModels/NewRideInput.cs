@@ -9,6 +9,10 @@ public class NewRideInput
     public Geolocation StartPoint { get; set; }
 
     public UserIdentifier User { get; set; }
+    
+    public UserIdentifier Driver { get; set; }
 
     public string GroupName { get; set; }
+    
+    public double Cost  { get; set; }
 }

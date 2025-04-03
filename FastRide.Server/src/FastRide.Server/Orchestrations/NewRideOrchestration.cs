@@ -27,7 +27,7 @@ public class NewRideOrchestration
         _logger.LogInformation($"{nameof(NewRideOrchestration)} was triggered!");
 
         var input = context.GetInput<NewRideInput>();
-
+        context.SetCustomStatus(input);
 
         var priceCalculated = await PriceCalculationStepAsync(context, input);
 
@@ -36,6 +36,9 @@ public class NewRideOrchestration
             _logger.LogInformation($"The ride was canceled!");
             return;
         }
+        
+        input.Cost = priceCalculated;
+        context.SetCustomStatus(input);
 
         var paymentConfirmed = await PaymentStepAsync(context, input, priceCalculated);
 
@@ -60,6 +63,12 @@ public class NewRideOrchestration
             _logger.LogInformation($"The ride was canceled!");
             return;
         }
+
+        input.Driver = new UserIdentifier()
+        {
+            NameIdentifier = driverId
+        };
+        context.SetCustomStatus(input);
 
         //todo: when driver arrives to the user destination
 

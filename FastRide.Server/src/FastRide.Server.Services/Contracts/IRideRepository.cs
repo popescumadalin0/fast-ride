@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Threading.Tasks;
 using Azure;
 using FastRide.Server.Services.Entities;
@@ -9,4 +9,4 @@ public interface IRideRepository
 {
     Task<List<RideEntity>> GetRidesByUserAsync(string email);
     Task<Response> AddRideForUserAsync(RideEntity ride);
-}
+}*/

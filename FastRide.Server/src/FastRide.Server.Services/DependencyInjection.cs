@@ -15,17 +15,17 @@ public static class DependencyInjection
 
         services.AddSingleton<ITableClient<UserEntity>, TableClient<UserEntity>>();
 
-        services.AddSingleton<ITableClient<RideEntity>, TableClient<RideEntity>>();
+        //services.AddSingleton<ITableClient<RideEntity>, TableClient<RideEntity>>();
 
         services.AddSingleton<IUserRepository, UserRepository>();
 
-        services.AddSingleton<IRideRepository, RideRepository>();
+        //services.AddSingleton<IRideRepository, RideRepository>();
 
         services.AddSingleton<IOnlineDriverRepository, OnlineDriverRepository>();
         
         services.AddSingleton<IUserService, UserService>();
 
-        services.AddSingleton<IRideService, RideService>();
+        //services.AddSingleton<IRideService, RideService>();
 
         services.AddSingleton<IOnlineDriversService, OnlineDriversService>();
 

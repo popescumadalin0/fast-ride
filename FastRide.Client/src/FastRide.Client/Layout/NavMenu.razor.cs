@@ -47,7 +47,8 @@ public partial class NavMenu : IDisposable
             }
 
             CurrentRideState.InRide = rides.Response.Any(x => x.Status == RideStatus.InProgress);
-
+            CurrentRideState.State = "Ride is in progress";
+            
             SignalRService.DriverRideAccepted += InRideTriggered;
         }
 
@@ -59,6 +60,8 @@ public partial class NavMenu : IDisposable
     private Task InRideTriggered()
     {
         CurrentRideState.InRide = true;
+        CurrentRideState.State = "Ride is in progress";
+
         return Task.CompletedTask;
     }
 
