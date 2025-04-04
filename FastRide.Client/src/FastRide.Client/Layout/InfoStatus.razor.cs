@@ -10,9 +10,8 @@ public partial class InfoStatus : IDisposable
 {
     [Inject] private ISignalRService SignalRService { get; set; }
 
-
     [Inject] private CurrentRideState CurrentRideState { get; set; }
-
+    
     public void Dispose()
     {
         CurrentRideState.OnChange -= StateHasChanged;

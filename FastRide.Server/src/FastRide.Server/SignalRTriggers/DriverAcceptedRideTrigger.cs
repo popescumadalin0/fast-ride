@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
@@ -18,20 +19,30 @@ public class DriverAcceptedRideTrigger
     [Function(nameof(DriverAcceptedRideTrigger))]
     public async Task<SignalRMessageAction> DriverAcceptedRide(
         [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientDriverAcceptRide, "instanceId",
-            "userId")]
+            "userId", "accepted")]
         SignalRInvocationContext invocationContext,
         [DurableClient] DurableTaskClient client,
         string instanceId,
-        string userId)
+        string userId,
+        bool accepted)
     {
         _logger.LogInformation($"{nameof(DriverAcceptedRideTrigger)} function executed");
 
-        await client.RaiseEventAsync(instanceId, SignalRConstants.ClientDriverAcceptRide, invocationContext.UserId);
-
-        return new SignalRMessageAction(SignalRConstants.ServerDriverRideAccepted)
+        await client.RaiseEventAsync(instanceId, SignalRConstants.ClientDriverAcceptRide, new DriverAcceptResponse()
         {
-            Arguments = [],
-            UserId = userId,
-        };
+            UserId = invocationContext.UserId,
+            Accepted = accepted
+        });
+
+        if (!accepted)
+        {
+            return new SignalRMessageAction(SignalRConstants.ServerDriverRideAccepted)
+            {
+                Arguments = [],
+                UserId = userId,
+            };
+        }
+
+        return new SignalRMessageAction("nothing");
     }
 }

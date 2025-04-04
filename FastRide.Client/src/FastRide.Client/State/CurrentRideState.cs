@@ -1,27 +1,16 @@
 ﻿using System;
+using FastRide.Client.Enums;
 using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.State;
 
 public class CurrentRideState
 {
-    private bool _inRide;
+    private RideState _state;
 
-    private string _state;
-    
     public event Action OnChange;
-    
-    public bool InRide
-    {
-        get => _inRide;
-        set
-        {
-            _inRide = value;
-            OnChange?.Invoke();
-        }
-    }
-    
-    public string State
+
+    public RideState State
     {
         get => _state;
         set

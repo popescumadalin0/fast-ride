@@ -22,10 +22,28 @@ main {
     text-align: center;
 }
 
+.info{
+    position: fixed;
+    z-index: 1000;
+    transform: translate(-50%, 0);
+    left: 50%;
+    top: 10px;
+    background-color: white;
+    border-radius: 10px;
+    width: 100vw;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+}
+
 @media (min-width: 641px) {
     .sidebar {
         width: max-content;
         border-radius: 50px;
         bottom: 10px;
+    }
+    .info {
+        width: max-content;
+        border-radius: 50px;
+        top: 20px;
     }
 }

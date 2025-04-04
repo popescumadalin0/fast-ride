@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace FastRide.Server.HttpTriggers;
 
@@ -40,7 +41,7 @@ public class RideFunction
         var rides = new List<Ride>();
         await foreach (var instance in instances)
         {
-            var customStatus = instance.ReadCustomStatusAs<NewRideInput>();
+            var customStatus = JsonConvert.DeserializeObject<NewRideInput>(instance.SerializedCustomStatus!);
             if (customStatus.User.NameIdentifier == req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value)
             {
                 rides.Add(new Ride()

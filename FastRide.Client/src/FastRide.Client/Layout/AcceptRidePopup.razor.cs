@@ -16,8 +16,6 @@ public partial class AcceptRidePopup : IDisposable
 {
     private bool _openAvailableRide;
 
-    private bool _opened;
-
     private DriverRideInformation _ride;
     [Inject] private DestinationState DestinationState { get; set; }
 
@@ -64,21 +62,27 @@ public partial class AcceptRidePopup : IDisposable
         {
             Distance = arg.Distance,
             Destination = locationText,
-            DestinationLocation = arg.DestinationGeolocation
+            DestinationLocation = arg.DestinationGeolocation,
+            InstanceId = arg.InstanceId,
         };
         OpenRide();
     }
 
     private async Task AcceptRideAsync()
     {
-        _opened = false;
+        _openAvailableRide = false;
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        await SignalRService.AcceptRideAsync(new RideInformation()
-        {
-            Destination = _ride.Destination,
-            DestinationLocation = _ride.DestinationLocation,
-            DriverEmail = authState.User.Claims.SingleOrDefault(x => x.Type == "email")?.Value,
-        });
+        await SignalRService.AcceptRideAsync(_ride.InstanceId,
+            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
+    }
+
+    private async Task DiscardRideAsync()
+    {
+        _openAvailableRide = false;
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await SignalRService.AcceptRideAsync(_ride.InstanceId,
+            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, false);
     }
 }

@@ -1,10 +1,11 @@
-﻿@if (CurrentRideState.InRide)
+﻿@using FastRide.Client.Enums
+@if (CurrentRideState.State != RideState.None)
 {
     <nav class="d-flex flex-row align-items-center justify-content-center">
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-1">
-                    @CurrentRideState.State
+                    @CurrentRideState.State.GetDescription()
                 </div>
             </Authorized>
         </AuthorizeView>

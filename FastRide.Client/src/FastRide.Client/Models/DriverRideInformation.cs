@@ -5,6 +5,8 @@ namespace FastRide.Client.Models;
 
 public class DriverRideInformation
 {
+    public string InstanceId { get; set; }
+
     public string Destination { get; set; }
     
     public Geolocation DestinationLocation { get; set; }

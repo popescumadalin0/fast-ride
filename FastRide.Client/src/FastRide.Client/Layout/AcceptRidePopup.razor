@@ -3,17 +3,28 @@
              onclick="@OpenRide">Ride
     </NavLink>
 </div>
-<MudPopover Open="@_opened" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
-    <MudPaper Width="300px">
-        <div class="d-flex flex-row justify-content-between">
-            <div class="d-flex flex-column">
-                        <span class="ellipsis-text destination-width"
-                              title="@_ride.Destination">@_ride.Destination</span>
-                <span class="text-muted">@_ride.</span>
+<MudPopover Open="@_openAvailableRide" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <MudPaper Height="100px" Width="500px">
+        @if (_ride == null)
+        {
+            <span>No rides available!</span>
+        }
+        else
+        {
+            <MudCard class="m-1">
+            <div class="d-flex flex-row justify-content-between m-1">
+                <div class="d-flex flex-column">
+                    <span class="ellipsis-text destination-width"
+                          title="@_ride.Destination">@_ride.Destination</span>
+                    <span class="text-muted">@((int)_ride.Distance) m</span>
+                </div>
+                <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Clear"
+                               OnClick="@DiscardRideAsync"></MudIconButton>
+                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
+                               OnClick="@AcceptRideAsync"></MudIconButton>
             </div>
-            <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
-                           OnClick="@AcceptRideAsync"></MudIconButton>
-        </div>
+            </MudCard>
+        }
     </MudPaper>
 </MudPopover>
 @*todo: something that represents reloading: time to respond to the request*@

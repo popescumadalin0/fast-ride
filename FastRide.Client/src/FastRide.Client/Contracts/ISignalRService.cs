@@ -36,7 +36,7 @@ public interface ISignalRService : IAsyncDisposable
 
     Task NotifyUserGeolocationAsync(string userId, string groupName, Geolocation geolocation);
 
-    Task AcceptRideAsync(RideInformation rideInformation);
+    Task AcceptRideAsync(string instanceId, string driverId, bool accepted);
 
     Task CreateNewRideAsync(NewRideInput rideInput);
 }

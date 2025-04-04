@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Client.Enums;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
@@ -152,7 +153,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadCurrentUser()
     {
-        var type = !CurrentRideState.InRide ? "human" : "currentCar";
+        var type = CurrentRideState.State == RideState.None ? "human" : "currentCar";
 
         var authState = await AuthenticationState;
 
@@ -165,7 +166,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadDriversAsync()
     {
-        if (CurrentRideState.InRide)
+        if (CurrentRideState.State != RideState.None)
         {
             return;
         }

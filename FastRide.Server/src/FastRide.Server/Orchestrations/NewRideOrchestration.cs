@@ -36,7 +36,7 @@ public class NewRideOrchestration
             _logger.LogInformation($"The ride was canceled!");
             return;
         }
-        
+
         input.Cost = priceCalculated;
         context.SetCustomStatus(input);
 
@@ -127,14 +127,15 @@ public class NewRideOrchestration
                 ExcludeDrivers = excludeDriver
             });
 
-            var accepted = await context.WaitForExternalEvent<string>(SignalRConstants.ClientDriverAcceptRide);
+            var response =
+                await context.WaitForExternalEvent<DriverAcceptResponse>(SignalRConstants.ClientDriverAcceptRide);
 
-            if (!string.IsNullOrEmpty(accepted))
+            if (response.Accepted)
             {
-                return accepted;
+                return response.UserId;
             }
 
-            excludeDriver.Add(context.InstanceId);
+            excludeDriver.Add(response.UserId);
         } while (retries-- > 0);
 
         return string.Empty;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Client.Enums;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.SignalRModels;
@@ -45,11 +46,10 @@ public partial class NavMenu : IDisposable
             {
                 throw new Exception($"{rides.ReasonPhrase}-{rides.ResponseMessage}-{rides.ClientError}");
             }
-
-            CurrentRideState.InRide = rides.Response.Any(x => x.Status == RideStatus.InProgress);
-            CurrentRideState.State = "Ride is in progress";
             
-            SignalRService.DriverRideAccepted += InRideTriggered;
+            CurrentRideState.State = rides.Response.Any(x => x.Status == RideStatus.InProgress) ? RideState.GoingToDestination : RideState.None;
+            
+            SignalRService.DriverRideAccepted += DriverAcceptedRide;
         }
 
         DestinationState.OnChange += StateHasChanged;
@@ -57,10 +57,9 @@ public partial class NavMenu : IDisposable
         await base.OnInitializedAsync();
     }
 
-    private Task InRideTriggered()
+    private Task DriverAcceptedRide()
     {
-        CurrentRideState.InRide = true;
-        CurrentRideState.State = "Ride is in progress";
+        CurrentRideState.State = RideState.GoingToUser;
 
         return Task.CompletedTask;
     }

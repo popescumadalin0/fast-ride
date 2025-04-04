@@ -154,9 +154,9 @@ public class SignalRService : ISignalRService
             });
     }
 
-    public async Task AcceptRideAsync(RideInformation rideInformation)
+    public async Task  AcceptRideAsync(string instanceId, string driverId, bool accepted)
     {
-        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, rideInformation);
+        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, instanceId, driverId, accepted);
     }
 
     public async Task CreateNewRideAsync(NewRideInput rideInput)
