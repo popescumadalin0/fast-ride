@@ -1,17 +1,13 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.Models;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
-using Microsoft.JSInterop;
 
 namespace FastRide.Client.Service;
 

@@ -1,4 +1,5 @@
-﻿using FastRide.Server.Contracts.Models;
+﻿using FastRide.Server.Contracts.Enums;
+using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Server.Contracts.SignalRModels;
 
@@ -15,4 +16,6 @@ public class NewRideInput
     public string GroupName { get; set; }
     
     public double Cost  { get; set; }
+    
+    public InternRideStatus Status { get; set; }
 }

@@ -20,18 +20,21 @@ public class CalculateCurrentGeolocationService : IDisposable
     private readonly ISignalRService _signalRService;
     private readonly IUserGroupService _userGroupService;
     private readonly CurrentPositionState _currentPositionState;
+    private readonly ICurrentRideState _currentRideState;
     private bool _running;
 
     private Timer _timer;
 
     public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
-        AuthenticationStateProvider authenticationStateProvider, CurrentPositionState currentPositionState)
+        AuthenticationStateProvider authenticationStateProvider, CurrentPositionState currentPositionState,
+        ICurrentRideState currentRideState)
     {
         _geolocationService = geolocationService;
         _userGroupService = userGroupService;
         _authenticationStateProvider = authenticationStateProvider;
         _currentPositionState = currentPositionState;
+        _currentRideState = currentRideState;
         _signalRService = signalRService;
     }
 
@@ -65,6 +68,12 @@ public class CalculateCurrentGeolocationService : IDisposable
     private void HandleTimer(object source = null, ElapsedEventArgs e = null)
     {
         SaveCurrentGeolocationAsync().GetAwaiter().GetResult();
+        if (_currentRideState.State is RideStatus.Finished or RideStatus.Cancelled)
+        {
+            _currentRideState.ResetState();
+        }
+
+        _currentRideState.UpdateState().GetAwaiter().GetResult();
     }
 
     private async Task SaveCurrentGeolocationAsync()

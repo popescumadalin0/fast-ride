@@ -24,6 +24,8 @@ public partial class AcceptRidePopup : IDisposable
     [Inject] private ILocationService LocationService { get; set; }
 
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    
+    [Inject] private ICurrentRideState CurrentRideState{ get; set; }
 
     public void Dispose()
     {
@@ -39,7 +41,7 @@ public partial class AcceptRidePopup : IDisposable
         if (authState.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.Role)?.Value ==
             UserType.Driver.ToString())
         {
-            SignalRService.DriverAcceptRide += DriverAcceptRide;
+            SignalRService.DriverAcceptRide += DriverNewRide;
         }
 
 
@@ -53,7 +55,7 @@ public partial class AcceptRidePopup : IDisposable
         StateHasChanged();
     }
 
-    private async Task DriverAcceptRide(DriverAcceptRide arg)
+    private async Task DriverNewRide(DriverAcceptRide arg)
     {
         var locationText = await LocationService.GetAddressByLatLongAsync(arg.DestinationGeolocation.Latitude,
             arg.DestinationGeolocation.Longitude);
@@ -75,6 +77,7 @@ public partial class AcceptRidePopup : IDisposable
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.AcceptRideAsync(_ride.InstanceId,
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
+        _ride = null;
     }
 
     private async Task DiscardRideAsync()
@@ -84,5 +87,6 @@ public partial class AcceptRidePopup : IDisposable
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.AcceptRideAsync(_ride.InstanceId,
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, false);
+        _ride = null;
     }
 }

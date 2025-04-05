@@ -23,5 +23,5 @@ public class Ride
 
     public UserIdentifier User { get; set; }
 
-    public RideStatus Status { get; set; }
+    public InternRideStatus Status { get; set; }
 }

@@ -50,7 +50,7 @@ public class RideFunction
                     Driver = customStatus.Driver,
                     User = customStatus.User,
                     Id = instance.InstanceId,
-                    Status = instance.RuntimeStatus.ToRideStatus(),
+                    Status = customStatus.Status,
                     DestinationLat = customStatus.Destination.Latitude,
                     DestinationLng = customStatus.Destination.Longitude,
                     StartPointLat = customStatus.StartPoint.Latitude,

@@ -39,7 +39,7 @@
                     }
                     else
                     {
-                        <MudText>The ride costs: <b>$@_price</b></MudText>
+                        <MudText>The ride costs: <b>$@_price.ToString("#.##")</b></MudText>
                         <MudText>Do you want to continue?</MudText>
                     }
                 </MudStep>
@@ -78,7 +78,7 @@
                             </MudText>
                         </MudStack>
                     }
-                    <MudButton Color="Color.Primary" OnClick="@(() => MudDialog.Close(DialogResult.Ok(true)))">Ok
+                    <MudButton Color="Color.Primary" OnClick="@(() => CompleteDialog())">Ok
                     </MudButton>
                 </MudStack>
             </CompletedContent>

@@ -1,12 +1,8 @@
 using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.Enums;
 using FastRide.Client.State;
-using FastRide.Server.Contracts.Enums;
-using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -28,7 +24,7 @@ public partial class NavMenu : IDisposable
 
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
-    [Inject] private CurrentRideState CurrentRideState { get; set; }
+    [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
     public void Dispose()
     {
@@ -40,15 +36,6 @@ public partial class NavMenu : IDisposable
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
-            var rides = await FastRideApiClient.GetRidesByUserAsync();
-
-            if (!rides.Success)
-            {
-                throw new Exception($"{rides.ReasonPhrase}-{rides.ResponseMessage}-{rides.ClientError}");
-            }
-            
-            CurrentRideState.State = rides.Response.Any(x => x.Status == RideStatus.InProgress) ? RideState.GoingToDestination : RideState.None;
-            
             SignalRService.DriverRideAccepted += DriverAcceptedRide;
         }
 
@@ -59,8 +46,6 @@ public partial class NavMenu : IDisposable
 
     private Task DriverAcceptedRide()
     {
-        CurrentRideState.State = RideState.GoingToUser;
-
         return Task.CompletedTask;
     }
 

@@ -34,7 +34,7 @@ public class DriverAcceptedRideTrigger
             Accepted = accepted
         });
 
-        if (!accepted)
+        if (accepted)
         {
             return new SignalRMessageAction(SignalRConstants.ServerDriverRideAccepted)
             {

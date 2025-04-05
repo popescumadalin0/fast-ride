@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Client.State;
 using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,8 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     [Inject] private IStripeService StripeService { get; set; }
 
     [Inject] private IConfiguration Configuration { get; set; }
+    
+    [Inject] private ICurrentRideState  ICurrentRideState { get; set; }
 
     public void Dispose()
     {
@@ -97,6 +100,11 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         _nextDisabled = true;
         _stepperLoading = true;
         await stepper.NextStepAsync();
+    }
+
+    private void CompleteDialog()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     private async Task CancelAsync(MudStepper stepper)

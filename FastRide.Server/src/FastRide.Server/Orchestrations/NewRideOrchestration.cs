@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FastRide.Server.Activities;
 using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
@@ -48,9 +49,12 @@ public class NewRideOrchestration
             return;
         }
 
+        input.Status = InternRideStatus.NewRideAvailable;
+        context.SetCustomStatus(input);
+            
         var driverId = await FindDriverAsync(context, input.StartPoint, input.Destination, input.GroupName);
 
-        if (!string.IsNullOrEmpty(driverId))
+        if (string.IsNullOrEmpty(driverId))
         {
             await context.CallActivityAsync(
                 nameof(CancelRideActivity),
@@ -61,6 +65,8 @@ public class NewRideOrchestration
                 });
 
             _logger.LogInformation($"The ride was canceled!");
+            input.Status = InternRideStatus.Cancelled;
+            context.SetCustomStatus(input);
             return;
         }
 
@@ -68,13 +74,19 @@ public class NewRideOrchestration
         {
             NameIdentifier = driverId
         };
+        input.Status = InternRideStatus.GoingToUser;
         context.SetCustomStatus(input);
 
         //todo: when driver arrives to the user destination
 
+        input.Status = InternRideStatus.GoingToDestination;
+        context.SetCustomStatus(input);
         //todo: when user arrives at driver car
 
         //todo: when driver + users arrives at destination
+        
+        input.Status = InternRideStatus.Finished;
+        context.SetCustomStatus(input);
 
         //todo: when user provide a note to the driver
     }

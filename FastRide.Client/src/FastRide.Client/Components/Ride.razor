@@ -1,15 +1,21 @@
-﻿<div class="d-flex flex-row justify-content-between align-content-center ride">
+﻿@using System.Security.Claims
+@using FastRide.Server.Contracts.Enums
+<div class="d-flex flex-row justify-content-between align-content-center ride">
     <div class="d-flex flex-row align-content-center justify-content-center gap-1">
         <div class="icon-label">
             <i class="bi bi-car-front"></i>
         </div>
         <div class="d-flex flex-column">
-            <div class="ellipsis-text destination-width fw-bold" title="@RideInfo.Destination">@RideInfo.Destination</div>
+            <div class="ellipsis-text destination-width fw-bold"
+                 title="@RideInfo.Destination">@RideInfo.Destination</div>
             <spam class="text-muted">@RideInfo.TimeStamp.ToString("dd MMM, HH:mm"), LEI @RideInfo.Cost</spam>
         </div>
     </div>
-    <button class="rebook-button fw-bold" onclick="@(async () => await OnRebook.InvokeAsync(RideInfo))">
-        <i class="bi bi-arrow-counterclockwise"></i>
-        <span>Rebook</span>
-    </button>
+    @if (AuthenticationState.Result.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value != UserType.Driver.ToString())
+    {
+        <button class="rebook-button fw-bold" onclick="@(async () => await OnRebook.InvokeAsync(RideInfo))">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            <span>Rebook</span>
+        </button>
+    }
 </div>

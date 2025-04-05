@@ -7,9 +7,9 @@
     "Google:Api": "https://oauth2.googleapis.com/",
     "AzureSignalRConnectionString": "Endpoint=http://localhost;Port=8888;AccessKey=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGH;Version=1.0;",
     "Distance:PricePerKm": 2,
-    "Distance:PricePerMinute": 5,
-    "Distance:AverageSpeed": 5,
-    "Distance:BasePrice": 5,
+    "Distance:PricePerMinute": 4,
+    "Distance:AverageSpeed": 3,
+    "Distance:BasePrice": 3,
     "Stripe:SecretKey" : "sk_test_51QCJV1CpLPiMeksm1mNX4ODYVvS8Q1vcatMsZQpXv16JWGVxvYAll0oFOgtt3AwYEkKFmlMMi0Xc2qtbUZXNF49T00H3kxqzHm"
   },
   "Host": {

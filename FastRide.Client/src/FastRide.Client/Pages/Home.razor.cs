@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.Enums;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
-using FastRide.Server.Sdk.Contracts;
 using LeafletForBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Configuration;
 
 namespace FastRide.Client.Pages;
@@ -25,7 +21,7 @@ public partial class Home : ComponentBase, IDisposable
 
     [Inject] private DestinationState DestinationState { get; set; }
 
-    [Inject] private CurrentRideState CurrentRideState { get; set; }
+    [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
     [Inject] private CurrentPositionState CurrentPositionState { get; set; }
 
@@ -35,7 +31,7 @@ public partial class Home : ComponentBase, IDisposable
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
-    private string _state;
+    private string _city;
 
     private Geolocation _currentGeolocation;
 
@@ -120,18 +116,21 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task MapClickedAsync(RealTimeMap.ClicksMapArgs obj)
     {
-        var realTimeMap = obj.sender;
-
-        DestinationState.Geolocation = new Geolocation()
+        if (CurrentRideState.State == RideStatus.None)
         {
-            Longitude = obj.location.longitude,
-            Latitude = obj.location.latitude,
-        };
+            var realTimeMap = obj.sender;
 
-        await UpdatePointPositionAsync(realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
-        {
-            Longitude = obj.location.longitude, Latitude = obj.location.latitude
-        });
+            DestinationState.Geolocation = new Geolocation()
+            {
+                Longitude = obj.location.longitude,
+                Latitude = obj.location.latitude,
+            };
+
+            await UpdatePointPositionAsync(realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
+            {
+                Longitude = obj.location.longitude, Latitude = obj.location.latitude
+            });
+        }
     }
 
     private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
@@ -153,7 +152,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadCurrentUser()
     {
-        var type = CurrentRideState.State == RideState.None ? "human" : "currentCar";
+        var type = CurrentRideState.State < RideStatus.DriverGoingToDestination ? "human" : "currentCar";
 
         var authState = await AuthenticationState;
 
@@ -166,7 +165,7 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadDriversAsync()
     {
-        if (CurrentRideState.State != RideState.None)
+        if (CurrentRideState.State != RideStatus.None)
         {
             return;
         }

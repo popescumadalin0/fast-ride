@@ -1,0 +1,13 @@
+﻿using System;
+using System.Threading.Tasks;
+using FastRide.Server.Contracts.Enums;
+
+namespace FastRide.Client.Contracts;
+
+public interface ICurrentRideState
+{
+    event Action OnChange;
+    RideStatus State { get; }
+    void ResetState();
+    Task UpdateState();
+}

@@ -1,5 +1,6 @@
 ﻿@using FastRide.Client.Enums
-@if (CurrentRideState.State != RideState.None)
+@using FastRide.Server.Contracts.Enums
+@if (CurrentRideState.State != RideStatus.None)
 {
     <nav class="d-flex flex-row align-items-center justify-content-center">
         <AuthorizeView>
