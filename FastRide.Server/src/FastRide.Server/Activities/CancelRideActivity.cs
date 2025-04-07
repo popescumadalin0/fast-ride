@@ -25,14 +25,7 @@ public class CancelRideActivity
 
         return Task.FromResult(new SignalRMessageAction(SignalRConstants.ServerCancelRide)
         {
-            Arguments =
-            [
-                new CancelRide()
-                {
-                    InstanceId = input.InstanceId,
-                }
-            ],
-            UserId = input.UserId
+            UserId = input.InstanceId
         });
     }
 }

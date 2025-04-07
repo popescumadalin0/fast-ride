@@ -67,14 +67,7 @@ public class FindDriverActivity
         _logger.LogWarning($"Unable to find closest driver for {input.GroupName}! The ride is closed!");
         return new SignalRMessageAction(SignalRConstants.ServerCancelRide)
         {
-            Arguments =
-            [
-                new CancelRide()
-                {
-                    InstanceId = input.InstanceId,
-                }
-            ],
-            GroupName = input.GroupName
+            GroupName = input.InstanceId
         };
     }
 }

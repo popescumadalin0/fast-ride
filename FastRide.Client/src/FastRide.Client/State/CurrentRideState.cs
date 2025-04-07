@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Server.Contracts.Enums;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -11,17 +12,22 @@ namespace FastRide.Client.State;
 
 public class CurrentRideState : ICurrentRideState
 {
+    public string InstanceId { get; set; }
+
     private RideStatus _state;
 
     private readonly IFastRideApiClient _fastRideApiClient;
 
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
+    private readonly DestinationState _destinationState;
+
     public CurrentRideState(IFastRideApiClient fastRideApiClient,
-        AuthenticationStateProvider authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider, DestinationState destinationState)
     {
         _fastRideApiClient = fastRideApiClient;
         _authenticationStateProvider = authenticationStateProvider;
+        _destinationState = destinationState;
     }
 
     public event Action OnChange;
@@ -60,9 +66,9 @@ public class CurrentRideState : ICurrentRideState
                 return;
             }
 
-            var lastRideStatus = rides.Response.MaxBy(x => x.TimeStamp).Status;
+            var lastRideStatus = rides.Response.MaxBy(x => x.TimeStamp);
 
-            switch (lastRideStatus)
+            switch (lastRideStatus.Status)
             {
                 case InternRideStatus.Cancelled:
                     State = RideStatus.Cancelled;
@@ -76,10 +82,11 @@ public class CurrentRideState : ICurrentRideState
                 case InternRideStatus.GoingToDestination:
                 default:
                 {
+                    InstanceId = lastRideStatus.Id;
                     if (authState.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ==
                         UserType.User.ToString())
                     {
-                        State = lastRideStatus switch
+                        State = lastRideStatus.Status switch
                         {
                             InternRideStatus.NewRideAvailable => RideStatus.FindingDriver,
                             InternRideStatus.GoingToDestination => RideStatus.GoingToDestination,
@@ -89,13 +96,45 @@ public class CurrentRideState : ICurrentRideState
                     }
                     else
                     {
-                        State = lastRideStatus switch
+                        switch (lastRideStatus.Status)
                         {
-                            InternRideStatus.NewRideAvailable => RideStatus.NewRideAvailable,
-                            InternRideStatus.GoingToDestination => RideStatus.DriverGoingToDestination,
-                            InternRideStatus.GoingToUser => RideStatus.DriverGoingToUser,
-                            _ => State
-                        };
+                            case InternRideStatus.NewRideAvailable:
+                            {
+                                State = RideStatus.NewRideAvailable;
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = lastRideStatus.StartPointLat,
+                                    Longitude = lastRideStatus.StartPointLng
+                                };
+                                break;
+                            }
+                            case InternRideStatus.GoingToDestination:
+                            {
+                                State = RideStatus.DriverGoingToDestination;
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = lastRideStatus.DestinationLat,
+                                    Longitude = lastRideStatus.DestinationLng
+                                };
+                                break;
+                            }
+                            case InternRideStatus.GoingToUser:
+                            {
+                                State = RideStatus.DriverGoingToUser;
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = lastRideStatus.StartPointLat,
+                                    Longitude = lastRideStatus.StartPointLng
+                                };
+                                break;
+                            }
+                            case InternRideStatus.None:
+                            case InternRideStatus.Finished:
+                            case InternRideStatus.Cancelled:
+                            default:
+                                State = State;
+                                break;
+                        }
                     }
 
                     break;

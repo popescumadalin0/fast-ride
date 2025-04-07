@@ -150,7 +150,7 @@ public class SignalRService : ISignalRService
             });
     }
 
-    public async Task  AcceptRideAsync(string instanceId, string driverId, bool accepted)
+    public async Task AcceptRideAsync(string instanceId, string driverId, bool accepted)
     {
         await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, instanceId, driverId, accepted);
     }
@@ -178,6 +178,11 @@ public class SignalRService : ISignalRService
     public async Task JoinUserInGroupAsync(string userId, string groupName)
     {
         await _connection.SendAsync(SignalRConstants.ClientJoinUserToGroup, userId, groupName);
+    }
+
+    public async Task CancelRideAsync(string groupName)
+    {
+        await _connection.SendAsync(SignalRConstants.ClientCancelRide, groupName);
     }
 
     public async ValueTask DisposeAsync()

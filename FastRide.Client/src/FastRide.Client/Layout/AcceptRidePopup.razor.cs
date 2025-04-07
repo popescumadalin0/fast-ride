@@ -23,9 +23,11 @@ public partial class AcceptRidePopup : IDisposable
 
     [Inject] private ILocationService LocationService { get; set; }
 
+    [Inject] private IUserGroupService UserGroupService { get; set; }
+
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    
-    [Inject] private ICurrentRideState CurrentRideState{ get; set; }
+
+    [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
     public void Dispose()
     {
@@ -78,6 +80,11 @@ public partial class AcceptRidePopup : IDisposable
         await SignalRService.AcceptRideAsync(_ride.InstanceId,
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
         _ride = null;
+        await SignalRService.RemoveUserFromGroupAsync(
+            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
+            await UserGroupService.GetCurrentUserGroupNameAsync());
+        await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
+            _ride!.InstanceId);
     }
 
     private async Task DiscardRideAsync()

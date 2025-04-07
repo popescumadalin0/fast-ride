@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace FastRide.Client.Layout;
 
-public partial class NavMenu : IDisposable
+public partial class NavMenu : IAsyncDisposable
 {
     [Inject] private NavigationManager Navigation { get; set; }
 
@@ -26,9 +26,14 @@ public partial class NavMenu : IDisposable
 
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         DestinationState.OnChange -= StateHasChanged;
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated ?? false)
+        {
+            SignalRService.DriverRideAccepted += DriverAcceptedRide;
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -40,13 +45,24 @@ public partial class NavMenu : IDisposable
         }
 
         DestinationState.OnChange += StateHasChanged;
+        SignalRService.CancelRide += CancelRideAsync;
 
         await base.OnInitializedAsync();
     }
 
-    private Task DriverAcceptedRide()
+    private async Task CancelRideAsync()
     {
-        return Task.CompletedTask;
+        await SignalRService.CancelRideAsync(await UserGroupService.GetCurrentUserGroupNameAsync());
+    }
+
+    private async Task DriverAcceptedRide()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await SignalRService.RemoveUserFromGroupAsync(
+            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
+            await UserGroupService.GetCurrentUserGroupNameAsync());
+        await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
+            CurrentRideState.InstanceId);
     }
 
     private async Task LogOutAsync()

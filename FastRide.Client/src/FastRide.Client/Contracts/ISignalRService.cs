@@ -38,4 +38,6 @@ public interface ISignalRService : IAsyncDisposable
     Task AcceptRideAsync(string instanceId, string driverId, bool accepted);
 
     Task CreateNewRideAsync(NewRideInput rideInput);
+
+    Task CancelRideAsync(string groupName);
 }
