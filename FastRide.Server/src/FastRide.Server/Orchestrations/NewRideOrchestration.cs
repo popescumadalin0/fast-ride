@@ -76,19 +76,14 @@ public class NewRideOrchestration
         };
         input.Status = InternRideStatus.GoingToUser;
         context.SetCustomStatus(input);
-
-        //todo: when driver arrives to the user destination
-
+        
+        await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
         input.Status = InternRideStatus.GoingToDestination;
         context.SetCustomStatus(input);
-        //todo: when user arrives at driver car
-
-        //todo: when driver + users arrives at destination
         
+        await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
         input.Status = InternRideStatus.Finished;
         context.SetCustomStatus(input);
-
-        //todo: when user provide a note to the driver
     }
 
     private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)

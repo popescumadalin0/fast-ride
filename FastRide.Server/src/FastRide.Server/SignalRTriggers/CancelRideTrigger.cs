@@ -19,7 +19,7 @@ public class CancelRideTrigger
 
     [Function(nameof(CancelRideTrigger))]
     [SignalROutput(HubName = SignalRConstants.HubName)]
-    public async Task<SignalRMessageAction> CreateRide(
+    public async Task<SignalRMessageAction> CancelRide(
         [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientCancelRide)]
         SignalRInvocationContext invocationContext,
         [DurableClient] DurableTaskClient client)

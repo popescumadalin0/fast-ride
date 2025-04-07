@@ -150,6 +150,11 @@ public class SignalRService : ISignalRService
             });
     }
 
+    public async Task NotifyDriverArrivedAsync(string groupName)
+    {
+        await _connection.SendAsync(SignalRConstants.ClientDriverArrived, groupName);
+    }
+
     public async Task AcceptRideAsync(string instanceId, string driverId, bool accepted)
     {
         await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, instanceId, driverId, accepted);

@@ -21,6 +21,7 @@ public class CalculateCurrentGeolocationService : IDisposable
     private readonly IUserGroupService _userGroupService;
     private readonly CurrentPositionState _currentPositionState;
     private readonly ICurrentRideState _currentRideState;
+    private readonly DestinationState _destinationState;
     private bool _running;
 
     private Timer _timer;
@@ -28,13 +29,14 @@ public class CalculateCurrentGeolocationService : IDisposable
     public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
         AuthenticationStateProvider authenticationStateProvider, CurrentPositionState currentPositionState,
-        ICurrentRideState currentRideState)
+        ICurrentRideState currentRideState, DestinationState destinationState)
     {
         _geolocationService = geolocationService;
         _userGroupService = userGroupService;
         _authenticationStateProvider = authenticationStateProvider;
         _currentPositionState = currentPositionState;
         _currentRideState = currentRideState;
+        _destinationState = destinationState;
         _signalRService = signalRService;
     }
 
@@ -80,16 +82,23 @@ public class CalculateCurrentGeolocationService : IDisposable
     {
         var auth = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var geolocation = await _geolocationService.GetGeolocationAsync();
+        var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
 
         if ((auth.User.Identity?.IsAuthenticated ?? false) &&
             auth.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value == UserType.Driver.ToString())
         {
             var userId = auth.User.Claims.Single(x => x.Type == "sub").Value;
-            var groupName = await _userGroupService.GetCurrentUserGroupNameAsync();
 
             await _signalRService.NotifyUserGeolocationAsync(userId,
                 groupName,
                 geolocation);
+        }
+
+        const double tolerance = 0.00015;
+        if(Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&
+           Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance)
+        {
+            await _signalRService.NotifyDriverArrivedAsync(groupName);
         }
 
         _currentPositionState.Geolocation = geolocation;

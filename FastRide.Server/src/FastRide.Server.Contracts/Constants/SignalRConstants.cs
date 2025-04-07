@@ -34,5 +34,7 @@ public class SignalRConstants
     public const string ServerCancelRide = "server.cancel-ride";
     
     public const string ClientCancelRide = "client.cancel-ride";
+    
+    public const string ClientDriverArrived = "client.driver-arrived";
 
 }
