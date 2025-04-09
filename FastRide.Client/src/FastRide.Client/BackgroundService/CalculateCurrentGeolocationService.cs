@@ -74,8 +74,6 @@ public class CalculateCurrentGeolocationService : IDisposable
         {
             _currentRideState.ResetState();
         }
-
-        _currentRideState.UpdateState().GetAwaiter().GetResult();
     }
 
     private async Task SaveCurrentGeolocationAsync()

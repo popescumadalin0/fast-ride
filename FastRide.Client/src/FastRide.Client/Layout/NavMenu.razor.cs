@@ -32,7 +32,8 @@ public partial class NavMenu : IAsyncDisposable
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
-            SignalRService.DriverRideAccepted += DriverAcceptedRide;
+            SignalRService.DriverRideAccepted -= DriverAcceptedRide;
+            SignalRService.NotifyState -= CurrentRideState.UpdateState;
         }
     }
 
@@ -42,6 +43,7 @@ public partial class NavMenu : IAsyncDisposable
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
             SignalRService.DriverRideAccepted += DriverAcceptedRide;
+            SignalRService.NotifyState += CurrentRideState.UpdateState;
         }
 
         DestinationState.OnChange += StateHasChanged;

@@ -30,6 +30,8 @@ public class SignalRConstants
     public const string ClientNotifyUserGeolocation = "client.notify-user-geolocation";
 
     public const string ServerNotifyUserGeolocation = "server.notify-user-geolocation";
+    
+    public const string ServerNotifyState = "server.notify-state";
 
     public const string ServerCancelRide = "server.cancel-ride";
     

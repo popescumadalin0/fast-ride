@@ -16,18 +16,14 @@ public class CurrentRideState : ICurrentRideState
 
     private RideStatus _state;
 
-    private readonly IFastRideApiClient _fastRideApiClient;
+    private readonly DestinationState _destinationState;
 
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    private readonly DestinationState _destinationState;
-
-    public CurrentRideState(IFastRideApiClient fastRideApiClient,
-        AuthenticationStateProvider authenticationStateProvider, DestinationState destinationState)
+    public CurrentRideState(DestinationState destinationState, AuthenticationStateProvider authenticationStateProvider)
     {
-        _fastRideApiClient = fastRideApiClient;
-        _authenticationStateProvider = authenticationStateProvider;
         _destinationState = destinationState;
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
     public event Action OnChange;
@@ -47,98 +43,79 @@ public class CurrentRideState : ICurrentRideState
         State = RideStatus.None;
     }
 
-    public async Task UpdateState()
+    public async Task UpdateState(Ride ride)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        if (authState.User.Identity?.IsAuthenticated ?? false)
+        switch (ride.Status)
         {
-            var rides = await _fastRideApiClient.GetRidesByUserAsync();
-
-            if (!rides.Success)
+            case InternRideStatus.Cancelled:
+                State = RideStatus.Cancelled;
+                break;
+            case InternRideStatus.None:
+            case InternRideStatus.Finished:
+                State = RideStatus.Finished;
+                break;
+            case InternRideStatus.NewRideAvailable:
+            case InternRideStatus.GoingToUser:
+            case InternRideStatus.GoingToDestination:
+            default:
             {
-                throw new Exception(
-                    $"Failed to get rides. {rides.ClientError} - {rides.ReasonPhrase} - {rides.ResponseMessage}");
-            }
-
-            if (rides.Response.Count == 0)
-            {
-                State = RideStatus.None;
-                return;
-            }
-
-            var lastRideStatus = rides.Response.MaxBy(x => x.TimeStamp);
-
-            switch (lastRideStatus.Status)
-            {
-                case InternRideStatus.Cancelled:
-                    State = RideStatus.Cancelled;
-                    break;
-                case InternRideStatus.None:
-                case InternRideStatus.Finished:
-                    State = RideStatus.Finished;
-                    break;
-                case InternRideStatus.NewRideAvailable:
-                case InternRideStatus.GoingToUser:
-                case InternRideStatus.GoingToDestination:
-                default:
+                InstanceId = ride.Id;
+                if (authState.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ==
+                    UserType.User.ToString())
                 {
-                    InstanceId = lastRideStatus.Id;
-                    if (authState.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ==
-                        UserType.User.ToString())
+                    State = ride.Status switch
                     {
-                        State = lastRideStatus.Status switch
-                        {
-                            InternRideStatus.NewRideAvailable => RideStatus.FindingDriver,
-                            InternRideStatus.GoingToDestination => RideStatus.GoingToDestination,
-                            InternRideStatus.GoingToUser => RideStatus.GoingToUser,
-                            _ => State
-                        };
-                    }
-                    else
-                    {
-                        switch (lastRideStatus.Status)
-                        {
-                            case InternRideStatus.NewRideAvailable:
-                            {
-                                State = RideStatus.NewRideAvailable;
-                                _destinationState.Geolocation = new Geolocation()
-                                {
-                                    Latitude = lastRideStatus.StartPointLat,
-                                    Longitude = lastRideStatus.StartPointLng
-                                };
-                                break;
-                            }
-                            case InternRideStatus.GoingToDestination:
-                            {
-                                State = RideStatus.DriverGoingToDestination;
-                                _destinationState.Geolocation = new Geolocation()
-                                {
-                                    Latitude = lastRideStatus.DestinationLat,
-                                    Longitude = lastRideStatus.DestinationLng
-                                };
-                                break;
-                            }
-                            case InternRideStatus.GoingToUser:
-                            {
-                                State = RideStatus.DriverGoingToUser;
-                                _destinationState.Geolocation = new Geolocation()
-                                {
-                                    Latitude = lastRideStatus.StartPointLat,
-                                    Longitude = lastRideStatus.StartPointLng
-                                };
-                                break;
-                            }
-                            case InternRideStatus.None:
-                            case InternRideStatus.Finished:
-                            case InternRideStatus.Cancelled:
-                            default:
-                                State = State;
-                                break;
-                        }
-                    }
-
-                    break;
+                        InternRideStatus.NewRideAvailable => RideStatus.FindingDriver,
+                        InternRideStatus.GoingToDestination => RideStatus.GoingToDestination,
+                        InternRideStatus.GoingToUser => RideStatus.GoingToUser,
+                        _ => State
+                    };
                 }
+                else
+                {
+                    switch (ride.Status)
+                    {
+                        case InternRideStatus.NewRideAvailable:
+                        {
+                            State = RideStatus.NewRideAvailable;
+                            _destinationState.Geolocation = new Geolocation()
+                            {
+                                Latitude = ride.StartPointLat,
+                                Longitude = ride.StartPointLng
+                            };
+                            break;
+                        }
+                        case InternRideStatus.GoingToDestination:
+                        {
+                            State = RideStatus.DriverGoingToDestination;
+                            _destinationState.Geolocation = new Geolocation()
+                            {
+                                Latitude = ride.DestinationLat,
+                                Longitude = ride.DestinationLng
+                            };
+                            break;
+                        }
+                        case InternRideStatus.GoingToUser:
+                        {
+                            State = RideStatus.DriverGoingToUser;
+                            _destinationState.Geolocation = new Geolocation()
+                            {
+                                Latitude = ride.StartPointLat,
+                                Longitude = ride.StartPointLng
+                            };
+                            break;
+                        }
+                        case InternRideStatus.None:
+                        case InternRideStatus.Finished:
+                        case InternRideStatus.Cancelled:
+                        default:
+                            State = State;
+                            break;
+                    }
+                }
+
+                break;
             }
         }
     }
