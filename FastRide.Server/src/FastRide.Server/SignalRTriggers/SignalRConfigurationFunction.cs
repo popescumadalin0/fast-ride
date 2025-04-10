@@ -44,8 +44,7 @@ public class SignalRConfigurationFunction
     {
         return new SignalRMessage
         {
-            Target = "ReceiveMessage",
-            Arguments = [$"Client with connection ID {context.ConnectionId} has connected."]
+            UserId = context.UserId,
         };
     }
 
@@ -59,8 +58,7 @@ public class SignalRConfigurationFunction
 
         return new SignalRMessage
         {
-            Target = "ReceiveMessage",
-            Arguments = [$"Client with connection ID {context.ConnectionId} has disconnected."]
+            UserId = context.UserId,
         };
     }
 }

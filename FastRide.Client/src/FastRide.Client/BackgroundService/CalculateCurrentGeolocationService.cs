@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using FastRide.Client.Contracts;
@@ -10,8 +11,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Timer = System.Timers.Timer;
 
 namespace FastRide.Client.BackgroundService;
-
-public class JobExecutedEventArgs : EventArgs;
 
 public class CalculateCurrentGeolocationService : IDisposable
 {
@@ -24,7 +23,8 @@ public class CalculateCurrentGeolocationService : IDisposable
     private readonly DestinationState _destinationState;
     private bool _running;
 
-    private Timer _timer;
+    private PeriodicTimer _timer;
+    private CancellationTokenSource _cts;
 
     public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
@@ -42,34 +42,35 @@ public class CalculateCurrentGeolocationService : IDisposable
 
     public void Dispose()
     {
-        if (_running)
+        if (!_running) return;
+        _cts.Dispose();
+        _timer.Dispose();
+    }
+
+    public async Task StartExecutingAsync()
+    {
+        if (_running) return;
+
+        _running = true;
+        _cts = new CancellationTokenSource();
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(2.5));
+
+        while (await _timer.WaitForNextTickAsync(_cts.Token))
         {
-            _timer.Dispose();
+            await HandleTimerAsync();
         }
     }
 
-    public event EventHandler<JobExecutedEventArgs> JobExecuted;
-
-    private void OnJobExecuted()
+    public async Task StopExecutingAsync()
     {
-        JobExecuted?.Invoke(this, new JobExecutedEventArgs());
+        _running = false;
+        await _cts.CancelAsync();
     }
 
-    public void StartExecuting()
+    private async ValueTask HandleTimerAsync()
     {
-        if (_running) return;
-        _timer = new Timer();
-        _timer.Interval = 5000;
-        _timer.Elapsed += HandleTimer;
-        _timer.AutoReset = true;
-        _timer.Enabled = true;
+        await SaveCurrentGeolocationAsync();
 
-        _running = true;
-    }
-
-    private void HandleTimer(object source = null, ElapsedEventArgs e = null)
-    {
-        SaveCurrentGeolocationAsync().GetAwaiter().GetResult();
         if (_currentRideState.State is RideStatus.Finished or RideStatus.Cancelled)
         {
             _currentRideState.ResetState();
@@ -92,15 +93,16 @@ public class CalculateCurrentGeolocationService : IDisposable
                 geolocation);
         }
 
-        const double tolerance = 0.00015;
-        if(Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&
-           Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance)
-        {
-            await _signalRService.NotifyDriverArrivedAsync(groupName);
-        }
-
         _currentPositionState.Geolocation = geolocation;
 
-        OnJobExecuted();
+        if (_currentRideState.State is not RideStatus.None)
+        {
+            const double tolerance = 0.00015;
+            if (Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&
+                Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance)
+            {
+                await _signalRService.NotifyDriverArrivedAsync(groupName);
+            }
+        }
     }
 }

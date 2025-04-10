@@ -221,7 +221,6 @@ public class SignalRService : ISignalRService
                     Console.WriteLine($"Reconnecting... : {error} ");
                     return Task.CompletedTask;
                 };
-
                 _connection.Reconnecting += error =>
                 {
                     Console.WriteLine($"Reconnected... : {error} ");

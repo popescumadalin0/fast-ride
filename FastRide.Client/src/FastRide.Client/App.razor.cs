@@ -38,6 +38,6 @@ public partial class App : IAsyncDisposable
 
         await SignalRService.JoinUserInGroupAsync(userId, groupName);
 
-        CalculateCurrentGeolocationService.StartExecuting();
+        await CalculateCurrentGeolocationService.StartExecutingAsync();
     }
 }

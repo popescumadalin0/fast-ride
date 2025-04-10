@@ -43,7 +43,7 @@ public partial class Home : ComponentBase, IDisposable
     {
         DestinationState.OnChange -= StateHasChanged;
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
-        CurrentPositionState.OnChange -= CurrentPositionStateOnChange;
+        CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
         CurrentRideState.OnChange -= StateHasChanged;
     }
 
@@ -55,7 +55,7 @@ public partial class Home : ComponentBase, IDisposable
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
 
-        CurrentPositionState.OnChange += CurrentPositionStateOnChange;
+        CurrentPositionState.OnChange += CurrentPositionStateOnChangeAsync;
 
         CurrentRideState.OnChange += StateHasChanged;
 
@@ -81,15 +81,16 @@ public partial class Home : ComponentBase, IDisposable
         }
     }
 
-    private void CurrentPositionStateOnChange()
+    private async Task CurrentPositionStateOnChangeAsync()
     {
         _currentGeolocation = CurrentPositionState.Geolocation;
-        LoadCurrentUser().GetAwaiter().GetResult();
+        await LoadCurrentUser();
     }
 
     private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
     {
         var realTimeMap = obj.sender;
+        _currentGeolocation = await GeolocationService.GetGeolocationAsync();
 
         realTimeMap.Geometric.Points.changeExtentWhenAddPoints = true;
         realTimeMap.Geometric.Points.changeExtentWhenMovingPoints = false;

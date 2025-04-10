@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FastRide.Server.Activities;
 using FastRide.Server.Contracts.Constants;
@@ -6,6 +7,7 @@ using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
+using Grpc.Core;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Logging;
@@ -35,6 +37,8 @@ public class NewRideOrchestration
         if (priceCalculated == 0)
         {
             _logger.LogInformation($"The ride was canceled!");
+            input.Status = InternRideStatus.Cancelled;
+            context.SetCustomStatus(input);
             return;
         }
 
@@ -46,12 +50,14 @@ public class NewRideOrchestration
         if (!paymentConfirmed)
         {
             _logger.LogInformation($"The ride was canceled!");
+            input.Status = InternRideStatus.Cancelled;
+            context.SetCustomStatus(input);
             return;
         }
 
         input.Status = InternRideStatus.NewRideAvailable;
         context.SetCustomStatus(input);
-            
+
         var driverId = await FindDriverAsync(context, input.StartPoint, input.Destination, input.GroupName);
 
         if (string.IsNullOrEmpty(driverId))
@@ -76,11 +82,11 @@ public class NewRideOrchestration
         };
         input.Status = InternRideStatus.GoingToUser;
         context.SetCustomStatus(input);
-        
+
         await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
         input.Status = InternRideStatus.GoingToDestination;
         context.SetCustomStatus(input);
-        
+
         await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
         input.Status = InternRideStatus.Finished;
         context.SetCustomStatus(input);
@@ -134,15 +140,27 @@ public class NewRideOrchestration
                 ExcludeDrivers = excludeDriver
             });
 
-            var response =
-                await context.WaitForExternalEvent<DriverAcceptResponse>(SignalRConstants.ClientDriverAcceptRide);
+            var clientResponseTask =
+                context.WaitForExternalEvent<DriverAcceptResponse>(SignalRConstants.ClientDriverAcceptRide);
 
-            if (response.Accepted)
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10))
+                .ContinueWith(_ => new DriverAcceptResponse { Accepted = false });
+
+            var completedTask = await Task.WhenAny(clientResponseTask, timeoutTask);
+
+            if (completedTask == clientResponseTask)
             {
-                return response.UserId;
-            }
+                if ((await completedTask).Accepted)
+                {
+                    return (await completedTask).UserId;
+                }
 
-            excludeDriver.Add(response.UserId);
+                excludeDriver.Add((await completedTask).UserId);
+            }
+            else
+            {
+                excludeDriver.Add((await timeoutTask).UserId);
+            }
         } while (retries-- > 0);
 
         return string.Empty;
