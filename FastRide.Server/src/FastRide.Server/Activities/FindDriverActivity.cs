@@ -15,21 +15,16 @@ public class FindDriverActivity
 {
     private readonly ILogger<FindDriverActivity> _logger;
 
-    private readonly IDistanceService _distanceService;
-
     private readonly IOnlineDriversService _onlineDriversService;
 
-    public FindDriverActivity(ILogger<FindDriverActivity> logger, IOnlineDriversService onlineDriversService,
-        IDistanceService distanceService)
+    public FindDriverActivity(ILogger<FindDriverActivity> logger, IOnlineDriversService onlineDriversService)
     {
-        _logger = logger; 
+        _logger = logger;
         _onlineDriversService = onlineDriversService;
-        _distanceService = distanceService;
     }
 
     [Function(nameof(FindDriverActivity))]
-    [SignalROutput(HubName = SignalRConstants.HubName)]
-    public async Task<SignalRMessageAction> RunAsync([ActivityTrigger] FindDriverActivityInput input)
+    public async Task<OnlineDriver> RunAsync([ActivityTrigger] FindDriverActivityInput input)
     {
         _logger.LogInformation($"{nameof(FindDriverActivity)} was triggered!");
 
@@ -46,28 +41,6 @@ public class FindDriverActivity
 
         var driver = drivers.FirstOrDefault(d => !input.ExcludeDrivers.Contains(d.Identifier.NameIdentifier));
 
-        if (driver != null)
-        {
-            return new SignalRMessageAction(SignalRConstants.ServerDriverAcceptRide)
-            {
-                Arguments =
-                [
-                    new DriverAcceptRide()
-                    {
-                        InstanceId = input.InstanceId,
-                        DestinationGeolocation = input.Destination,
-                        Distance = _distanceService.GetDistanceBetweenLocations(input.UserGeolocation,
-                            input.Destination)
-                    }
-                ],
-                UserId = driver.Identifier.NameIdentifier
-            };
-        }
-
-        _logger.LogWarning($"Unable to find closest driver for {input.GroupName}! The ride is closed!");
-        return new SignalRMessageAction(SignalRConstants.ServerCancelRide)
-        {
-            GroupName = input.InstanceId
-        };
+        return driver;
     }
 }

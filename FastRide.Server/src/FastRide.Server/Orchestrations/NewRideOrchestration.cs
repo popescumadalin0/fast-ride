@@ -131,20 +131,42 @@ public class NewRideOrchestration
         var excludeDriver = new List<string>();
         do
         {
-            await context.CallActivityAsync(nameof(FindDriverActivity), new FindDriverActivityInput()
+            var driver = await context.CallActivityAsync<OnlineDriver>(nameof(FindDriverActivity),
+                new FindDriverActivityInput()
+                {
+                    InstanceId = context.InstanceId,
+                    UserGeolocation = userPosition,
+                    Destination = userDestination,
+                    GroupName = groupName,
+                    ExcludeDrivers = excludeDriver
+                });
+            if (driver == null)
             {
-                InstanceId = context.InstanceId,
-                UserGeolocation = userPosition,
-                Destination = userDestination,
-                GroupName = groupName,
-                ExcludeDrivers = excludeDriver
+                return string.Empty;
+            }
+            
+            await context.CallActivityAsync(nameof(SendRideToDriverActivity), new SendRideToDriverActivityInput()
+            {
+                RequestInput = new FindDriverActivityInput()
+                {
+                    InstanceId = context.InstanceId,
+                    UserGeolocation = userPosition,
+                    Destination = userDestination,
+                    GroupName = groupName,
+                    ExcludeDrivers = excludeDriver
+                },
+                Driver = driver
             });
-
+            
             var clientResponseTask =
                 context.WaitForExternalEvent<DriverAcceptResponse>(SignalRConstants.ClientDriverAcceptRide);
 
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10))
-                .ContinueWith(_ => new DriverAcceptResponse { Accepted = false });
+            var timeoutTask = context.CallActivityAsync<DriverAcceptResponse>(nameof(DelayActivity),
+                new DelayActivityInput()
+                {
+                    Seconds = 10,
+                    DriverIdentifier = driver.Identifier.NameIdentifier,
+                });
 
             var completedTask = await Task.WhenAny(clientResponseTask, timeoutTask);
 

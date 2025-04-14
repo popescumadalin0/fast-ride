@@ -7,6 +7,7 @@ using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using MudBlazor;
 
 namespace FastRide.Client.Layout;
 
@@ -25,6 +26,8 @@ public partial class NavMenu : IAsyncDisposable
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
+    
+    [Inject] private ISnackbar  Snackbar { get; set; }
 
     public async ValueTask DisposeAsync()
     {
@@ -54,6 +57,7 @@ public partial class NavMenu : IAsyncDisposable
 
     private async Task CancelRideAsync()
     {
+        Snackbar.Add("Ride Cancelled", Severity.Error);
         await SignalRService.CancelRideAsync(await UserGroupService.GetCurrentUserGroupNameAsync());
     }
 

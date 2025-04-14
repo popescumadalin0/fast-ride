@@ -52,7 +52,7 @@ public class RideFunction
     [Function(nameof(NotifyUserStateAsync))]
     [SignalROutput(HubName = SignalRConstants.HubName)]
     public async Task<List<SignalRMessageAction>> NotifyUserStateAsync(
-        [TimerTrigger("5 * * * * *")] TimerInfo timerInfo,
+        [TimerTrigger("*/5 * * * * *")] TimerInfo timerInfo,
         [DurableClient] DurableTaskClient client)
     {
         _logger.LogInformation($"{nameof(NotifyUserStateAsync)} timer trigger function started.");

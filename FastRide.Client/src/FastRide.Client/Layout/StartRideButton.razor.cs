@@ -28,6 +28,10 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
     [Inject] private IBrowserViewportService BrowserViewportService { get; set; }
 
+    [Inject] private ISnackbar Snackbar { get; set; }
+
+    [Inject] private OverlayState OverlayState { get; set; }
+
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     public Guid Id { get; } = Guid.NewGuid();
@@ -35,6 +39,15 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
     private int _width;
 
     private int _height;
+
+    private bool _visible;
+
+    public void OnOverlayClosed()
+    {
+        if (!_visible)
+        {
+        }
+    }
 
     ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
     {
@@ -46,7 +59,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
     {
         DestinationState.OnChange -= StateHasChanged;
 
-        SignalRService.RideCreated -= RemoveUserFromGroups;
+        SignalRService.RideCreated -= RideCreated;
 
         await BrowserViewportService.UnsubscribeAsync(this);
     }
@@ -57,7 +70,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         DestinationState.OnChange += StateHasChanged;
 
-        SignalRService.RideCreated += RemoveUserFromGroups;
+        SignalRService.RideCreated += RideCreated;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -72,6 +85,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
     private async Task RideAsync()
     {
+        OverlayState.DataLoading = true;
+
         var authState = await AuthenticationStateTask;
         var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
         var email = authState.User.Claims.First(c => c.Type == "email").Value;
@@ -100,8 +115,11 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
         });
     }
 
-    private async Task RemoveUserFromGroups(RideCreated rideCreated)
+    private async Task RideCreated(RideCreated rideCreated)
     {
+        OverlayState.DataLoading = false;
+        Snackbar.Add("Begin ride...");
+
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,

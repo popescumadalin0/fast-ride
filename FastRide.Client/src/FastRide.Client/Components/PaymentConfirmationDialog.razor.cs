@@ -32,8 +32,8 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     [Inject] private IStripeService StripeService { get; set; }
 
     [Inject] private IConfiguration Configuration { get; set; }
-    
-    [Inject] private ICurrentRideState  ICurrentRideState { get; set; }
+
+    [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
     public void Dispose()
     {

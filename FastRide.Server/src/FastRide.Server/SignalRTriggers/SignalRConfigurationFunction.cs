@@ -44,7 +44,7 @@ public class SignalRConfigurationFunction
     {
         return new SignalRMessage
         {
-            UserId = context.UserId,
+            Target = "Connected"
         };
     }
 
@@ -58,7 +58,7 @@ public class SignalRConfigurationFunction
 
         return new SignalRMessage
         {
-            UserId = context.UserId,
+            Target = "Disconnected"
         };
     }
 }
