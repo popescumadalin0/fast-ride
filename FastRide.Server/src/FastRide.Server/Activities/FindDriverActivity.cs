@@ -19,7 +19,7 @@ public class FindDriverActivity
 
     public FindDriverActivity(ILogger<FindDriverActivity> logger, IOnlineDriversService onlineDriversService)
     {
-        _logger = logger;
+        _logger = logger; 
         _onlineDriversService = onlineDriversService;
     }
 
