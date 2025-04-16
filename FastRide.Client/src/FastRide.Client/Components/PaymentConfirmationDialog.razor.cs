@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.JSInterop;
 using MudBlazor;
 
 namespace FastRide.Client.Components;
@@ -32,6 +35,10 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     [Inject] private IStripeService StripeService { get; set; }
 
     [Inject] private IConfiguration Configuration { get; set; }
+
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    [Inject] private IUserGroupService UserGroupService { get; set; }
 
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
@@ -102,8 +109,14 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
         await stepper.NextStepAsync();
     }
 
-    private void CompleteDialog()
+    private async Task CompleteDialogAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await SignalRService.RemoveUserFromGroupAsync(
+            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
+            await UserGroupService.GetCurrentUserGroupNameAsync());
+        await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
+            _instanceId);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

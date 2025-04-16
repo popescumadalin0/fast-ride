@@ -63,12 +63,7 @@ public partial class NavMenu : IAsyncDisposable
 
     private async Task DriverAcceptedRide()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        await SignalRService.RemoveUserFromGroupAsync(
-            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
-            await UserGroupService.GetCurrentUserGroupNameAsync());
-        await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
-            CurrentRideState.InstanceId);
+   
     }
 
     private async Task LogOutAsync()

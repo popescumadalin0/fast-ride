@@ -39,6 +39,11 @@ public class NewRideOrchestration
             _logger.LogInformation($"The ride was canceled!");
             input.Status = InternRideStatus.Cancelled;
             context.SetCustomStatus(input);
+            await context.CallActivityAsync(nameof(DelayActivity),
+                new DelayActivityInput()
+                {
+                    Seconds = 10
+                });
             return;
         }
 
@@ -52,6 +57,11 @@ public class NewRideOrchestration
             _logger.LogInformation($"The ride was canceled!");
             input.Status = InternRideStatus.Cancelled;
             context.SetCustomStatus(input);
+            await context.CallActivityAsync(nameof(DelayActivity),
+                new DelayActivityInput()
+                {
+                    Seconds = 10
+                });
             return;
         }
 
@@ -73,6 +83,11 @@ public class NewRideOrchestration
             _logger.LogInformation($"The ride was canceled!");
             input.Status = InternRideStatus.Cancelled;
             context.SetCustomStatus(input);
+            await context.CallActivityAsync(nameof(DelayActivity),
+                new DelayActivityInput()
+                {
+                    Seconds = 10
+                });
             return;
         }
 
@@ -90,6 +105,11 @@ public class NewRideOrchestration
         await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
         input.Status = InternRideStatus.Finished;
         context.SetCustomStatus(input);
+        await context.CallActivityAsync(nameof(DelayActivity),
+            new DelayActivityInput()
+            {
+                Seconds = 10
+            });
     }
 
     private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)

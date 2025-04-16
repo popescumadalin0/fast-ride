@@ -118,7 +118,6 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
     private async Task RideCreated(RideCreated rideCreated)
     {
         OverlayState.DataLoading = false;
-        Snackbar.Add("Begin ride...");
 
         var options = new DialogOptions
         {

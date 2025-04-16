@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
@@ -21,7 +22,7 @@ public class DelayActivity
         [ActivityTrigger] DelayActivityInput input)
     {
         _logger.LogInformation($"DelayActivity triggered for: {input.Seconds}");
-        await Task.Delay(input.Seconds);
+        await Task.Delay(TimeSpan.FromSeconds(input.Seconds));
 
         return new DriverAcceptResponse()
         {
