@@ -38,11 +38,6 @@ public class CurrentRideState : ICurrentRideState
         }
     }
 
-    public void ResetState()
-    {
-        State = RideStatus.None;
-    }
-
     public async Task UpdateState(Ride ride)
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
@@ -51,9 +46,11 @@ public class CurrentRideState : ICurrentRideState
             case InternRideStatus.Cancelled:
                 State = RideStatus.Cancelled;
                 break;
-            case InternRideStatus.None:
             case InternRideStatus.Finished:
                 State = RideStatus.Finished;
+                break;
+            case InternRideStatus.None:
+                State = RideStatus.None;
                 break;
             case InternRideStatus.NewRideAvailable:
             case InternRideStatus.GoingToUser:

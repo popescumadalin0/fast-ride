@@ -32,11 +32,13 @@ public partial class AcceptRidePopup : IDisposable
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
+        CurrentRideState.OnChange -= CurrentRideStateOnOnChange;
     }
 
     protected override async Task OnInitializedAsync()
     {
         DestinationState.OnChange += StateHasChanged;
+        CurrentRideState.OnChange += CurrentRideStateOnOnChange;
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
@@ -48,6 +50,13 @@ public partial class AcceptRidePopup : IDisposable
 
 
         await base.OnInitializedAsync();
+    }
+
+    private void CurrentRideStateOnOnChange()
+    {
+        OpenRide();
+        _ride = null;
+        StateHasChanged();
     }
 
     private void OpenRide()

@@ -32,6 +32,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
     [Inject] private OverlayState OverlayState { get; set; }
 
+    [Inject] private ICurrentRideState CurrentRideState { get; set; }
+
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     public Guid Id { get; } = Guid.NewGuid();
@@ -61,6 +63,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         SignalRService.RideCreated -= RideCreated;
 
+        CurrentRideState.OnChange -= StateHasChanged;
+
         await BrowserViewportService.UnsubscribeAsync(this);
     }
 
@@ -71,6 +75,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
         DestinationState.OnChange += StateHasChanged;
 
         SignalRService.RideCreated += RideCreated;
+        
+        CurrentRideState.OnChange += StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

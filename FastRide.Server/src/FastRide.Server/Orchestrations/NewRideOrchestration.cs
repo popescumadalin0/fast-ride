@@ -37,13 +37,8 @@ public class NewRideOrchestration
         if (priceCalculated == 0)
         {
             _logger.LogInformation($"The ride was canceled!");
-            input.Status = InternRideStatus.Cancelled;
-            context.SetCustomStatus(input);
-            await context.CallActivityAsync(nameof(DelayActivity),
-                new DelayActivityInput()
-                {
-                    Seconds = 10
-                });
+            await CancelWorkflow(context, input);
+
             return;
         }
 
@@ -55,13 +50,7 @@ public class NewRideOrchestration
         if (!paymentConfirmed)
         {
             _logger.LogInformation($"The ride was canceled!");
-            input.Status = InternRideStatus.Cancelled;
-            context.SetCustomStatus(input);
-            await context.CallActivityAsync(nameof(DelayActivity),
-                new DelayActivityInput()
-                {
-                    Seconds = 10
-                });
+            await CancelWorkflow(context, input);
             return;
         }
 
@@ -81,13 +70,8 @@ public class NewRideOrchestration
                 });
 
             _logger.LogInformation($"The ride was canceled!");
-            input.Status = InternRideStatus.Cancelled;
-            context.SetCustomStatus(input);
-            await context.CallActivityAsync(nameof(DelayActivity),
-                new DelayActivityInput()
-                {
-                    Seconds = 10
-                });
+            await CancelWorkflow(context, input);
+
             return;
         }
 
@@ -103,13 +87,7 @@ public class NewRideOrchestration
         context.SetCustomStatus(input);
 
         await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
-        input.Status = InternRideStatus.Finished;
-        context.SetCustomStatus(input);
-        await context.CallActivityAsync(nameof(DelayActivity),
-            new DelayActivityInput()
-            {
-                Seconds = 10
-            });
+        await FinishWorkflow(context, input);
     }
 
     private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
@@ -146,7 +124,7 @@ public class NewRideOrchestration
     private static async Task<string> FindDriverAsync(TaskOrchestrationContext context, Geolocation userPosition,
         Geolocation userDestination, string groupName)
     {
-        var retries = 10;
+        var retries = 5;
 
         var excludeDriver = new List<string>();
         do
@@ -184,7 +162,7 @@ public class NewRideOrchestration
             var timeoutTask = context.CallActivityAsync<DriverAcceptResponse>(nameof(DelayActivity),
                 new DelayActivityInput()
                 {
-                    Seconds = 10,
+                    Seconds = 35,
                     DriverIdentifier = driver.Identifier.NameIdentifier,
                 });
 
@@ -206,5 +184,41 @@ public class NewRideOrchestration
         } while (retries-- > 0);
 
         return string.Empty;
+    }
+    
+    private static async Task FinishWorkflow(TaskOrchestrationContext context, NewRideInput input)
+    {
+        input.Status = InternRideStatus.Finished;
+        context.SetCustomStatus(input);
+        await context.CallActivityAsync(nameof(DelayActivity),
+            new DelayActivityInput()
+            {
+                Seconds = 25
+            });
+        input.Status = InternRideStatus.None;
+        context.SetCustomStatus(input);
+        await context.CallActivityAsync(nameof(DelayActivity),
+            new DelayActivityInput()
+            {
+                Seconds = 10
+            });
+    }
+
+    private static async Task CancelWorkflow(TaskOrchestrationContext context, NewRideInput input)
+    {
+        input.Status = InternRideStatus.Cancelled;
+        context.SetCustomStatus(input);
+        await context.CallActivityAsync(nameof(DelayActivity),
+            new DelayActivityInput()
+            {
+                Seconds = 25
+            });
+        input.Status = InternRideStatus.None;
+        context.SetCustomStatus(input);
+        await context.CallActivityAsync(nameof(DelayActivity),
+            new DelayActivityInput()
+            {
+                Seconds = 10
+            });
     }
 }

@@ -1,6 +1,7 @@
-﻿<div class="nav-item px-1">
+﻿@using FastRide.Server.Contracts.Enums
+<div class="nav-item px-1">
     <NavLink class="@($"nav-link btn btn-link {(false ? "bg-body" : "bg-warning")} text-white")"
-             onclick="@OpenRide">Get ride
+             onclick="@OpenRide" disabled="@(CurrentRideState.State == RideStatus.None)">Get ride
     </NavLink>
 </div>
 <MudPopover Open="@_openAvailableRide" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
@@ -12,19 +13,18 @@
         else
         {
             <MudCard class="m-1">
-            <div class="d-flex flex-row justify-content-between m-1">
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-row justify-content-between m-1">
+                    <div class="d-flex flex-column">
                     <span class="ellipsis-text destination-width"
                           title="@_ride.Destination">@_ride.Destination</span>
-                    <span class="text-muted">@((int)_ride.Distance) m</span>
+                        <span class="text-muted">@((int)_ride.Distance) m</span>
+                    </div>
+                    <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Clear"
+                                   OnClick="@DiscardRideAsync"></MudIconButton>
+                    <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
+                                   OnClick="@AcceptRideAsync"></MudIconButton>
                 </div>
-                <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Clear"
-                               OnClick="@DiscardRideAsync"></MudIconButton>
-                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Check"
-                               OnClick="@AcceptRideAsync"></MudIconButton>
-            </div>
             </MudCard>
         }
     </MudPaper>
 </MudPopover>
-@*todo: something that represents reloading: time to respond to the request*@

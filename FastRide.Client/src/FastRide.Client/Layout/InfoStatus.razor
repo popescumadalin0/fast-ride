@@ -1,14 +1,14 @@
 ﻿@using FastRide.Client.Enums
 @using FastRide.Server.Contracts.Enums
-@if (CurrentRideState.State != RideStatus.None)
-{
-    <nav class="d-flex flex-row align-items-center justify-content-center">
-        <AuthorizeView>
-            <Authorized>
+<nav class="d-flex flex-row align-items-center justify-content-center">
+    <AuthorizeView>
+        <Authorized>
+            @if (CurrentRideState.State != RideStatus.None)
+            {
                 <div class="nav-item px-1">
                     @CurrentRideState.State.GetDescription()
                 </div>
-            </Authorized>
-        </AuthorizeView>
-    </nav>
-}
+            }
+        </Authorized>
+    </AuthorizeView>
+</nav>

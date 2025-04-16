@@ -21,10 +21,11 @@ public class CalculateCurrentGeolocationService : IDisposable
     private readonly CurrentPositionState _currentPositionState;
     private readonly ICurrentRideState _currentRideState;
     private readonly DestinationState _destinationState;
-    private bool _running;
 
     private PeriodicTimer _timer;
     private CancellationTokenSource _cts;
+
+    private bool _running;
 
     public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
@@ -50,31 +51,21 @@ public class CalculateCurrentGeolocationService : IDisposable
     public async Task StartExecutingAsync()
     {
         if (_running) return;
+        
+        await SaveCurrentGeolocationAsync();
 
         _running = true;
         _cts = new CancellationTokenSource();
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(2.5));
-
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(3));
         while (await _timer.WaitForNextTickAsync(_cts.Token))
         {
             await HandleTimerAsync();
         }
     }
-
-    public async Task StopExecutingAsync()
-    {
-        _running = false;
-        await _cts.CancelAsync();
-    }
-
+    
     private async ValueTask HandleTimerAsync()
     {
         await SaveCurrentGeolocationAsync();
-
-        if (_currentRideState.State is RideStatus.Finished or RideStatus.Cancelled)
-        {
-            _currentRideState.ResetState();
-        }
     }
 
     private async Task SaveCurrentGeolocationAsync()
@@ -95,7 +86,7 @@ public class CalculateCurrentGeolocationService : IDisposable
 
         _currentPositionState.Geolocation = geolocation;
 
-        if (_currentRideState.State is not RideStatus.None)
+        if (_currentRideState.State is not RideStatus.None and RideStatus.Finished)
         {
             const double tolerance = 0.00015;
             if (Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&

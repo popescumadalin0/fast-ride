@@ -22,7 +22,7 @@
             </div>
             @if (context.User.Identity?.IsAuthenticated ?? false)
             {
-                if (DestinationState.Geolocation != null)
+                if (CurrentRideState.State == RideStatus.None && DestinationState.Geolocation != null)
                 {
                     if (context.User.IsInRole(UserType.User.ToString()))
                     {
@@ -30,7 +30,7 @@
                     }
                 }
 
-                if (context.User.IsInRole(UserType.Driver.ToString()))
+                if (CurrentRideState.State == RideStatus.None && context.User.IsInRole(UserType.Driver.ToString()))
                 {
                     <AcceptRidePopup/>
                 }

@@ -29,9 +29,7 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
     [Inject] private ISignalRService SignalRService { get; set; }
-
-    [Inject] private ISnackbar Snackbar { get; set; }
-
+    
     [Inject] private IStripeService StripeService { get; set; }
 
     [Inject] private IConfiguration Configuration { get; set; }
@@ -39,9 +37,7 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Inject] private IUserGroupService UserGroupService { get; set; }
-
-    [Inject] private ICurrentRideState CurrentRideState { get; set; }
-
+    
     public void Dispose()
     {
         SignalRService.SendPriceCalculated -= PriceReceivedAsync;
@@ -111,13 +107,14 @@ public partial class PaymentConfirmationDialog : ComponentBase, IDisposable
 
     private async Task CompleteDialogAsync()
     {
+        MudDialog.Close(DialogResult.Ok(true));
+        
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.RemoveUserFromGroupAsync(
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
             await UserGroupService.GetCurrentUserGroupNameAsync());
         await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
             _instanceId);
-        MudDialog.Close(DialogResult.Ok(true));
     }
 
     private async Task CancelAsync(MudStepper stepper)
