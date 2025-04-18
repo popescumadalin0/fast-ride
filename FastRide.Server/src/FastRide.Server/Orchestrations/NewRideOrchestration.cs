@@ -180,6 +180,7 @@ public class NewRideOrchestration
             else
             {
                 excludeDriver.Add((await timeoutTask).UserId);
+                await context.CallActivityAsync(nameof(NotifyDriverTimeoutActivity), (await timeoutTask).UserId);
             }
         } while (retries-- > 0);
 

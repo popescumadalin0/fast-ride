@@ -22,6 +22,8 @@ public interface ISignalRService : IAsyncDisposable
     event Func<Task> CancelRide;
     
     event Func<Ride,Task> NotifyState;
+    
+    event Func<Task> NotifyDriverTimeout;
 
     ValueTask StartConnectionAsync();
 

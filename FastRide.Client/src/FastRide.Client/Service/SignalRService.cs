@@ -43,6 +43,8 @@ public class SignalRService : ISignalRService
     /// <inheritdoc />
     public event Func<Ride, Task> NotifyState;
 
+    public event Func<Task> NotifyDriverTimeout;
+
     /// <inheritdoc />
     public event Func<NotifyUserGeolocation, Task> NotifyDriverGeolocation = null!;
 
@@ -146,6 +148,15 @@ public class SignalRService : ISignalRService
                 if (NotifyState != null!)
                 {
                     await NotifyState(x);
+                }
+            });
+        
+        _connection.On(SignalRConstants.ServerNotifyDriverTimeout,
+            async () =>
+            {
+                if (NotifyDriverTimeout != null!)
+                {
+                    await NotifyDriverTimeout();
                 }
             });
 

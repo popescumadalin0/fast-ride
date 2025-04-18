@@ -33,6 +33,8 @@ public class SignalRConstants
     
     public const string ServerNotifyState = "server.notify-state";
 
+    public const string ServerNotifyDriverTimeout = "server.notify-driver-timeout";
+    
     public const string ServerCancelRide = "server.cancel-ride";
     
     public const string ClientCancelRide = "client.cancel-ride";

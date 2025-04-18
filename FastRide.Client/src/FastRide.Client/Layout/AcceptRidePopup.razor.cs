@@ -32,13 +32,16 @@ public partial class AcceptRidePopup : IDisposable
     public void Dispose()
     {
         DestinationState.OnChange -= StateHasChanged;
-        CurrentRideState.OnChange -= CurrentRideStateOnOnChange;
+        CurrentRideState.OnChange -= StateHasChanged;
+        SignalRService.NotifyDriverTimeout += CurrentRideStateOnOnChange;
+        SignalRService.DriverAcceptRide -= DriverNewRide;
     }
 
     protected override async Task OnInitializedAsync()
     {
         DestinationState.OnChange += StateHasChanged;
-        CurrentRideState.OnChange += CurrentRideStateOnOnChange;
+        
+        CurrentRideState.OnChange += StateHasChanged;
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
@@ -46,17 +49,21 @@ public partial class AcceptRidePopup : IDisposable
             UserType.Driver.ToString())
         {
             SignalRService.DriverAcceptRide += DriverNewRide;
+
+            SignalRService.NotifyDriverTimeout += CurrentRideStateOnOnChange;
         }
 
 
         await base.OnInitializedAsync();
     }
 
-    private void CurrentRideStateOnOnChange()
+    private Task CurrentRideStateOnOnChange()
     {
         OpenRide();
         _ride = null;
         StateHasChanged();
+        
+        return Task.CompletedTask;
     }
 
     private void OpenRide()
