@@ -41,7 +41,7 @@ public partial class Home : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        DestinationState.OnChange -= StateHasChanged;
+        DestinationState.OnChange -= UpdatePinPositionAsync;
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
         CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
         CurrentRideState.OnChange -= StateHasChanged;
@@ -51,7 +51,7 @@ public partial class Home : ComponentBase, IDisposable
     {
         _currentGeolocation = await GeolocationService.GetGeolocationAsync();
 
-        DestinationState.OnChange += StateHasChanged;
+        DestinationState.OnChange += UpdatePinPositionAsync;
 
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
 
@@ -60,6 +60,14 @@ public partial class Home : ComponentBase, IDisposable
         CurrentRideState.OnChange += StateHasChanged;
 
         StateHasChanged();
+    }
+
+    private async Task UpdatePinPositionAsync()
+    {
+        await UpdatePointPositionAsync(_realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
+        {
+            Longitude = DestinationState.Geolocation.Longitude, Latitude = DestinationState.Geolocation.Latitude
+        });
     }
 
     private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
@@ -119,18 +127,11 @@ public partial class Home : ComponentBase, IDisposable
     {
         if (CurrentRideState.State == RideStatus.None)
         {
-            var realTimeMap = obj.sender;
-
             DestinationState.Geolocation = new Geolocation()
             {
                 Longitude = obj.location.longitude,
                 Latitude = obj.location.latitude,
             };
-
-            await UpdatePointPositionAsync(realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
-            {
-                Longitude = obj.location.longitude, Latitude = obj.location.latitude
-            });
         }
     }
 

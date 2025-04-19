@@ -31,7 +31,7 @@ public partial class NavMenu : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        DestinationState.OnChange -= StateHasChanged;
+        DestinationState.OnChange -= DestinationStateOnOnChange;
         CurrentRideState.OnChange -= StateHasChanged;
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity?.IsAuthenticated ?? false)
@@ -50,11 +50,16 @@ public partial class NavMenu : IAsyncDisposable
             SignalRService.NotifyState += CurrentRideState.UpdateState;
         }
 
-        DestinationState.OnChange += StateHasChanged;
+        DestinationState.OnChange += DestinationStateOnOnChange;
         SignalRService.CancelRide += CancelRideAsync;
         CurrentRideState.OnChange += StateHasChanged;
 
         await base.OnInitializedAsync();
+    }
+
+    private async Task DestinationStateOnOnChange()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task CancelRideAsync()

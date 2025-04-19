@@ -31,15 +31,20 @@ public partial class AcceptRidePopup : IDisposable
 
     public void Dispose()
     {
-        DestinationState.OnChange -= StateHasChanged;
+        DestinationState.OnChange -= DestinationStateOnOnChange;
         CurrentRideState.OnChange -= StateHasChanged;
         SignalRService.NotifyDriverTimeout += CurrentRideStateOnOnChange;
         SignalRService.DriverAcceptRide -= DriverNewRide;
     }
+    
+    private async Task DestinationStateOnOnChange()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        DestinationState.OnChange += StateHasChanged;
+        DestinationState.OnChange += DestinationStateOnOnChange;
         
         CurrentRideState.OnChange += StateHasChanged;
 
@@ -90,17 +95,16 @@ public partial class AcceptRidePopup : IDisposable
 
     private async Task AcceptRideAsync()
     {
-        _openAvailableRide = false;
-
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.AcceptRideAsync(_ride.InstanceId,
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
-        _ride = null;
         await SignalRService.RemoveUserFromGroupAsync(
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
             await UserGroupService.GetCurrentUserGroupNameAsync());
         await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
             _ride!.InstanceId);
+        _ride = null;
+        OpenRide();
     }
 
     private async Task DiscardRideAsync()

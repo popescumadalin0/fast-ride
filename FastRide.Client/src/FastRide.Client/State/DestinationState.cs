@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 
 namespace FastRide.Client.State;
@@ -7,7 +8,7 @@ public class DestinationState
 {
     private Geolocation _geolocation;
     
-    public event Action OnChange;
+    public event Func<Task> OnChange;
     
     public Geolocation Geolocation
     {
