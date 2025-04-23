@@ -40,6 +40,8 @@ public class CurrentRideState : ICurrentRideState
 
     public async Task UpdateState(Ride ride)
     {
+        const double tolerance = 0.00005;
+
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         switch (ride.Status)
         {
@@ -61,13 +63,54 @@ public class CurrentRideState : ICurrentRideState
                 if (authState.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ==
                     UserType.User.ToString())
                 {
-                    State = ride.Status switch
+                    switch (ride.Status)
                     {
-                        InternRideStatus.NewRideAvailable => RideStatus.FindingDriver,
-                        InternRideStatus.GoingToDestination => RideStatus.GoingToDestination,
-                        InternRideStatus.GoingToUser => RideStatus.GoingToUser,
-                        _ => State
-                    };
+                        case InternRideStatus.NewRideAvailable:
+                            State = RideStatus.FindingDriver;
+                            if (_destinationState.Geolocation == null ||
+                                Math.Abs(ride.DestinationLng - _destinationState.Geolocation.Longitude) > tolerance ||
+                                Math.Abs(ride.DestinationLat - _destinationState.Geolocation.Latitude) > tolerance)
+                            {
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = ride.DestinationLat,
+                                    Longitude = ride.DestinationLng
+                                };
+                            }
+
+                            break;
+                        case InternRideStatus.GoingToDestination:
+                            State = RideStatus.GoingToDestination;
+                            if (_destinationState.Geolocation == null ||
+                                Math.Abs(ride.DestinationLng - _destinationState.Geolocation.Longitude) > tolerance ||
+                                Math.Abs(ride.DestinationLat - _destinationState.Geolocation.Latitude) > tolerance)
+                            {
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = ride.DestinationLat,
+                                    Longitude = ride.DestinationLng
+                                };
+                            }
+
+                            break;
+                        case InternRideStatus.GoingToUser:
+                            State = RideStatus.GoingToUser;
+                            if (_destinationState.Geolocation == null ||
+                                Math.Abs(ride.DestinationLng - _destinationState.Geolocation.Longitude) > tolerance ||
+                                Math.Abs(ride.DestinationLat - _destinationState.Geolocation.Latitude) > tolerance)
+                            {
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = ride.DestinationLat,
+                                    Longitude = ride.DestinationLng
+                                };
+                            }
+
+                            break;
+                        default:
+                            State = State;
+                            break;
+                    }
                 }
                 else
                 {
@@ -76,31 +119,49 @@ public class CurrentRideState : ICurrentRideState
                         case InternRideStatus.NewRideAvailable:
                         {
                             State = RideStatus.NewRideAvailable;
-                            _destinationState.Geolocation = new Geolocation()
+                            if (_destinationState.Geolocation == null ||
+                                Math.Abs(ride.StartPointLng - _destinationState.Geolocation.Longitude) > tolerance ||
+                                Math.Abs(ride.StartPointLat - _destinationState.Geolocation.Latitude) > tolerance)
                             {
-                                Latitude = ride.StartPointLat,
-                                Longitude = ride.StartPointLng
-                            };
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = ride.StartPointLat,
+                                    Longitude = ride.StartPointLng
+                                };
+                            }
+
                             break;
                         }
                         case InternRideStatus.GoingToDestination:
                         {
                             State = RideStatus.DriverGoingToDestination;
-                            _destinationState.Geolocation = new Geolocation()
+                            if (_destinationState.Geolocation == null ||
+                                Math.Abs(ride.DestinationLng - _destinationState.Geolocation.Longitude) > tolerance ||
+                                Math.Abs(ride.DestinationLat - _destinationState.Geolocation.Latitude) > tolerance)
                             {
-                                Latitude = ride.DestinationLat,
-                                Longitude = ride.DestinationLng
-                            };
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = ride.DestinationLat,
+                                    Longitude = ride.DestinationLng
+                                };
+                            }
+
                             break;
                         }
                         case InternRideStatus.GoingToUser:
                         {
                             State = RideStatus.DriverGoingToUser;
-                            _destinationState.Geolocation = new Geolocation()
+                            if (_destinationState.Geolocation == null ||
+                                Math.Abs(ride.StartPointLng - _destinationState.Geolocation.Longitude) > tolerance ||
+                                Math.Abs(ride.StartPointLat - _destinationState.Geolocation.Latitude) > tolerance)
                             {
-                                Latitude = ride.StartPointLat,
-                                Longitude = ride.StartPointLng
-                            };
+                                _destinationState.Geolocation = new Geolocation()
+                                {
+                                    Latitude = ride.StartPointLat,
+                                    Longitude = ride.StartPointLng
+                                };
+                            }
+
                             break;
                         }
                         case InternRideStatus.None:
