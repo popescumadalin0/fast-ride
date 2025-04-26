@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using MudBlazor;
+using Newtonsoft.Json.Linq;
 
 namespace FastRide.Client.Service;
 
@@ -14,17 +20,22 @@ public class GeolocationService : IGeolocationService
 {
     private readonly IJSRuntime _jsRuntime;
     private readonly DotNetObjectReference<GeolocationService> _dotNetObjectReference;
+    private readonly HttpClient _http;
 
     private AuthenticationStateProvider _authenticationStateProviderForMock;
 
     private event Func<Geolocation, ValueTask> CoordinatesChanged = default!;
 
     private event Func<GeolocationError, ValueTask> OnGeolocationPositionError = default!;
+    
+    private Dictionary<string, List<Geolocation>> _mocks = new();
+    private Dictionary<string, int> _mockIndexes = new();
 
-    public GeolocationService(IJSRuntime jsRuntime, AuthenticationStateProvider authenticationStateProviderForMock)
+    public GeolocationService(IJSRuntime jsRuntime, AuthenticationStateProvider authenticationStateProviderForMock, HttpClient http)
     {
         _jsRuntime = jsRuntime;
         _authenticationStateProviderForMock = authenticationStateProviderForMock;
+        _http = http;
 
         _dotNetObjectReference = DotNetObjectReference.Create(this);
     }
@@ -69,165 +80,45 @@ public class GeolocationService : IGeolocationService
             await OnGeolocationPositionError.Invoke(error);
         }
     }
-
-    private static readonly Dictionary<string, List<Geolocation>> Mocks = new Dictionary<string, List<Geolocation>>()
+    
+    private async Task InitializeMocksAsync()
     {
+        try
         {
-            "d69b1c1a-5abc-07fd-0581-42f8d305508b", [
-                new Geolocation()
-                {
-                    Latitude = 44.289760,
-                    Longitude = 23.807116
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.289736,
-                    Longitude = 23.807276
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.289828,
-                    Longitude = 23.807459
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.289955,
-                    Longitude = 23.807673
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.290101,
-                    Longitude = 23.807915
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.290197,
-                    Longitude = 23.808049
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.290835,
-                    Longitude = 23.808961
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.291234,
-                    Longitude = 23.809733
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.291564,
-                    Longitude = 23.810109
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.291764,
-                    Longitude = 23.810452
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.291994,
-                    Longitude = 23.810828
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.292209,
-                    Longitude = 23.811074
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.292394,
-                    Longitude = 23.811407
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.292562,
-                    Longitude = 23.811740
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.292793,
-                    Longitude = 23.811986
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.292954,
-                    Longitude = 23.812330
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.293177,
-                    Longitude = 23.812641
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.293369,
-                    Longitude = 23.812941
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.293561,
-                    Longitude = 23.813167
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.293730,
-                    Longitude = 23.813446
-                },
-
-                new Geolocation()
-                {
-                    Latitude = 44.293968,
-                    Longitude = 23.813639
-                }
-            ]
+            var json = await _http.GetFromJsonAsync<Dictionary<string, List<Geolocation>>>("location-mock/mocks.json");
+            _mocks = json ?? new Dictionary<string, List<Geolocation>>();
+            _mockIndexes = _mocks.Keys.ToDictionary(key => key, _ => 0);
         }
-    };
-
-    private static readonly Dictionary<string, int> MockIndexes = new Dictionary<string, int>()
-    {
-        { "d69b1c1a-5abc-07fd-0581-42f8d305508b", 0 }
-    };
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to load mock data: {ex.Message}");
+            _mocks = new Dictionary<string, List<Geolocation>>();
+            _mockIndexes = new Dictionary<string, int>();
+        }
+    }
 
     private async ValueTask RequestGeoLocationAsync(bool enableHighAccuracy, int maximumAgeInMilliseconds)
     {
         var authState = await _authenticationStateProviderForMock.GetAuthenticationStateAsync();
-
+        if (_mocks.Count == 0)
+        {
+            await InitializeMocksAsync();
+        }
+    
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
-            if (Mocks.TryGetValue(authState.User.Claims.First(x => x.Type == "sub").Value, out var value))
+            if (_mocks.TryGetValue(authState.User.Claims.First(x => x.Type == "sub").Value, out var geolocationList))
             {
-                if (value.Count <= MockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value])
+                if (_mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value] >= geolocationList.Count)
                 {
-                    MockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value] = 0;
+                    _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value] = 0;
                 }
-
-                await OnSuccessAsync(
-                    value[
-                        MockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]++]);
+    
+                await OnSuccessAsync(geolocationList[_mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]++]);
                 return;
             }
         }
-
+    
         await _jsRuntime.InvokeVoidAsync("window.getGeolocation",
             _dotNetObjectReference,
             enableHighAccuracy,

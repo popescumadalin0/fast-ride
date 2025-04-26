@@ -29,4 +29,10 @@
     <ItemGroup>
       <Folder Include="wwwroot\icons\" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\location-mock\mocks.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>
