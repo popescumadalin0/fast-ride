@@ -167,11 +167,6 @@ public partial class Home : ComponentBase, IDisposable
 
     private async Task LoadDriversAsync()
     {
-        if (CurrentRideState.State != RideStatus.None)
-        {
-            return;
-        }
-
         foreach (var driver in _drivers)
         {
             await UpdatePointPositionAsync(_realTimeMap, driver.Key, "driver", driver.Value);

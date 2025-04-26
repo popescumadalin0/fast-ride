@@ -97,6 +97,13 @@ public class OnlineDriversService : IOnlineDriversService
     {
         try
         {
+            var user = await _onlineDriverRepository.GetOnlineDriversByUserIdAsync(onlineDriver.Identifier.NameIdentifier);
+
+            if (user != null)
+            {
+                return new ServiceResponse();
+            }
+            
             await _onlineDriverRepository.AddOnlineDriverAsync(new OnlineDriversEntity()
             {
                 PartitionKey = onlineDriver.GroupName,
