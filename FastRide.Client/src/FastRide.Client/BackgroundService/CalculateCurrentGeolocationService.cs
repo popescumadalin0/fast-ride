@@ -51,7 +51,7 @@ public class CalculateCurrentGeolocationService : IDisposable
     public async Task StartExecutingAsync()
     {
         if (_running) return;
-        
+
         await SaveCurrentGeolocationAsync();
 
         _running = true;
@@ -62,7 +62,7 @@ public class CalculateCurrentGeolocationService : IDisposable
             await HandleTimerAsync();
         }
     }
-    
+
     private async ValueTask HandleTimerAsync()
     {
         await SaveCurrentGeolocationAsync();
@@ -86,7 +86,7 @@ public class CalculateCurrentGeolocationService : IDisposable
 
         _currentPositionState.Geolocation = geolocation;
 
-        if (_currentRideState.State is not RideStatus.None and RideStatus.Finished)
+        if (_currentRideState.State != RideStatus.None && _currentRideState.State != RideStatus.Finished)
         {
             const double tolerance = 0.00015;
             if (Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&

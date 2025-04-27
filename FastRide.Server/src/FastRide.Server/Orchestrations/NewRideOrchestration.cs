@@ -82,11 +82,11 @@ public class NewRideOrchestration
         input.Status = InternRideStatus.GoingToUser;
         context.SetCustomStatus(input);
 
-        await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
+        await context.WaitForExternalEvent<object>(SignalRConstants.ClientDriverArrived);
         input.Status = InternRideStatus.GoingToDestination;
         context.SetCustomStatus(input);
 
-        await context.WaitForExternalEvent<bool>(SignalRConstants.ClientDriverArrived);
+        await context.WaitForExternalEvent<object>(SignalRConstants.ClientDriverArrived);
         await FinishWorkflow(context, input);
     }
 
