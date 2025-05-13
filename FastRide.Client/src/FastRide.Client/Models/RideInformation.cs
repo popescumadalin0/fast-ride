@@ -13,6 +13,4 @@ public class RideInformation
     public DateTime TimeStamp { get; set; }
 
     public double Cost { get; set; }
-
-    public string DriverEmail { get; set; }
 }

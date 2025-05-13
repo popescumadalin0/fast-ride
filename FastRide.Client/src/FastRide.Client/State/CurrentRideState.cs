@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Client.Service;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
@@ -164,10 +165,11 @@ public class CurrentRideState : ICurrentRideState
 
                             break;
                         }
-                        case InternRideStatus.None:
                         case InternRideStatus.Finished:
                         case InternRideStatus.Cancelled:
+                        case InternRideStatus.None:
                         default:
+                            InstanceId = null;
                             State = State;
                             break;
                     }

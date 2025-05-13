@@ -1,13 +1,16 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FastRide.Client.Components;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
+using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using MudBlazor;
+using Ride = FastRide.Server.Contracts.Models.Ride;
 
 namespace FastRide.Client.Layout;
 
@@ -26,8 +29,8 @@ public partial class NavMenu : IAsyncDisposable
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
-    
-    [Inject] private ISnackbar  Snackbar { get; set; }
+
+    [Inject] private ISnackbar Snackbar { get; set; }
 
     public async ValueTask DisposeAsync()
     {
@@ -37,7 +40,7 @@ public partial class NavMenu : IAsyncDisposable
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
             SignalRService.DriverRideAccepted -= DriverAcceptedRide;
-            SignalRService.NotifyState -= CurrentRideState.UpdateState;
+            SignalRService.NotifyState -= UpdateRideState;
         }
     }
 
@@ -47,7 +50,7 @@ public partial class NavMenu : IAsyncDisposable
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
             SignalRService.DriverRideAccepted += DriverAcceptedRide;
-            SignalRService.NotifyState += CurrentRideState.UpdateState;
+            SignalRService.NotifyState += UpdateRideState;
         }
 
         DestinationState.OnChange += DestinationStateOnOnChange;
@@ -55,6 +58,24 @@ public partial class NavMenu : IAsyncDisposable
         CurrentRideState.OnChange += StateHasChanged;
 
         await base.OnInitializedAsync();
+    }
+
+    private async Task UpdateRideState(Ride ride)
+    {
+        if (ride.Status is InternRideStatus.Finished or InternRideStatus.Cancelled &&
+            CurrentRideState.InstanceId != null)
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            await SignalRService.RemoveUserFromGroupAsync(
+                authState.User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value, CurrentRideState.InstanceId);
+
+            var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
+            await SignalRService.JoinUserInGroupAsync(
+                authState.User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value, groupName);
+        }
+
+        await CurrentRideState.UpdateState(ride);
     }
 
     private async Task DestinationStateOnOnChange()
@@ -70,7 +91,6 @@ public partial class NavMenu : IAsyncDisposable
 
     private async Task DriverAcceptedRide()
     {
-   
     }
 
     private async Task LogOutAsync()

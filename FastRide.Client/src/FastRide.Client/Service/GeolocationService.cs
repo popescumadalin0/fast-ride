@@ -34,6 +34,8 @@ public class GeolocationService : IGeolocationService
     private Dictionary<string, List<Geolocation>> _mocks = new();
     private Dictionary<string, int> _mockIndexes = new();
 
+    private int _stay = 0;
+
     public GeolocationService(IJSRuntime jsRuntime, AuthenticationStateProvider authenticationStateProviderForMock,
         HttpClient http, ICurrentRideState currentRideState)
     {
@@ -127,6 +129,7 @@ public class GeolocationService : IGeolocationService
         {
             if (_mocks.TryGetValue(authState.User.Claims.First(x => x.Type == "sub").Value, out var geolocationList))
             {
+                //reset position
                 if (_mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value] >= geolocationList.Count)
                 {
                     _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value] = 0;
@@ -136,14 +139,29 @@ public class GeolocationService : IGeolocationService
                     geolocationList[_mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]];
                 var userRole = authState.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
 
+                //move user if needed
                 if (userRole == UserType.User.ToString() &&
                     _currentRideState.State is RideStatus.GoingToDestination)
                 {
                     _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]++;
                 }
-                else if(userRole == UserType.Driver.ToString())
+                else if (userRole == UserType.Driver.ToString())
                 {
                     _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]++;
+                }
+
+                if (_currentRideState.State is RideStatus.GoingToDestination or RideStatus.Finished
+                    or RideStatus.DriverGoingToDestination)
+                {
+                    if (_stay <= 2)
+                    {
+                        _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]--;
+                        _stay++;
+                    }
+                }
+                else
+                {
+                    _stay = 0;
                 }
 
                 await OnSuccessAsync(nextGeolocation);

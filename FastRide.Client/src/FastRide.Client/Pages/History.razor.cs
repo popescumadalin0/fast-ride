@@ -44,66 +44,6 @@ public partial class History : IDisposable
             return;
         }
 
-        //mock data
-        response.Response.AddRange(new[]
-        {
-            new Ride()
-            {
-                TimeStamp = DateTime.Now,
-                DestinationLat = 44.4647452,
-                DestinationLng = 7.3553838,
-                StartPointLat = 50.3,
-                StartPointLng = 50.3,
-                Driver = new UserIdentifier() { Email = "test@test.com" },
-                Cost = 100.2,
-                Id = Guid.NewGuid().ToString(),
-            },
-            new Ride()
-            {
-                TimeStamp = DateTime.Now,
-                DestinationLat = 44.4647452,
-                DestinationLng = 7.3553838,
-                StartPointLat = 50.3,
-                StartPointLng = 50.3,
-                Driver = new UserIdentifier() { Email = "test@test.com" },
-                Cost = 10.2,
-                Id = Guid.NewGuid().ToString(),
-            },
-            new Ride()
-            {
-                TimeStamp = DateTime.Now,
-                DestinationLat = 44.4647452,
-                DestinationLng = 7.3553838,
-                StartPointLat = 50.3,
-                StartPointLng = 50.3,
-                Driver = new UserIdentifier() { Email = "test@test.com" },
-                Cost = 1.2,
-                Id = Guid.NewGuid().ToString(),
-            },
-            new Ride()
-            {
-                TimeStamp = DateTime.Now.AddDays(-1),
-                DestinationLat = 44.4647452,
-                DestinationLng = 7.3553838,
-                StartPointLat = 50.3,
-                StartPointLng = 50.3,
-                Driver = new UserIdentifier() { Email = "test@test.com" },
-                Cost = 1.2,
-                Id = Guid.NewGuid().ToString(),
-            },
-            new Ride()
-            {
-                TimeStamp = DateTime.Now.AddDays(-1),
-                DestinationLat = 44.4647452,
-                DestinationLng = 7.3553838,
-                StartPointLat = 50.3,
-                StartPointLng = 50.3,
-                Driver = new UserIdentifier() { Email = "test@test.com" },
-                Cost = 1.2,
-                Id = Guid.NewGuid().ToString(),
-            }
-        });
-
         var rides = new List<RideInformation>();
 
         if (response.Response.Count != 0)
@@ -118,7 +58,6 @@ public partial class History : IDisposable
                     Cost = ride.Cost,
                     Destination = destination,
                     Id = ride.Id,
-                    DriverEmail = ride.Driver.Email,
                     DestinationLocation = new Geolocation()
                     {
                         Longitude = ride.DestinationLng,

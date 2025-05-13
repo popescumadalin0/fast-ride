@@ -8,6 +8,7 @@ using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Models;
+using FastRide.Server.Services;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Models;
 using Microsoft.AspNetCore.Http;
@@ -43,10 +44,16 @@ public class RideFunction
 
         var rides = await MapRidesAsync(instances);
 
-        rides = rides.Where(x =>
-            x.User.NameIdentifier == req.HttpContext.User.Claims.Single(claim => claim.Type == "sub").Value).ToList();
+        var userId = req.HttpContext.User.Claims.Single(claim => claim.Type == "sub").Value
+            .GenerateGuidFromString().ToString();
+        var result = new List<Ride>();
+        result.AddRange(rides.Where(x =>
+            x.User.NameIdentifier == userId).ToList());
 
-        return ApiServiceResponse.ApiServiceResult(new ServiceResponse<List<Ride>>(rides));
+        result.AddRange(rides.Where(x =>
+            x.Driver.NameIdentifier == userId).ToList());
+
+        return ApiServiceResponse.ApiServiceResult(new ServiceResponse<List<Ride>>(result));
     }
 
     [Function(nameof(NotifyUserStateAsync))]

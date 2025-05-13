@@ -28,6 +28,8 @@ public partial class AcceptRidePopup : IDisposable
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
+    
+    [Inject] private OverlayState OverlayState { get; set; }
 
     public void Dispose()
     {
@@ -95,6 +97,7 @@ public partial class AcceptRidePopup : IDisposable
 
     private async Task AcceptRideAsync()
     {
+        OverlayState.DataLoading = true;
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.AcceptRideAsync(_ride.InstanceId,
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
@@ -103,6 +106,7 @@ public partial class AcceptRidePopup : IDisposable
             await UserGroupService.GetCurrentUserGroupNameAsync());
         await SignalRService.JoinUserInGroupAsync(authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
             _ride!.InstanceId);
+        OverlayState.DataLoading = false;
         _ride = null;
         OpenRide();
     }

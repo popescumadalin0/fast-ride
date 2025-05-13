@@ -201,7 +201,7 @@ public class NewRideOrchestration
         await context.CallActivityAsync(nameof(DelayActivity),
             new DelayActivityInput()
             {
-                Seconds = 10
+                Seconds = 35
             });
     }
 

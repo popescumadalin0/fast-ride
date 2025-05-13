@@ -27,6 +27,8 @@ public class CalculateCurrentGeolocationService : IDisposable
 
     private bool _running;
 
+    private bool _arrivedSent;
+
     public CalculateCurrentGeolocationService(ISignalRService signalRService,
         IGeolocationService geolocationService, IUserGroupService userGroupService,
         AuthenticationStateProvider authenticationStateProvider, CurrentPositionState currentPositionState,
@@ -82,18 +84,24 @@ public class CalculateCurrentGeolocationService : IDisposable
             await _signalRService.NotifyUserGeolocationAsync(userId,
                 groupName,
                 geolocation);
+
+            if (_currentRideState.State != RideStatus.None && _currentRideState.State != RideStatus.Finished)
+            {
+                const double tolerance = 0.0015;
+                if (Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&
+                    Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance &&
+                    !_arrivedSent)
+                {
+                    await _signalRService.NotifyDriverArrivedAsync(groupName);
+                    _arrivedSent = true;
+                }
+                else
+                {
+                    _arrivedSent = false;
+                }
+            }
         }
 
         _currentPositionState.Geolocation = geolocation;
-
-        if (_currentRideState.State != RideStatus.None && _currentRideState.State != RideStatus.Finished)
-        {
-            const double tolerance = 0.00015;
-            if (Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&
-                Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance)
-            {
-                await _signalRService.NotifyDriverArrivedAsync(groupName);
-            }
-        }
     }
 }
