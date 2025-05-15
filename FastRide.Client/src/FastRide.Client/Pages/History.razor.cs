@@ -22,11 +22,7 @@ public partial class History : IDisposable
     [Inject] private ISnackbar SnackBar { get; set; }
 
     [Inject] private OverlayState OverlayState { get; set; }
-
-    [Inject] private DestinationState DestinationState { get; set; }
-
-    [Inject] private NavigationManager NavigationManager { get; set; }
-
+    
     public void Dispose()
     {
         OverlayState.OnChange -= StateHasChanged;
@@ -70,13 +66,5 @@ public partial class History : IDisposable
         }
 
         OverlayState.DataLoading = false;
-    }
-
-    private Task RebookClickedAsync(RideInformation ride)
-    {
-        DestinationState.Geolocation = ride.DestinationLocation;
-        NavigationManager.NavigateTo("/");
-
-        return Task.CompletedTask;
     }
 }

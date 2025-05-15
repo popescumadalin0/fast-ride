@@ -8,12 +8,13 @@
         <div class="d-flex flex-column">
             <div class="ellipsis-text destination-width fw-bold"
                  title="@RideInfo.Destination">@RideInfo.Destination</div>
-            <spam class="text-muted">@RideInfo.TimeStamp.ToString("dd MMM, HH:mm"), LEI @RideInfo.Cost.ToString("#.##")</spam>
+            <spam class="text-muted">@RideInfo.TimeStamp.ToString("dd MMM, HH:mm"),
+                LEI @RideInfo.Cost.ToString("#.##")</spam>
         </div>
     </div>
     @if (AuthenticationState.Result.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value != UserType.Driver.ToString())
     {
-        <button class="rebook-button fw-bold" onclick="@(async () => await OnRebook.InvokeAsync(RideInfo))">
+        <button class="rebook-button fw-bold" @onclick="@(RebookClickedAsync)">
             <i class="bi bi-arrow-counterclockwise"></i>
             <span>Rebook</span>
         </button>

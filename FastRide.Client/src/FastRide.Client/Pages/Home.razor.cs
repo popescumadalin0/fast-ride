@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Client.Models;
+using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
@@ -15,7 +17,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace FastRide.Client.Pages;
 
-public partial class Home : ComponentBase, IDisposable
+public partial class Home : ComponentBase, IAsyncDisposable
 {
     [Inject] private ISignalRService SignalRService { get; set; }
 
@@ -27,24 +29,30 @@ public partial class Home : ComponentBase, IDisposable
 
     [Inject] private IGeolocationService GeolocationService { get; set; }
 
+    [Inject] private ILocationService LocationService { get; set; }
+
     [Inject] private IConfiguration Configuration { get; set; }
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
-    private string _city;
+    private OpenStreetMapResponse _selectedAddress = new();
+
+    private string _locality;
 
     private Geolocation _currentGeolocation;
 
     private readonly Dictionary<string, Geolocation> _drivers = new();
 
-    private RealTimeMap _realTimeMap = new RealTimeMap();
+    private RealTimeMap _realTimeMap = new();
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         DestinationState.OnChange -= UpdatePinPositionAsync;
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
         CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
         CurrentRideState.OnChange -= StateHasChanged;
+        
+        await _realTimeMap.DisposeAsync();
     }
 
     protected override async Task OnInitializedAsync()
@@ -59,6 +67,9 @@ public partial class Home : ComponentBase, IDisposable
 
         CurrentRideState.OnChange += StateHasChanged;
 
+        _locality = await LocationService.GetLocalityByLatLongAsync(_currentGeolocation.Latitude,
+            _currentGeolocation.Longitude);
+
         StateHasChanged();
     }
 
@@ -70,9 +81,11 @@ public partial class Home : ComponentBase, IDisposable
         });
     }
 
-    private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
+    private async Task<IEnumerable<OpenStreetMapResponse>> Search(string value, CancellationToken token)
     {
-        return ["test", "test1", "test2", "test3"];
+        var suggestions = await LocationService.GetAddressesBySuggestions(_locality, value);
+
+        return suggestions;
     }
 
     private async Task NotifyDriverGeolocationAsync(NotifyUserGeolocation input)
@@ -135,19 +148,30 @@ public partial class Home : ComponentBase, IDisposable
         }
     }
 
+    private void OnAutoCompleteValueChanged(OpenStreetMapResponse obj)
+    {
+        _selectedAddress = obj;
+        DestinationState.Geolocation = new Geolocation()
+        {
+            Latitude = obj.lat,
+            Longitude = obj.lon
+        };
+    }
+
     private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
     {
         realTimeMap.Geometric.Points.Appearance(item => item.type == "current").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/currentCar.png", iconSize = [40, 40], iconAnchor = [20,40] };
+            new RealTimeMap.PointIcon()
+                { iconUrl = $"icons/currentCar.png", iconSize = [40, 40], iconAnchor = [20, 40] };
 
         realTimeMap.Geometric.Points.Appearance(item => item.type == "pin").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/pin.png", iconSize = [40, 40], iconAnchor = [20,40]};
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/pin.png", iconSize = [40, 40], iconAnchor = [20, 40] };
 
         realTimeMap.Geometric.Points.Appearance(item => item.type == "human").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/human.png", iconSize = [40, 40], iconAnchor = [20,40] };
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/human.png", iconSize = [40, 40], iconAnchor = [20, 40] };
 
         realTimeMap.Geometric.Points.Appearance(item => item.type == "driver").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [40, 40], iconAnchor = [20,40] };
+            new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [40, 40], iconAnchor = [20, 40] };
 
         return Task.CompletedTask;
     }

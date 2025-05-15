@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using FastRide.Client.Models;
 
 namespace FastRide.Client.Contracts;
 
@@ -35,4 +37,12 @@ public interface ILocationService
     /// <param name="longitude"></param>
     /// <returns></returns>
     Task<string> GetCountyByLatLongAsync(double latitude, double longitude);
+
+    /// <summary>
+    /// Get list of suggestions based on a query
+    /// </summary>
+    /// <param name="city"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<List<OpenStreetMapResponse>> GetAddressesBySuggestions(string city, string query = "strada");
 }

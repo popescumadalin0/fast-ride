@@ -51,7 +51,7 @@ public class RideFunction
             x.User.NameIdentifier == userId).ToList());
 
         result.AddRange(rides.Where(x =>
-            x.Driver.NameIdentifier == userId).ToList());
+            x.Driver?.NameIdentifier == userId).ToList());
 
         return ApiServiceResponse.ApiServiceResult(new ServiceResponse<List<Ride>>(result));
     }

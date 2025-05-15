@@ -11,7 +11,7 @@
                 <MudExpansionPanel HideIcon="true" Text="@rideGroup.Key" Expanded="true">
                     @foreach (var ride in rideGroup.SkipLast(1))
                     {
-                        <Ride RideInfo="@ride" OnRebook="RebookClickedAsync"/>
+                        <Ride RideInfo="@ride" />
                         <hr/>
                     }
                     <Ride RideInfo="@rideGroup.Last()"/>

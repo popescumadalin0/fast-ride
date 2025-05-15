@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
@@ -12,18 +13,17 @@ namespace FastRide.Client.Service;
 
 public class LocationService : ILocationService
 {
-    private readonly IConfiguration _configuration;
-    private readonly IJSRuntime _jsRuntime;
-
     private readonly ILogger<LocationService> _logger;
 
-    public LocationService(IJSRuntime jsRuntime, IConfiguration configuration, ILogger<LocationService> logger)
+    private readonly string _mapBaseUrl;
+
+    public LocationService(IConfiguration configuration, ILogger<LocationService> logger)
     {
-        _jsRuntime = jsRuntime;
-        _configuration = configuration;
         _logger = logger;
+
+        _mapBaseUrl = configuration.GetValue<string>("Map:BaseUrl");
     }
-    
+
     public async Task<string> GetAddressByLatLongAsync(double latitude, double longitude)
     {
         var result = await GetInformationByLatLong(latitude, longitude);
@@ -63,16 +63,26 @@ public class LocationService : ILocationService
         return locality;
     }
 
-    private async Task<OpenStreetMapResponse> GetInformationByLatLong(double latitude, double longitude)
+    public async Task<List<OpenStreetMapResponse>> GetAddressesBySuggestions(string city, string query = "strada")
     {
-        var mapBaseUrl = _configuration.GetValue<string>("Map:BaseUrl");
-
         using var httpClient = new HttpClient();
         var response =
             await httpClient.GetAsync(
-                new Uri($"{mapBaseUrl}/reverse?lat={latitude}&lon={longitude}&format=json"));
+                new Uri($"{_mapBaseUrl}/search?q={city} {query}&format=json&addressdetails=1"));
         var json = await response.Content.ReadAsStringAsync();
-        dynamic result = JsonConvert.DeserializeObject<OpenStreetMapResponse>(json);
+        var result = JsonConvert.DeserializeObject<List<OpenStreetMapResponse>>(json);
+
+        return result;
+    }
+
+    private async Task<OpenStreetMapResponse> GetInformationByLatLong(double latitude, double longitude)
+    {
+        using var httpClient = new HttpClient();
+        var response =
+            await httpClient.GetAsync(
+                new Uri($"{_mapBaseUrl}/reverse?lat={latitude}&lon={longitude}&format=json"));
+        var json = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<OpenStreetMapResponse>(json);
 
         return result;
     }
