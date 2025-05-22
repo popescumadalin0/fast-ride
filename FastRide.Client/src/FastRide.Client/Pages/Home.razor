@@ -1,32 +1,31 @@
-﻿@page "/"
-@using FastRide.Client.Models
-@using FastRide.Server.Contracts.Enums
-@using FastRide.Server.Contracts.Models
-@inherits ComponentBase
+﻿ @page "/"
+ @using FastRide.Client.Models
+ @using FastRide.Server.Contracts.Enums
+ @using FastRide.Server.Contracts.Models
+ @inherits ComponentBase
 
-<PageTitle>Home</PageTitle>
+ <PageTitle>Home</PageTitle>
 
-@if (CurrentRideState.State == RideStatus.None)
-{
-    <div class="search-destination">
-        <MudStack Style="width: 70dvw">
-            <MudAutocomplete T="OpenStreetMapResponse"
-                             Label="Search your destination..."
-                             ToStringFunc="@(x => x.display_name)"
-                             Value="@_selectedAddress"
-                             ValueChanged="OnAutoCompleteValueChanged"
-                             SearchFunc="@Search"
-                             FullWidth
-                             Dense
-                             SelectValueOnTab
-                             Variant="Variant.Filled"
-                             DebounceInterval="500"
-                             AdornmentIcon="@Icons.Material.Filled.Search"
-                             ShowProgressIndicator="true"/>
-        </MudStack>
-    </div>
-}
+ @if (CurrentRideState.State == RideStatus.None)
+ {
+     <div class="search-destination">
+         <MudStack Style="width: 70dvw">
+             <MudAutocomplete T="OpenStreetMapResponse"
+                              Label="Search your destination..."
+                              ToStringFunc="@(x => x.display_name)"
+                              Value="@_selectedAddress"
+                              ValueChanged="OnAutoCompleteValueChanged"
+                              SearchFunc="@Search"
+                              FullWidth
+                              Dense
+                              SelectValueOnTab
+                              Variant="Variant.Filled"
+                              DebounceInterval="500"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              ShowProgressIndicator="true"/>
+         </MudStack>
+     </div>
+ }
 
-<RealTimeMap @ref="@_realTimeMap" height="100dvh"
-             width="100dvw" OnAfterMapLoaded="@MapLoadedAsync" OnClickMap="@MapClickedAsync">
-</RealTimeMap>
+ <Map @ref="@_map" OnAfterMapLoaded="@MapLoadedAsync" OnClickMap="@MapClickedAsync">
+ </Map>

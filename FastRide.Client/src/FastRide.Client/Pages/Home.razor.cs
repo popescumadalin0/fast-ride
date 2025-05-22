@@ -27,8 +27,6 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
     [Inject] private CurrentPositionState CurrentPositionState { get; set; }
 
-    [Inject] private IGeolocationService GeolocationService { get; set; }
-
     [Inject] private ILocationService LocationService { get; set; }
 
     [Inject] private IConfiguration Configuration { get; set; }
@@ -38,12 +36,10 @@ public partial class Home : ComponentBase, IAsyncDisposable
     private OpenStreetMapResponse _selectedAddress = new();
 
     private string _locality;
-
-    private Geolocation _currentGeolocation;
-
+    
     private readonly Dictionary<string, Geolocation> _drivers = new();
 
-    private RealTimeMap _realTimeMap = new();
+    private Map _map = new();
 
     public async ValueTask DisposeAsync()
     {
@@ -52,12 +48,11 @@ public partial class Home : ComponentBase, IAsyncDisposable
         CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
         CurrentRideState.OnChange -= StateHasChanged;
         
-        await _realTimeMap.DisposeAsync();
+        await _map.DisposeAsync();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        _currentGeolocation = await GeolocationService.GetGeolocationAsync();
 
         DestinationState.OnChange += UpdatePinPositionAsync;
 
@@ -75,7 +70,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
     private async Task UpdatePinPositionAsync()
     {
-        await UpdatePointPositionAsync(_realTimeMap, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
+        await UpdatePointPositionAsync(_map, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
         {
             Longitude = DestinationState.Geolocation.Longitude, Latitude = DestinationState.Geolocation.Latitude
         });
@@ -112,22 +107,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
     {
         var realTimeMap = obj.sender;
         _currentGeolocation = await GeolocationService.GetGeolocationAsync();
-
-        realTimeMap.Geometric.Points.changeExtentWhenAddPoints = true;
-        realTimeMap.Geometric.Points.changeExtentWhenMovingPoints = false;
-        realTimeMap.Parameters.zoomLevel = 18;
-
-        realTimeMap.Options.keyboardNavigationOptions = new RealTimeMap.KeyboardNavigationOptions()
-        {
-            keyboard = false,
-        };
-        realTimeMap.Options.interactionOptions = new RealTimeMap.InteractionOptions()
-        {
-            dragging = false,
-            trackResize = false,
-            doubleClickZoom = true,
-            shiftBoxZoom = false,
-        };
+        
 
         await PredefineMapContentAsync(realTimeMap);
 
@@ -186,38 +166,38 @@ public partial class Home : ComponentBase, IAsyncDisposable
             ? authState.User.Claims.Single(x => x.Type == "sub").Value
             : Guid.Empty.ToString();
 
-        await UpdatePointPositionAsync(_realTimeMap, id, type, _currentGeolocation);
+        await UpdatePointPositionAsync(_map, id, type, _currentGeolocation);
     }
 
     private async Task LoadDriversAsync()
     {
         foreach (var driver in _drivers)
         {
-            await UpdatePointPositionAsync(_realTimeMap, driver.Key, "driver", driver.Value);
+            await UpdatePointPositionAsync(_map, driver.Key, "driver", driver.Value);
         }
     }
 
-    private async Task UpdatePointPositionAsync(RealTimeMap realTimeMap, string id, string type,
+    private async Task UpdatePointPositionAsync(Map _map, string id, string type,
         Geolocation geolocation)
     {
         const double tolerance = 0.00005;
-        var removePoints = realTimeMap.Geometric.Points.getItems(x =>
+        var removePoints = _map.Geometric.Points.getItems(x =>
             x.guid == Guid.Parse(id) && x.type == "pin" &&
             Math.Abs(geolocation.Latitude - x.latitude) < tolerance &&
             Math.Abs(geolocation.Longitude - x.longitude) < tolerance);
 
         if (removePoints.Count != 0)
         {
-            await _realTimeMap.Geometric.Points.delete(removePoints.Select(x => x.guid.ToString()).ToArray());
+            await this._map.Geometric.Points.delete(removePoints.Select(x => x.guid.ToString()).ToArray());
         }
         else
         {
-            var points = realTimeMap.Geometric.Points.getItems(x =>
+            var points = _map.Geometric.Points.getItems(x =>
                 x.guid == Guid.Parse(id));
 
             if (points.Count != 0)
             {
-                await _realTimeMap.Geometric.Points.moveTo(
+                await this._map.Geometric.Points.moveTo(
                     new RealTimeMap.StreamPoint
                     {
                         guid = Guid.Parse(id),
@@ -229,7 +209,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
             }
             else
             {
-                await _realTimeMap.Geometric.Points.add([
+                await this._map.Geometric.Points.add([
                     new RealTimeMap.StreamPoint
                     {
                         guid = Guid.Parse(id),
@@ -241,6 +221,6 @@ public partial class Home : ComponentBase, IAsyncDisposable
             }
         }
 
-        realTimeMap.Geometric.Points.changeExtentWhenAddPoints = false;
+        _map.Geometric.Points.changeExtentWhenAddPoints = false;
     }
 }
