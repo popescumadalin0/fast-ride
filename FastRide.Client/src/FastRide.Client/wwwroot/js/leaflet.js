@@ -3,6 +3,10 @@ let userMarkers = {};
 let clickMarker = null;
 let routeControl = null;
 
+let dotNetInstance;
+
+let onClickCallback;
+
 const iconSize = [40, 40];
 
 window.leafletCreateIcon = (imgUrl) => {
@@ -13,19 +17,22 @@ window.leafletCreateIcon = (imgUrl) => {
     });
 }
 
-window.leafletIsSameLocation = (latlng1, latlng2, threshold = 0.0005) => {
+window.leafletIsSameLocation = (latlng1, latlng2, threshold = 0.00005) => {
     return Math.abs(latlng1.lat - latlng2.lat) < threshold &&
         Math.abs(latlng1.lng - latlng2.lng) < threshold;
 }
 
 window.leafletDispose = () => {
-    map.remove();
+    //map.remove();
 }
 
-window.leafletInitMap = (startLat, startLng, zoom = 13) => {
-    if (map) {
+window.leafletInitMap = (dotNet, startLat, startLng, zoom = 13, clickCallback = 'OnClickMap') => {
+/*    if (map) {
         map.remove();
-    }
+    }*/
+
+    onClickCallback = clickCallback;
+    dotNetInstance = dotNet;
 
     map = L.map('map').setView([startLat, startLng], zoom);
 
@@ -38,36 +45,44 @@ window.leafletInitMap = (startLat, startLng, zoom = 13) => {
 }
 
 function onMapClick(e) {
-    if (clickMarker && leafletIsSameLocation(clickMarker.getLatLng(), e.latlng)) {
-        map.removeLayer(clickMarker);
-        clickMarker = null;
-    } else {
-        if (clickMarker) {
+    if (dotNetInstance) {
+        if (clickMarker && leafletIsSameLocation(clickMarker.getLatLng(), e.latlng)) {
             map.removeLayer(clickMarker);
+            clickMarker = null;
+        } else {
+            if (clickMarker) {
+                map.removeLayer(clickMarker);
+            }
+            clickMarker = L.marker(e.latlng, {
+                icon: leafletCreateIcon("icons/pin.png")
+            }).addTo(map);
         }
-        clickMarker = L.marker(e.latlng).addTo(map);
+        const latLng = clickMarker ==null ? null : { lat: clickMarker.getLatLng().lat, lng: clickMarker.getLatLng().lng };
+        dotNetInstance.invokeMethodAsync(onClickCallback, latLng);
     }
 }
 
 window.leafletAddUser = (userId, lat, lng, imgUrl) => {
+    if (map == null)
+    {
+        return;
+    }
     if (userMarkers[userId]) {
         map.removeLayer(userMarkers[userId]);
     }
 
     const marker = L.marker([lat, lng], {
-        icon: createIcon(imgUrl)
+        icon: leafletCreateIcon(imgUrl)
     }).addTo(map);
 
     userMarkers[userId] = marker;
 }
 
-window.leafletMoveUser = (userId, lat, lng) => {
-    if (userMarkers[userId]) {
-        userMarkers[userId].setLatLng([lat, lng]);
-    }
-}
-
 window.leafletRemoveUser = (userId) => {
+    if (map == null)
+    {
+        return;
+    }
     if (userMarkers[userId]) {
         map.removeLayer(userMarkers[userId]);
         delete userMarkers[userId];
@@ -75,6 +90,10 @@ window.leafletRemoveUser = (userId) => {
 }
 
 window.drawRoute = (startLat, startLng, endLat, endLng) => {
+    if (map == null)
+    {
+        return;
+    }
     if (routeControl) {
         map.removeControl(routeControl);
     }

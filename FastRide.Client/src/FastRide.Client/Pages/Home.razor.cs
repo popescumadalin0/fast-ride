@@ -5,12 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
-using FastRide.Client.Service;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
-using LeafletForBlazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -35,50 +33,38 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
     private OpenStreetMapResponse _selectedAddress = new();
 
-    private string _locality;
-    
     private readonly Dictionary<string, Geolocation> _drivers = new();
 
     private Map _map = new();
 
+    private string _userId;
+
     public async ValueTask DisposeAsync()
     {
-        DestinationState.OnChange -= UpdatePinPositionAsync;
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
         CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
         CurrentRideState.OnChange -= StateHasChanged;
-        
-        await _map.DisposeAsync();
     }
 
     protected override async Task OnInitializedAsync()
     {
-
-        DestinationState.OnChange += UpdatePinPositionAsync;
-
         SignalRService.NotifyDriverGeolocation += NotifyDriverGeolocationAsync;
 
         CurrentPositionState.OnChange += CurrentPositionStateOnChangeAsync;
 
         CurrentRideState.OnChange += StateHasChanged;
 
-        _locality = await LocationService.GetLocalityByLatLongAsync(_currentGeolocation.Latitude,
-            _currentGeolocation.Longitude);
+        var authState = await AuthenticationState;
+        _userId = authState.User.Identity?.IsAuthenticated ?? false
+            ? authState.User.Claims.Single(x => x.Type == "sub").Value
+            : Guid.Empty.ToString();
 
         StateHasChanged();
     }
 
-    private async Task UpdatePinPositionAsync()
-    {
-        await UpdatePointPositionAsync(_map, Configuration["Map:PinGuid"]!, "pin", new Geolocation()
-        {
-            Longitude = DestinationState.Geolocation.Longitude, Latitude = DestinationState.Geolocation.Latitude
-        });
-    }
-
     private async Task<IEnumerable<OpenStreetMapResponse>> Search(string value, CancellationToken token)
     {
-        var suggestions = await LocationService.GetAddressesBySuggestions(_locality, value);
+        var suggestions = await LocationService.GetAddressesBySuggestions(_map.Locality, value);
 
         return suggestions;
     }
@@ -93,38 +79,20 @@ public partial class Home : ComponentBase, IAsyncDisposable
                 Longitude = input.Geolocation.Longitude,
                 Latitude = input.Geolocation.Latitude,
             };
-            await LoadDriversAsync();
         }
     }
 
     private async Task CurrentPositionStateOnChangeAsync()
     {
-        _currentGeolocation = CurrentPositionState.Geolocation;
-        await LoadCurrentUser();
+        StateHasChanged();
     }
 
-    private async Task MapLoadedAsync(RealTimeMap.MapEventArgs obj)
-    {
-        var realTimeMap = obj.sender;
-        _currentGeolocation = await GeolocationService.GetGeolocationAsync();
-        
 
-        await PredefineMapContentAsync(realTimeMap);
-
-        await LoadCurrentUser();
-
-        await LoadDriversAsync();
-    }
-
-    private async Task MapClickedAsync(RealTimeMap.ClicksMapArgs obj)
+    private void MapClicked(Geolocation obj)
     {
         if (CurrentRideState.State == RideStatus.None)
         {
-            DestinationState.Geolocation = new Geolocation()
-            {
-                Longitude = obj.location.longitude,
-                Latitude = obj.location.latitude,
-            };
+            DestinationState.Geolocation = obj;
         }
     }
 
@@ -136,91 +104,5 @@ public partial class Home : ComponentBase, IAsyncDisposable
             Latitude = obj.lat,
             Longitude = obj.lon
         };
-    }
-
-    private static Task PredefineMapContentAsync(RealTimeMap realTimeMap)
-    {
-        realTimeMap.Geometric.Points.Appearance(item => item.type == "current").pattern =
-            new RealTimeMap.PointIcon()
-                { iconUrl = $"icons/currentCar.png", iconSize = [40, 40], iconAnchor = [20, 40] };
-
-        realTimeMap.Geometric.Points.Appearance(item => item.type == "pin").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/pin.png", iconSize = [40, 40], iconAnchor = [20, 40] };
-
-        realTimeMap.Geometric.Points.Appearance(item => item.type == "human").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/human.png", iconSize = [40, 40], iconAnchor = [20, 40] };
-
-        realTimeMap.Geometric.Points.Appearance(item => item.type == "driver").pattern =
-            new RealTimeMap.PointIcon() { iconUrl = $"icons/driver.png", iconSize = [40, 40], iconAnchor = [20, 40] };
-
-        return Task.CompletedTask;
-    }
-
-    private async Task LoadCurrentUser()
-    {
-        var type = CurrentRideState.State < RideStatus.DriverGoingToDestination ? "human" : "currentCar";
-
-        var authState = await AuthenticationState;
-
-        var id = authState.User.Identity?.IsAuthenticated ?? false
-            ? authState.User.Claims.Single(x => x.Type == "sub").Value
-            : Guid.Empty.ToString();
-
-        await UpdatePointPositionAsync(_map, id, type, _currentGeolocation);
-    }
-
-    private async Task LoadDriversAsync()
-    {
-        foreach (var driver in _drivers)
-        {
-            await UpdatePointPositionAsync(_map, driver.Key, "driver", driver.Value);
-        }
-    }
-
-    private async Task UpdatePointPositionAsync(Map _map, string id, string type,
-        Geolocation geolocation)
-    {
-        const double tolerance = 0.00005;
-        var removePoints = _map.Geometric.Points.getItems(x =>
-            x.guid == Guid.Parse(id) && x.type == "pin" &&
-            Math.Abs(geolocation.Latitude - x.latitude) < tolerance &&
-            Math.Abs(geolocation.Longitude - x.longitude) < tolerance);
-
-        if (removePoints.Count != 0)
-        {
-            await this._map.Geometric.Points.delete(removePoints.Select(x => x.guid.ToString()).ToArray());
-        }
-        else
-        {
-            var points = _map.Geometric.Points.getItems(x =>
-                x.guid == Guid.Parse(id));
-
-            if (points.Count != 0)
-            {
-                await this._map.Geometric.Points.moveTo(
-                    new RealTimeMap.StreamPoint
-                    {
-                        guid = Guid.Parse(id),
-                        latitude = geolocation.Latitude,
-                        longitude = geolocation.Longitude,
-                        type = type
-                    }
-                );
-            }
-            else
-            {
-                await this._map.Geometric.Points.add([
-                    new RealTimeMap.StreamPoint
-                    {
-                        guid = Guid.Parse(id),
-                        latitude = geolocation.Latitude,
-                        longitude = geolocation.Longitude,
-                        type = type
-                    }
-                ]);
-            }
-        }
-
-        _map.Geometric.Points.changeExtentWhenAddPoints = false;
     }
 }
