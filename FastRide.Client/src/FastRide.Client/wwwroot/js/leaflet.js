@@ -26,11 +26,7 @@ window.leafletDispose = () => {
     //map.remove();
 }
 
-window.leafletInitMap = (dotNet, startLat, startLng, zoom = 13, clickCallback = 'OnClickMap') => {
-/*    if (map) {
-        map.remove();
-    }*/
-
+window.leafletInitMap = (dotNet, userId, startLat, startLng, img, zoom = 13, clickCallback = 'OnClickMap') => {
     onClickCallback = clickCallback;
     dotNetInstance = dotNet;
 
@@ -41,30 +37,42 @@ window.leafletInitMap = (dotNet, startLat, startLng, zoom = 13, clickCallback = 
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+    leafletAddUser(userId, startLat, startLng, img);
+
     map.on('click', onMapClick);
 }
 
 function onMapClick(e) {
     if (dotNetInstance) {
-        if (clickMarker && leafletIsSameLocation(clickMarker.getLatLng(), e.latlng)) {
-            map.removeLayer(clickMarker);
-            clickMarker = null;
-        } else {
-            if (clickMarker) {
-                map.removeLayer(clickMarker);
-            }
-            clickMarker = L.marker(e.latlng, {
-                icon: leafletCreateIcon("icons/pin.png")
-            }).addTo(map);
-        }
-        const latLng = clickMarker ==null ? null : { lat: clickMarker.getLatLng().lat, lng: clickMarker.getLatLng().lng };
+        const latLng = clickMarker && leafletIsSameLocation(clickMarker.getLatLng(), e.latlng) ? null : {
+            lat: e.latlng.lat,
+            lng: e.latlng.lng
+        };
         dotNetInstance.invokeMethodAsync(onClickCallback, latLng);
     }
 }
 
+window.leafletSetPinLocation = (e) => {
+    if (e == null) {
+        if(clickMarker) {
+            map.removeLayer(clickMarker);
+            clickMarker = null;
+        }
+        else{
+            return;
+        }
+    } else {
+        if (clickMarker) {
+            map.removeLayer(clickMarker);
+        }
+        clickMarker = L.marker(e.latlng, {
+            icon: leafletCreateIcon("icons/pin.png")
+        }).addTo(map);
+    }
+}
+
 window.leafletAddUser = (userId, lat, lng, imgUrl) => {
-    if (map == null)
-    {
+    if (map == null) {
         return;
     }
     if (userMarkers[userId]) {
@@ -79,8 +87,7 @@ window.leafletAddUser = (userId, lat, lng, imgUrl) => {
 }
 
 window.leafletRemoveUser = (userId) => {
-    if (map == null)
-    {
+    if (map == null) {
         return;
     }
     if (userMarkers[userId]) {
@@ -89,22 +96,29 @@ window.leafletRemoveUser = (userId) => {
     }
 }
 
-window.drawRoute = (startLat, startLng, endLat, endLng) => {
-    if (map == null)
-    {
+window.leafletDrawRoute = (startLat, startLng, endLat, endLng) => {
+    if (map == null) {
         return;
     }
     if (routeControl) {
-        map.removeControl(routeControl);
-    }
-
-    routeControl = L.Routing.control({
-        waypoints: [
+        routeControl.setWaypoints([
             L.latLng(startLat, startLng),
             L.latLng(endLat, endLng)
-        ],
-        routeWhileDragging: false,
-        draggableWaypoints: false,
-        addWaypoints: false
-    }).addTo(map);
+        ]);
+    }
+else {
+        routeControl = L.Routing.control({
+            waypoints: [
+                L.latLng(startLat, startLng),
+                L.latLng(endLat, endLng)
+            ],
+            routeWhileDragging: true,
+            lineOptions: {
+                styles: [{color: 'blue', opacity: 1, weight: 5}]
+            },
+            createMarker: function () {
+                return null;
+            },
+        }).addTo(map);
+    }
 }

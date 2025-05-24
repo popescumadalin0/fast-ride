@@ -29,8 +29,5 @@
 
 <Map @ref="@_map"
      OnClickMap="@MapClicked"
-     CurrentGeolocation="@CurrentPositionState.Geolocation"
-     Drivers="@_drivers"
-     UserId="@_userId"
-     InCar="@(CurrentRideState.State >= RideStatus.DriverGoingToDestination)">
+     OnMapRendered="OnMapRenderedAsync">
 </Map>

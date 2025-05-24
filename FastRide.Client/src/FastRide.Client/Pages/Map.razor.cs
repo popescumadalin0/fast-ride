@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
 namespace FastRide.Client.Pages;
 
 public partial class Map : ComponentBase, IAsyncDisposable
 {
+    [Parameter] public Action<Geolocation> OnClickMap { get; set; }
+
+    [Parameter] public Func<Task> OnMapRendered { get; set; }
+    
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
     [Inject] private IJSRuntime JsRuntime { get; set; }
 
     [Inject] private IGeolocationService GeolocationService { get; set; }
-
-    [Parameter] public Dictionary<string, Geolocation> Drivers { get; set; }
-
-    [Parameter] public Geolocation CurrentGeolocation { get; set; }
-
-    [Parameter] public Action<Geolocation> OnClickMap { get; set; }
-
-    [Parameter] public bool InCar { get; set; }
-
-    [Parameter] public string UserId { get; set; }
-
+    
     [Inject] private ILocationService LocationService { get; set; }
 
+    private Dictionary<string, Geolocation> _drivers = new ();
+    
     public string Locality { get; set; }
-
-    private bool isInitialized;
-
+    
     private Dictionary<string, string> _assets = new()
     {
         { "driver", "icons/driver.png" },
@@ -45,57 +43,93 @@ public partial class Map : ComponentBase, IAsyncDisposable
     {
         await JsRuntime.InvokeVoidAsync("window.leafletDispose");
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            CurrentGeolocation = await GeolocationService.GetGeolocationAsync();
+            var currentGeolocation = await GeolocationService.GetGeolocationAsync();
 
             _dotNetObjectReference = DotNetObjectReference.Create(this);
+            
+            var auth = await AuthenticationState;
+            var userId = auth.User.Identity?.IsAuthenticated ?? false
+                ? auth.User.Claims.Single(x => x.Type == "sub").Value
+                : Guid.Empty.ToString();
 
             await JsRuntime.InvokeVoidAsync(
                 "window.leafletInitMap",
                 _dotNetObjectReference,
-                CurrentGeolocation.Latitude,
-                CurrentGeolocation.Longitude,
+                userId,
+                currentGeolocation.Latitude,
+                currentGeolocation.Longitude,
+                _assets["human"],
                 18,
                 nameof(OnClickMapEvent));
 
-            Locality = await LocationService.GetLocalityByLatLongAsync(CurrentGeolocation.Latitude,
-                CurrentGeolocation.Longitude);
+            Locality = await LocationService.GetLocalityByLatLongAsync(currentGeolocation.Latitude,
+                currentGeolocation.Longitude);
 
-            isInitialized = true;
+            if (OnClickMap != null)
+            {
+                await OnMapRendered.Invoke();
+            }
         }
+
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    protected override async Task OnParametersSetAsync()
+    public async Task SetUserLocationAsync(string userId, Geolocation geolocation, bool inCar)
     {
-        if(!isInitialized)
+        if (inCar)
         {
-            return;
-        }
-
-        if (InCar)
-        {
-            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", UserId, CurrentGeolocation.Latitude,
-                CurrentGeolocation.Longitude, _assets["currentCar"]);
+            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", userId, geolocation.Latitude,
+                geolocation.Longitude, _assets["currentCar"]);
         }
         else
         {
-            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", UserId, CurrentGeolocation.Latitude,
-                CurrentGeolocation.Longitude, _assets["human"]);
+            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", userId, geolocation.Latitude,
+                geolocation.Longitude, _assets["human"]);
         }
+    }
 
-        foreach (var driver in Drivers)
+    public async Task SetDriverLocationAsync(string driverId, Geolocation geolocation)
+    {
+        _drivers[driverId] = new Geolocation()
+        {
+            Longitude = geolocation.Longitude,
+            Latitude = geolocation.Latitude,
+        };
+
+        foreach (var driver in _drivers)
         {
             await JsRuntime.InvokeVoidAsync("window.leafletAddUser", driver.Key, driver.Value.Latitude,
                 driver.Value.Longitude, _assets["driver"]);
         }
-
-        await base.OnParametersSetAsync();
     }
+
+    public async Task SetPinLocationAsync(Geolocation location)
+    {
+        var setValue = location == null
+            ? null
+            : new
+            {
+                latlng = new LeafletGeolocation()
+                {
+                    lat = location.Latitude,
+                    lng = location.Longitude
+                }
+            };
+
+        await JsRuntime.InvokeVoidAsync("window.leafletSetPinLocation", setValue);
+    }
+    
+    public async Task DrawRouteAsync(Geolocation start, Geolocation end)
+    {
+        await JsRuntime.InvokeVoidAsync("window.leafletDrawRoute", start.Latitude, start.Longitude, end.Latitude,
+            end.Longitude);
+    }
+
 
     [JSInvokable]
     public void OnClickMapEvent(LeafletGeolocation geolocation)
@@ -104,11 +138,11 @@ public partial class Map : ComponentBase, IAsyncDisposable
         {
             if (geolocation == null)
             {
-                OnClickMap?.Invoke(null);
+                OnClickMap.Invoke(null);
             }
             else
             {
-                OnClickMap?.Invoke(new Geolocation()
+                OnClickMap.Invoke(new Geolocation()
                 {
                     Latitude = geolocation.lat,
                     Longitude = geolocation.lng

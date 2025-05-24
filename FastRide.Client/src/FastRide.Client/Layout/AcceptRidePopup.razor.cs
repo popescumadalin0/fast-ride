@@ -98,6 +98,7 @@ public partial class AcceptRidePopup : IDisposable
     private async Task AcceptRideAsync()
     {
         OverlayState.DataLoading = true;
+        OpenRide();
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         await SignalRService.AcceptRideAsync(_ride.InstanceId,
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
@@ -108,7 +109,6 @@ public partial class AcceptRidePopup : IDisposable
             _ride!.InstanceId);
         OverlayState.DataLoading = false;
         _ride = null;
-        OpenRide();
     }
 
     private async Task DiscardRideAsync()
