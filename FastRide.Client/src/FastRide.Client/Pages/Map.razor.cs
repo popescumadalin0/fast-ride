@@ -129,7 +129,11 @@ public partial class Map : ComponentBase, IAsyncDisposable
         await JsRuntime.InvokeVoidAsync("window.leafletDrawRoute", start.Latitude, start.Longitude, end.Latitude,
             end.Longitude);
     }
-
+    
+    public async Task RemoveRouteAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("window.leafletRemoveRoute");
+    }
 
     [JSInvokable]
     public void OnClickMapEvent(LeafletGeolocation geolocation)

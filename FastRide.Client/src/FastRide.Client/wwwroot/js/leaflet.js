@@ -30,6 +30,10 @@ window.leafletInitMap = (dotNet, userId, startLat, startLng, img, zoom = 13, cli
     onClickCallback = clickCallback;
     dotNetInstance = dotNet;
 
+    routeControl = null;
+    clickMarker = null;
+    userMarkers = {};
+
     map = L.map('map').setView([startLat, startLng], zoom);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -54,11 +58,10 @@ function onMapClick(e) {
 
 window.leafletSetPinLocation = (e) => {
     if (e == null) {
-        if(clickMarker) {
+        if (clickMarker) {
             map.removeLayer(clickMarker);
             clickMarker = null;
-        }
-        else{
+        } else {
             return;
         }
     } else {
@@ -105,8 +108,7 @@ window.leafletDrawRoute = (startLat, startLng, endLat, endLng) => {
             L.latLng(startLat, startLng),
             L.latLng(endLat, endLng)
         ]);
-    }
-else {
+    } else {
         routeControl = L.Routing.control({
             waypoints: [
                 L.latLng(startLat, startLng),
@@ -120,5 +122,14 @@ else {
                 return null;
             },
         }).addTo(map);
+    }
+}
+
+window.leafletRemoveRoute = () => {
+    if (map == null) {
+        return;
+    }
+    if (routeControl) {
+        map.removeControl(routeControl);
     }
 }

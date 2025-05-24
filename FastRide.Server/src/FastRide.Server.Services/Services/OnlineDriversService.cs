@@ -37,8 +37,9 @@ public class OnlineDriversService : IOnlineDriversService
                 .Select(driver => new
                 {
                     Driver = driver,
-                    Distance = _distanceService.GetDistanceBetweenLocations(geolocation,
-                        new Geolocation() { Latitude = driver.Latitude, Longitude = driver.Longitude })
+                    Distance = _distanceService.GetDistanceBetweenLocations(
+                        new Geolocation() { Latitude = driver.Latitude, Longitude = driver.Longitude },
+                        geolocation)
                 })
                 .OrderBy(d => d.Distance)
                 .Select(x => x.Driver).ToList();
@@ -97,13 +98,14 @@ public class OnlineDriversService : IOnlineDriversService
     {
         try
         {
-            var user = await _onlineDriverRepository.GetOnlineDriversByUserIdAsync(onlineDriver.Identifier.NameIdentifier);
+            var user = await _onlineDriverRepository.GetOnlineDriversByUserIdAsync(onlineDriver.Identifier
+                .NameIdentifier);
 
             if (user != null)
             {
                 return new ServiceResponse();
             }
-            
+
             await _onlineDriverRepository.AddOnlineDriverAsync(new OnlineDriversEntity()
             {
                 PartitionKey = onlineDriver.GroupName,

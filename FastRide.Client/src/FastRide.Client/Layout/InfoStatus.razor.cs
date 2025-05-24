@@ -14,13 +14,20 @@ public partial class InfoStatus : IDisposable
     
     public void Dispose()
     {
-        CurrentRideState.OnChange -= StateHasChanged;
+        CurrentRideState.OnChange -= CurrentRideStateOnChange;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        CurrentRideState.OnChange += StateHasChanged;
+        CurrentRideState.OnChange += CurrentRideStateOnChange;
 
         await base.OnInitializedAsync();
+    }
+    
+    private Task CurrentRideStateOnChange()
+    {
+        StateHasChanged();
+        
+        return Task.CompletedTask;
     }
 }

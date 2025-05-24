@@ -87,7 +87,7 @@ public class CalculateCurrentGeolocationService : IDisposable
 
             if (_currentRideState.State != RideStatus.None && _currentRideState.State != RideStatus.Finished)
             {
-                const double tolerance = 0.0015;
+                const double tolerance = 0.0005;
                 if (Math.Abs(geolocation.Latitude - _destinationState.Geolocation.Latitude) < tolerance &&
                     Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance &&
                     !_arrivedSent)

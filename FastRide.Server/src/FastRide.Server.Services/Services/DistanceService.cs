@@ -20,18 +20,22 @@ public class DistanceService(ILogger<DistanceService> logger)
     public double CalculatePricePerDistance(double distanceInKm, double durationInMinutes)
     {
         logger.LogInformation("Calculate price for current distance!");
-        return _basePrice + (_pricePerKm * distanceInKm) + (_pricePerMinute * durationInMinutes);
+        return _basePrice + _pricePerKm * distanceInKm + _pricePerMinute * durationInMinutes;
     }
 
     public double GetDistanceBetweenLocations(Geolocation locationA, Geolocation locationB)
     {
-        var dLat = ToRadians(locationB.Latitude - locationA.Latitude);
-        var dLon = ToRadians(locationB.Longitude - locationA.Longitude);
-        locationA.Latitude = ToRadians(locationA.Latitude);
-        locationB.Latitude = ToRadians(locationB.Latitude);
+        var lat1Rad = ToRadians(locationA.Latitude);
+        var lon1Rad = ToRadians(locationA.Longitude);
+        var lat2Rad = ToRadians(locationB.Latitude);
+        var lon2Rad = ToRadians(locationB.Longitude);
+
+        var dLat = lat2Rad - lat1Rad;
+        var dLon = lon2Rad - lon1Rad;
 
         var a = Math.Pow(Math.Sin(dLat / 2), 2) +
-                Math.Cos(locationA.Latitude) * Math.Cos(locationB.Latitude) * Math.Pow(Math.Sin(dLon / 2), 2);
+                Math.Cos(lat1Rad) * Math.Cos(lat2Rad) *
+                Math.Pow(Math.Sin(dLon / 2), 2);
 
         var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 

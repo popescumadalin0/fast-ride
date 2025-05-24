@@ -7,7 +7,7 @@ namespace FastRide.Client.Contracts;
 
 public interface ICurrentRideState
 {
-    event Action OnChange;
+    event Func<Task> OnChange;
     
     RideStatus State { get; }
     

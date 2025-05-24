@@ -42,7 +42,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
     {
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
         CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
-        CurrentRideState.OnChange -= StateHasChanged;
+        CurrentRideState.OnChange -= CurrentRideStateOnOnChange;
         DestinationState.OnChange -= DestinationStateOnChangeAsync;
     }
 
@@ -52,9 +52,20 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
         CurrentPositionState.OnChange += CurrentPositionStateOnChangeAsync;
 
-        CurrentRideState.OnChange += StateHasChanged;
+        CurrentRideState.OnChange += CurrentRideStateOnOnChange;
 
         DestinationState.OnChange += DestinationStateOnChangeAsync;
+
+        StateHasChanged();
+    }
+
+    private async Task CurrentRideStateOnOnChange()
+    {
+        if (CurrentRideState.State == RideStatus.None)
+        {
+            await _map.RemoveRouteAsync();
+            DestinationState.Geolocation = null;
+        }
 
         StateHasChanged();
     }
@@ -82,7 +93,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
             }
         }
     }
-    
+
     private async Task CurrentPositionStateOnChangeAsync()
     {
         if (!_isInitialized)
@@ -103,17 +114,11 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
         if (role == UserType.User.ToString())
         {
-            inCar = CurrentRideState.State >= RideStatus.DriverGoingToUser &&
-                    CurrentRideState.State != RideStatus.None &&
-                    CurrentRideState.State != RideStatus.Finished &&
-                    CurrentRideState.State != RideStatus.Cancelled;
+            inCar = CurrentRideState.State is RideStatus.GoingToUser or RideStatus.GoingToDestination;
         }
         else
         {
-            inCar = CurrentRideState.State >= RideStatus.DriverGoingToDestination &&
-                    CurrentRideState.State != RideStatus.None &&
-                    CurrentRideState.State != RideStatus.Finished &&
-                    CurrentRideState.State != RideStatus.Cancelled;
+            inCar = CurrentRideState.State is RideStatus.DriverGoingToDestination or RideStatus.DriverGoingToUser;
         }
 
         await _map.SetUserLocationAsync(userId, CurrentPositionState.Geolocation,

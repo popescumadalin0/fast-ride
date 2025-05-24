@@ -27,7 +27,7 @@ public class CurrentRideState : ICurrentRideState
         _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public event Action OnChange;
+    public event Func<Task> OnChange;
 
     public RideStatus State
     {
@@ -165,9 +165,6 @@ public class CurrentRideState : ICurrentRideState
 
                             break;
                         }
-                        case InternRideStatus.Finished:
-                        case InternRideStatus.Cancelled:
-                        case InternRideStatus.None:
                         default:
                             InstanceId = null;
                             State = State;

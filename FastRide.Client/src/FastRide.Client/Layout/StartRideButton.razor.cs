@@ -63,7 +63,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         SignalRService.RideCreated -= RideCreated;
 
-        CurrentRideState.OnChange -= StateHasChanged;
+        CurrentRideState.OnChange -= CurrentRideStateOnChange;
 
         await BrowserViewportService.UnsubscribeAsync(this);
     }
@@ -71,6 +71,13 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
     private async Task DestinationStateOnOnChange()
     {
         await InvokeAsync(StateHasChanged);
+    }
+    
+    private Task CurrentRideStateOnChange()
+    {
+        StateHasChanged();
+        
+        return Task.CompletedTask;
     }
 
     protected override void OnInitialized()
@@ -81,7 +88,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         SignalRService.RideCreated += RideCreated;
         
-        CurrentRideState.OnChange += StateHasChanged;
+        CurrentRideState.OnChange += CurrentRideStateOnChange;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
