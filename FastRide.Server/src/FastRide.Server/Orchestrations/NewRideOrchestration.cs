@@ -37,7 +37,7 @@ public class NewRideOrchestration
         if (priceCalculated == 0)
         {
             _logger.LogInformation($"The ride was canceled!");
-            await CancelWorkflow(context, input);
+            await CancelWorkflow(context, input, CompleteStatus.Cancelled);
 
             return;
         }
@@ -50,7 +50,7 @@ public class NewRideOrchestration
         if (!paymentConfirmed)
         {
             _logger.LogInformation($"The ride was canceled!");
-            await CancelWorkflow(context, input);
+            await CancelWorkflow(context, input, CompleteStatus.PaymentRefused);
             return;
         }
 
@@ -70,7 +70,7 @@ public class NewRideOrchestration
                 });
 
             _logger.LogInformation($"The ride was canceled!");
-            await CancelWorkflow(context, input);
+            await CancelWorkflow(context, input, CompleteStatus.DriverNotFound);
 
             return;
         }
@@ -190,6 +190,7 @@ public class NewRideOrchestration
     private static async Task FinishWorkflow(TaskOrchestrationContext context, NewRideInput input)
     {
         input.Status = InternRideStatus.Finished;
+        input.CompleteStatus = CompleteStatus.Completed;
         context.SetCustomStatus(input);
         await context.CallActivityAsync(nameof(DelayActivity),
             new DelayActivityInput()
@@ -205,9 +206,10 @@ public class NewRideOrchestration
             });
     }
 
-    private static async Task CancelWorkflow(TaskOrchestrationContext context, NewRideInput input)
+    private static async Task CancelWorkflow(TaskOrchestrationContext context, NewRideInput input, CompleteStatus completeStatus)
     {
         input.Status = InternRideStatus.Cancelled;
+        input.CompleteStatus = completeStatus;
         context.SetCustomStatus(input);
         await context.CallActivityAsync(nameof(DelayActivity),
             new DelayActivityInput()
@@ -219,7 +221,7 @@ public class NewRideOrchestration
         await context.CallActivityAsync(nameof(DelayActivity),
             new DelayActivityInput()
             {
-                Seconds = 10
+                Seconds = 35
             });
     }
 }

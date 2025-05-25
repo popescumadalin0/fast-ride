@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Models;
 
@@ -44,5 +45,5 @@ public interface ILocationService
     /// <param name="city"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    Task<List<OpenStreetMapResponse>> GetAddressesBySuggestions(string city, string query = "strada");
+    Task<List<OpenStreetMapResponse>> GetAddressesBySuggestions(string city, string query,  CancellationToken cancellationToken = default);
 }

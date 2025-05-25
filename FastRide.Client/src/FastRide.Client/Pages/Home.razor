@@ -10,19 +10,18 @@
 {
     <div class="search-destination">
         <MudStack Style="width: 70dvw">
-            <MudAutocomplete T="OpenStreetMapResponse"
+            <MudAutocomplete T="string"
                              Label="Search your destination..."
-                             ToStringFunc="@(x => x.display_name)"
-                             Value="@_selectedAddress"
-                             ValueChanged="OnAutoCompleteValueChanged"
+                             Value="@_destinationAddress"
+                             ValueChanged="@ValueHasChanged"
                              SearchFunc="@Search"
-                             FullWidth
-                             Dense
+                             TextChanged="@TextHasChanged"
+                             Text="@_destinationAddressText"
                              SelectValueOnTab
+                             ShowProgressIndicator
                              Variant="Variant.Filled"
-                             DebounceInterval="500"
-                             AdornmentIcon="@Icons.Material.Filled.Search"
-                             ShowProgressIndicator="true"/>
+                             AdornmentIcon="@Icons.Material.Filled.Search"/>
+
         </MudStack>
     </div>
 }

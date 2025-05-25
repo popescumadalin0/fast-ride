@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FastRide.Client.Components;
 using FastRide.Client.Contracts;
@@ -29,6 +30,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
     [Inject] private IBrowserViewportService BrowserViewportService { get; set; }
 
     [Inject] private ISnackbar Snackbar { get; set; }
+
+    [Inject] private ILocationService LocationService { get; set; }
 
     [Inject] private OverlayState OverlayState { get; set; }
 
@@ -67,16 +70,16 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         await BrowserViewportService.UnsubscribeAsync(this);
     }
-    
+
     private async Task DestinationStateOnOnChange()
     {
         await InvokeAsync(StateHasChanged);
     }
-    
+
     private Task CurrentRideStateOnChange()
     {
         StateHasChanged();
-        
+
         return Task.CompletedTask;
     }
 
@@ -87,7 +90,7 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
         DestinationState.OnChange += DestinationStateOnOnChange;
 
         SignalRService.RideCreated += RideCreated;
-        
+
         CurrentRideState.OnChange += CurrentRideStateOnChange;
     }
 
@@ -112,6 +115,10 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
 
         var currentLocation = CurrentPositionState.Geolocation;
 
+        var destination =
+            await LocationService.GetAddressByLatLongAsync(DestinationState.Geolocation.Latitude,
+                DestinationState.Geolocation.Longitude);
+        
         await SignalRService.CreateNewRideAsync(new NewRideInput()
         {
             Destination = new Geolocation()
@@ -129,7 +136,8 @@ public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserve
                 Email = email,
                 NameIdentifier = userId
             },
-            GroupName = groupName
+            GroupName = groupName,
+            AddressName = destination
         });
     }
 

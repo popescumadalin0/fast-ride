@@ -41,12 +41,17 @@ public class SignalRUserFunction
             var customStatus = JsonConvert.DeserializeObject<NewRideInput>(instance.SerializedCustomStatus!);
             if (customStatus.User.NameIdentifier == userId && customStatus.Status is InternRideStatus.NewRideAvailable
                     or InternRideStatus.GoingToUser
-                    or InternRideStatus.GoingToDestination)
+                    or InternRideStatus.GoingToDestination
+                    or InternRideStatus.Finished
+                    or InternRideStatus.Cancelled)
             {
                 groupName = instance.InstanceId;
             }
-            else if (customStatus.Driver.NameIdentifier == userId && customStatus.Status is InternRideStatus.GoingToUser
-                         or InternRideStatus.GoingToDestination)
+            else if (customStatus.Driver?.NameIdentifier == userId && customStatus.Status is InternRideStatus.GoingToUser
+                         or InternRideStatus.GoingToDestination
+                         or InternRideStatus.Finished
+                         or InternRideStatus.Cancelled
+                         )
             {
                 groupName = instance.InstanceId;
             }

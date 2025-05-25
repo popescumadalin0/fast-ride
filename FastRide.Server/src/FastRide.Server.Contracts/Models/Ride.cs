@@ -16,6 +16,8 @@ public class Ride
     public double StartPointLng { get; set; }
 
     public DateTime TimeStamp { get; set; }
+    
+    public string AddressName { get; set; }
 
     public double Cost { get; set; }
 
@@ -24,4 +26,6 @@ public class Ride
     public UserIdentifier User { get; set; }
 
     public InternRideStatus Status { get; set; }
+    
+    public CompleteStatus CompleteStatus { get; set; }
 }

@@ -106,10 +106,12 @@ public class GeolocationService : IGeolocationService
 
     private async ValueTask RequestGeoLocationAsync(bool enableHighAccuracy, int maximumAgeInMilliseconds)
     {
+        #if DEBUG
         if (await HandleGeolocationMockAsync())
         {
             return;
         }
+        #endif
 
         await _jsRuntime.InvokeVoidAsync("window.getGeolocation",
             _dotNetObjectReference,

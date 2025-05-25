@@ -98,6 +98,8 @@ public class RideFunction
                 StartPointLat = customStatus.StartPoint.Latitude,
                 StartPointLng = customStatus.StartPoint.Longitude,
                 TimeStamp = instance.LastUpdatedAt.UtcDateTime,
+                AddressName = customStatus.AddressName,
+                CompleteStatus = customStatus.CompleteStatus,
             });
         }
 

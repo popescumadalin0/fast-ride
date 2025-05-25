@@ -17,5 +17,9 @@ public class NewRideInput
     
     public double Cost  { get; set; }
     
+    public string AddressName { get; set; }
+    
     public InternRideStatus Status { get; set; }
+    
+    public CompleteStatus CompleteStatus { get; set; }
 }

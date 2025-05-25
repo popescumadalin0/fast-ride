@@ -22,7 +22,7 @@ public partial class History : IDisposable
     [Inject] private ISnackbar SnackBar { get; set; }
 
     [Inject] private OverlayState OverlayState { get; set; }
-    
+
     public void Dispose()
     {
         OverlayState.OnChange -= StateHasChanged;
@@ -37,6 +37,7 @@ public partial class History : IDisposable
         if (!response.Success)
         {
             SnackBar.Add("Something went wrong", Severity.Error);
+            OverlayState.DataLoading = false;
             return;
         }
 
@@ -44,25 +45,17 @@ public partial class History : IDisposable
 
         if (response.Response.Count != 0)
         {
-            foreach (var ride in response.Response)
+            rides.AddRange(response.Response.Select(ride => new RideInformation()
             {
-                var destination =
-                    await LocationService.GetAddressByLatLongAsync(ride.DestinationLat, ride.DestinationLng);
-                rides.Add(new RideInformation()
-                {
-                    TimeStamp = ride.TimeStamp,
-                    Cost = ride.Cost,
-                    Destination = destination,
-                    Id = ride.Id,
-                    DestinationLocation = new Geolocation()
-                    {
-                        Longitude = ride.DestinationLng,
-                        Latitude = ride.DestinationLat
-                    },
-                });
-            }
+                TimeStamp = ride.TimeStamp,
+                Cost = ride.Cost,
+                Destination = ride.AddressName,
+                Id = ride.Id,
+                DestinationLocation = new Geolocation() { Longitude = ride.DestinationLng, Latitude = ride.DestinationLat },
+                CompleteStatus = ride.CompleteStatus
+            }));
 
-            _rideGroups = rides.GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
+            _rideGroups = rides.OrderBy(x => x.TimeStamp).GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
         }
 
         OverlayState.DataLoading = false;

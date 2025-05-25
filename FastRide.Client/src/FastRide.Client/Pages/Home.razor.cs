@@ -32,7 +32,11 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
-    private OpenStreetMapResponse _selectedAddress = new();
+    private Dictionary<string, Geolocation> _locations = new();
+
+    private string _destinationAddress;
+    
+    private string _destinationAddressText;
 
     private Map _map = new();
 
@@ -70,11 +74,22 @@ public partial class Home : ComponentBase, IAsyncDisposable
         StateHasChanged();
     }
 
-    private async Task<IEnumerable<OpenStreetMapResponse>> Search(string value, CancellationToken token)
+    private async Task<IEnumerable<string>> Search(string value, CancellationToken token)
     {
-        var suggestions = await LocationService.GetAddressesBySuggestions(_map.Locality, value);
+        if (string.IsNullOrEmpty(value))
+        {
+            _locations.Clear();
+            return Array.Empty<string>();
+        }
 
-        return suggestions;
+        var suggestions = await LocationService.GetAddressesBySuggestions(_map.Locality, value, token);
+        _locations = suggestions.ToDictionary(x => x.display_name, x => new Geolocation()
+        {
+            Latitude = x.lat,
+            Longitude = x.lon
+        });
+
+        return _locations.Keys;
     }
 
     private async Task NotifyDriverGeolocationAsync(NotifyUserGeolocation input)
@@ -154,15 +169,18 @@ public partial class Home : ComponentBase, IAsyncDisposable
         }
 
         await _map.SetPinLocationAsync(DestinationState.Geolocation);
-    }
 
-    private void OnAutoCompleteValueChanged(OpenStreetMapResponse obj)
+        _destinationAddress = null;
+    }
+    
+    private void ValueHasChanged(string obj)
     {
-        _selectedAddress = obj;
-        DestinationState.Geolocation = new Geolocation()
-        {
-            Latitude = obj.lat,
-            Longitude = obj.lon
-        };
+        DestinationState.Geolocation = _locations[obj];
+        _destinationAddress = obj;
+    }
+    
+    private void TextHasChanged(string obj)
+    {
+        _destinationAddressText = obj;
     }
 }

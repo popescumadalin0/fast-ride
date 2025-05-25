@@ -12,6 +12,8 @@ public partial class MainLayout : IDisposable
     
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
+    private bool _developmentMode;
+    
     public void Dispose()
     {
         OverlayState.OnChange -= StateHasChanged;
@@ -20,5 +22,11 @@ public partial class MainLayout : IDisposable
     protected override async Task OnInitializedAsync()
     {
         OverlayState.OnChange += StateHasChanged;
+        
+        #if DEBUG
+            _developmentMode = true;
+        #endif
+
+        await base.OnInitializedAsync();
     }
 }

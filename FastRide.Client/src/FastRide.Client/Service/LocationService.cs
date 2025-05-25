@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using FastRide.Client.Models;
@@ -63,13 +64,13 @@ public class LocationService : ILocationService
         return locality;
     }
 
-    public async Task<List<OpenStreetMapResponse>> GetAddressesBySuggestions(string city, string query = "strada")
+    public async Task<List<OpenStreetMapResponse>> GetAddressesBySuggestions(string city, string query, CancellationToken cancellationToken = default)
     {
         using var httpClient = new HttpClient();
         var response =
             await httpClient.GetAsync(
-                new Uri($"{_mapBaseUrl}/search?q={city} {query}&format=json&addressdetails=1"));
-        var json = await response.Content.ReadAsStringAsync();
+                new Uri($"{_mapBaseUrl}/search?q={city} {query}&format=json&addressdetails=1"), cancellationToken: cancellationToken);
+        var json = await response.Content.ReadAsStringAsync(cancellationToken);
         var result = JsonConvert.DeserializeObject<List<OpenStreetMapResponse>>(json);
 
         return result;

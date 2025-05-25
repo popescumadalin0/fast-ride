@@ -31,6 +31,8 @@ public partial class NavMenu : IAsyncDisposable
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
     [Inject] private ISnackbar Snackbar { get; set; }
+    
+    [Inject] private OverlayState OverlayState { get; set; }
 
     public async ValueTask DisposeAsync()
     {
@@ -102,6 +104,7 @@ public partial class NavMenu : IAsyncDisposable
 
     private async Task LogOutAsync()
     {
+        OverlayState.DataLoading = true;
         var auth = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         DestinationState.Geolocation = null;
         var userId = auth.User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
@@ -109,13 +112,16 @@ public partial class NavMenu : IAsyncDisposable
         await SignalRService.RemoveUserFromGroupAsync(userId, groupName);
         await SignalRService.JoinUserInGroupAsync(Constants.Constants.Guest, groupName);
         Navigation.NavigateToLogout("authentication/logout");
+        OverlayState.DataLoading = false;
     }
 
     private async Task LogInAsync()
     {
+        OverlayState.DataLoading = true;
         DestinationState.Geolocation = null;
         var groupName = await UserGroupService.GetCurrentUserGroupNameAsync();
         await SignalRService.RemoveUserFromGroupAsync(Constants.Constants.Guest, groupName);
         Navigation.NavigateToLogout("authentication/login");
+        OverlayState.DataLoading = false;
     }
 }
