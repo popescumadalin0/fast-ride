@@ -7,6 +7,7 @@ using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Models;
+using FastRide.Server.Services.Contracts;
 using Grpc.Core;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
@@ -17,10 +18,13 @@ namespace FastRide.Server.Orchestrations;
 public class NewRideOrchestration
 {
     private readonly ILogger<NewRideOrchestration> _logger;
+    
+    private readonly IUserService _userService;
 
-    public NewRideOrchestration(ILogger<NewRideOrchestration> logger)
+    public NewRideOrchestration(ILogger<NewRideOrchestration> logger, IUserService userService)
     {
         _logger = logger;
+        _userService = userService;
     }
 
     [Function(nameof(NewRideOrchestration))]
@@ -120,6 +124,19 @@ public class NewRideOrchestration
 
         return acccepted;
     }
+    
+    private static async Task<int> RatingStepAsync(TaskOrchestrationContext context, NewRideInput input)
+    {
+        await context.CallActivityAsync(nameof(SendRatingRequestActivity), new SendRatingRequestActivityInput()
+        {
+            InstanceId = context.InstanceId,
+            UserId = input.User.NameIdentifier,
+        });
+
+        var rating = await context.WaitForExternalEvent<int>(SignalRConstants.ClientSendRatingRequest);
+
+        return rating;
+    }
 
     private static async Task<string> FindDriverAsync(TaskOrchestrationContext context, Geolocation userPosition,
         Geolocation userDestination, string groupName)
@@ -187,7 +204,7 @@ public class NewRideOrchestration
         return string.Empty;
     }
     
-    private static async Task FinishWorkflow(TaskOrchestrationContext context, NewRideInput input)
+    private async Task FinishWorkflow(TaskOrchestrationContext context, NewRideInput input)
     {
         input.Status = InternRideStatus.Finished;
         input.CompleteStatus = CompleteStatus.Completed;
@@ -197,6 +214,18 @@ public class NewRideOrchestration
             {
                 Seconds = 25
             });
+        
+        var rating = await RatingStepAsync(context, input);
+
+        if (rating != 0)
+        {
+            var response = await _userService.UpdateUserRatingAsync(input.Driver.NameIdentifier, rating);
+            if (!response.Success)
+            {
+                _logger.LogError(response.ErrorMessage);
+            }
+        }
+        
         input.Status = InternRideStatus.None;
         context.SetCustomStatus(input);
         await context.CallActivityAsync(nameof(DelayActivity),

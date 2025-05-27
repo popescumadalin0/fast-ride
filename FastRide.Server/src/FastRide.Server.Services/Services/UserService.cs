@@ -125,25 +125,21 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<ServiceResponse> UpdateUserRatingAsync(UserRating userRating)
+    public async Task<ServiceResponse> UpdateUserRatingAsync(string userId, int rating)
     {
         try
         {
-            var actualUser = await _userRepository.GetUserAsync(userRating.User.NameIdentifier, userRating.User.Email);
+            var actualUser = await _userRepository.GetUserByUserNameIdentifierAsync(userId);
 
             if (actualUser == null)
             {
                 return new ServiceResponse(errorMessage: "User not found");
             }
 
-            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
+            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity() 
             {
-                PartitionKey = userRating.User.Email,
-                RowKey = userRating.User.NameIdentifier,
-                UserType = actualUser.UserType,
-                PhoneNumber = actualUser.PhoneNumber,
-                PictureUrl = actualUser.PictureUrl,
-                Rating = CalculateRating(actualUser.Rating, userRating.Rating)
+                RowKey = userId,
+                Rating = CalculateRating(actualUser.Rating, rating)
             });
 
             if (response.IsError)

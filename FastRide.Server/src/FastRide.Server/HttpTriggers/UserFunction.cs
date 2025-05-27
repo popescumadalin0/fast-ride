@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
 using FastRide.Server.Contracts.Models;
+using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.HttpResponse;
 using FastRide.Server.Services.Contracts;
 using FastRide.Server.Services.Enums;

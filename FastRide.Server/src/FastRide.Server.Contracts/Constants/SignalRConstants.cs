@@ -30,15 +30,18 @@ public class SignalRConstants
     public const string ClientNotifyUserGeolocation = "client.notify-user-geolocation";
 
     public const string ServerNotifyUserGeolocation = "server.notify-user-geolocation";
-    
+
     public const string ServerNotifyState = "server.notify-state";
 
     public const string ServerNotifyDriverTimeout = "server.notify-driver-timeout";
-    
+
     public const string ServerCancelRide = "server.cancel-ride";
-    
+
     public const string ClientCancelRide = "client.cancel-ride";
-    
+
     public const string ClientDriverArrived = "client.driver-arrived";
 
+    public const string ServerSendRatingRequest = "server.send-rating-request";
+
+    public const string ClientSendRatingRequest = "client.send-rating-request";
 }
