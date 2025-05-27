@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.Models;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;

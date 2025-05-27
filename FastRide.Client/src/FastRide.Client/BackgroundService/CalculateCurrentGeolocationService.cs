@@ -3,12 +3,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
 using Microsoft.AspNetCore.Components.Authorization;
-using Timer = System.Timers.Timer;
 
 namespace FastRide.Client.BackgroundService;
 

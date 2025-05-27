@@ -3,12 +3,10 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.State;
 using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
-using Microsoft.JSInterop;
 using MudBlazor;
 
 namespace FastRide.Client.Components;

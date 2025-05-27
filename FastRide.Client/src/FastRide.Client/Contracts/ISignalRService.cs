@@ -16,6 +16,8 @@ public interface ISignalRService : IAsyncDisposable
     event Func<SendPaymentIntent, Task> SendPaymentIntentReceived;
 
     event Func<DriverAcceptRide, Task> DriverAcceptRide;
+    
+    event Func<RatingRequest, Task> SendRating;
 
     event Func<Task> DriverRideAccepted;
     
@@ -34,6 +36,8 @@ public interface ISignalRService : IAsyncDisposable
     Task ConfirmPriceCalculatedAsync(string instanceId, string priceConfirmed);
 
     Task ConfirmPaymentAsync(string instanceId, bool paymentSuccess);
+    
+    Task SendRatingAsync(string instanceId, int rating);
     
     Task JoinUserInGroupAsync(string userId, string groupName);
 

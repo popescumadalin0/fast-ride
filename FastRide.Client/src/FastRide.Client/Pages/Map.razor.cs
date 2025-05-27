@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;

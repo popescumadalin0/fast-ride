@@ -9,9 +9,9 @@ namespace FastRide.Client.Layout;
 public partial class MainLayout : IDisposable
 {
     [Inject] private OverlayState OverlayState { get; set; }
-    
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    
     private bool _developmentMode;
     
     public void Dispose()
@@ -22,10 +22,10 @@ public partial class MainLayout : IDisposable
     protected override async Task OnInitializedAsync()
     {
         OverlayState.OnChange += StateHasChanged;
-        
-        #if DEBUG
-            _developmentMode = true;
-        #endif
+
+#if DEBUG
+        _developmentMode = true;
+#endif
 
         await base.OnInitializedAsync();
     }

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FastRide.Client.Components;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;

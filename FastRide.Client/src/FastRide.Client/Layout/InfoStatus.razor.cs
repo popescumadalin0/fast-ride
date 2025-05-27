@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.State;
 using Microsoft.AspNetCore.Components;
 
 namespace FastRide.Client.Layout;

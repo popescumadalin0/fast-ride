@@ -3,10 +3,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
-using FastRide.Client.Service;
 using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
-using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace FastRide.Client.State;

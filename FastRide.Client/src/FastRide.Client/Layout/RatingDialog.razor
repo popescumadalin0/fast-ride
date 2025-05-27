@@ -1,0 +1,10 @@
+﻿<MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <MudPaper Height="100px" Width="500px">
+        <MudCard class="m-1">
+            <MudRating SelectedValue="@_rating" SelectedValueChanged="RatingChangedAsync"></MudRating>
+
+            <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Clear"
+                           OnClick="@NoRatingAsync"></MudIconButton>
+        </MudCard>
+    </MudPaper>
+</MudPopover>

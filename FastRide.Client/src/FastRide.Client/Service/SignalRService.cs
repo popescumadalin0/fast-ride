@@ -35,6 +35,9 @@ public class SignalRService : ISignalRService
     public event Func<DriverAcceptRide, Task> DriverAcceptRide;
 
     /// <inheritdoc />
+    public event Func<RatingRequest, Task> SendRating;
+
+    /// <inheritdoc />
     public event Func<Task> DriverRideAccepted;
 
     /// <inheritdoc />
@@ -106,6 +109,15 @@ public class SignalRService : ISignalRService
                 }
             });
 
+        _connection.On<RatingRequest>(SignalRConstants.ServerSendRatingRequest,
+            async (payload) =>
+            {
+                if (SendRating != null!)
+                {
+                    await SendRating(payload);
+                }
+            });
+
         _connection.On<SendPaymentIntent>(SignalRConstants.ServerSendPaymentIntent,
             async (payload) =>
             {
@@ -150,7 +162,7 @@ public class SignalRService : ISignalRService
                     await NotifyState(x);
                 }
             });
-        
+
         _connection.On(SignalRConstants.ServerNotifyDriverTimeout,
             async () =>
             {
@@ -201,6 +213,11 @@ public class SignalRService : ISignalRService
     public async Task ConfirmPaymentAsync(string instanceId, bool paymentSuccess)
     {
         await _connection.SendAsync(SignalRConstants.ClientSendPaymentIntent, instanceId, paymentSuccess);
+    }
+
+    public async Task SendRatingAsync(string instanceId, int rating)
+    {
+        await _connection.SendAsync(SignalRConstants.ClientSendRatingRequest, instanceId, rating);
     }
 
     public async Task JoinUserInGroupAsync(string userId, string groupName)

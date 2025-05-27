@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -13,8 +11,6 @@ using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using MudBlazor;
-using Newtonsoft.Json.Linq;
 
 namespace FastRide.Client.Service;
 

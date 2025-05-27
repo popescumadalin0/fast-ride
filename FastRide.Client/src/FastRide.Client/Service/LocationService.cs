@@ -7,7 +7,6 @@ using FastRide.Client.Contracts;
 using FastRide.Client.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 
 namespace FastRide.Client.Service;
