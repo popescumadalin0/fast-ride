@@ -66,31 +66,6 @@ public partial class NavMenu : IAsyncDisposable
         CurrentRideState.OnChange += CurrentRideStateOnChange;
         SignalRService.SendRating += OpenRatingDialog;
 
-        var dialogOptions = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            Position = DialogPosition.Center,
-        };
-        var dialogParameters = new DialogParameters<DriverInformationDialog>
-        {
-            {
-                x => x.UserIdentifier, new UserIdentifier()
-                {
-                    NameIdentifier = "d69b1c1a-5abc-07fd-0581-42f8d305508b"
-                }
-            }
-        };
-
-
-        await DialogService.ShowAsync<DriverInformationDialog>("Your driver is on the way!", dialogParameters,
-            dialogOptions);
-
-
-        /*await DialogService.ShowAsync<RatingDialog>("Your driver is on the way!", new DialogParameters<RatingDialog>
-        {
-            { x => x.InstanceId, "123456789" }
-        }, dialogOptions);*/
-
         await base.OnInitializedAsync();
     }
 

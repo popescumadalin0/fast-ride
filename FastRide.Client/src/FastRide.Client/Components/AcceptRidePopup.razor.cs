@@ -98,6 +98,7 @@ public partial class AcceptRidePopup : IDisposable
             Destination = locationText,
             DestinationLocation = arg.DestinationGeolocation,
             InstanceId = arg.InstanceId,
+            User = arg.User
         };
         OpenRide();
     }
@@ -107,8 +108,8 @@ public partial class AcceptRidePopup : IDisposable
         OverlayState.DataLoading = true;
         OpenRide();
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        await SignalRService.AcceptRideAsync(_ride.InstanceId,
-            authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value, true);
+        await SignalRService.AcceptRideAsync(_ride.InstanceId, _ride.User.NameIdentifier, true);
+        
         await SignalRService.RemoveUserFromGroupAsync(
             authState.User.Claims.SingleOrDefault(x => x.Type == "sub")?.Value,
             await UserGroupService.GetCurrentUserGroupNameAsync());

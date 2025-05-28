@@ -11,4 +11,6 @@ public class DriverRideInformation
     public Geolocation DestinationLocation { get; set; }
     
     public double Distance { get; set; }
+    
+    public UserIdentifier User { get; set; }
 }

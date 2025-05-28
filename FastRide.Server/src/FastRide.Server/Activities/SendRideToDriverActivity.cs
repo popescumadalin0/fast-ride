@@ -39,7 +39,8 @@ public class SendRideToDriverActivity
                     InstanceId = input.RequestInput.InstanceId,
                     DestinationGeolocation = input.RequestInput.Destination,
                     Distance = _distanceService.GetDistanceBetweenLocations(input.RequestInput.UserGeolocation,
-                        input.RequestInput.Destination)
+                        input.RequestInput.Destination),
+                    User = input.User
                 }
             ],
             UserId = input.Driver.Identifier.NameIdentifier

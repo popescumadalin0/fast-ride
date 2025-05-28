@@ -61,7 +61,7 @@ public class NewRideOrchestration
         input.Status = InternRideStatus.NewRideAvailable;
         context.SetCustomStatus(input);
 
-        var driverId = await FindDriverAsync(context, input.StartPoint, input.Destination, input.GroupName);
+        var driverId = await FindDriverAsync(context, input);
 
         if (string.IsNullOrEmpty(driverId))
         {
@@ -138,8 +138,7 @@ public class NewRideOrchestration
         return rating;
     }
 
-    private static async Task<string> FindDriverAsync(TaskOrchestrationContext context, Geolocation userPosition,
-        Geolocation userDestination, string groupName)
+    private static async Task<string> FindDriverAsync(TaskOrchestrationContext context, NewRideInput input)
     {
         var retries = 5;
 
@@ -150,9 +149,9 @@ public class NewRideOrchestration
                 new FindDriverActivityInput()
                 {
                     InstanceId = context.InstanceId,
-                    UserGeolocation = userPosition,
-                    Destination = userDestination,
-                    GroupName = groupName,
+                    UserGeolocation = input.StartPoint,
+                    Destination = input.Destination, 
+                    GroupName = input.GroupName,
                     ExcludeDrivers = excludeDriver
                 });
             if (driver == null)
@@ -165,12 +164,13 @@ public class NewRideOrchestration
                 RequestInput = new FindDriverActivityInput()
                 {
                     InstanceId = context.InstanceId,
-                    UserGeolocation = userPosition,
-                    Destination = userDestination,
-                    GroupName = groupName,
-                    ExcludeDrivers = excludeDriver
+                    UserGeolocation = input.StartPoint,
+                    Destination = input.Destination,
+                    GroupName = input.GroupName,
+                    ExcludeDrivers = excludeDriver,
                 },
-                Driver = driver
+                Driver = driver,
+                User = input.User
             });
             
             var clientResponseTask =

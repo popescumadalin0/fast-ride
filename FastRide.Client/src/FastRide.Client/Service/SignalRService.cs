@@ -190,9 +190,9 @@ public class SignalRService : ISignalRService
         await _connection.SendAsync(SignalRConstants.ClientDriverArrived, groupName);
     }
 
-    public async Task AcceptRideAsync(string instanceId, string driverId, bool accepted)
+    public async Task AcceptRideAsync(string instanceId, string userId, bool accepted)
     {
-        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, instanceId, driverId, accepted);
+        await _connection.SendAsync(SignalRConstants.ClientDriverAcceptRide, instanceId, userId, accepted);
     }
 
     public async Task CreateNewRideAsync(NewRideInput rideInput)

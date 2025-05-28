@@ -55,7 +55,7 @@ public partial class History : IDisposable
                 CompleteStatus = ride.CompleteStatus
             }));
 
-            _rideGroups = rides.OrderBy(x => x.TimeStamp).GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
+            _rideGroups = rides.OrderByDescending(x => x.TimeStamp).GroupBy(x => x.TimeStamp.ToString("dd MMM, HH:mm"));
         }
 
         OverlayState.DataLoading = false;

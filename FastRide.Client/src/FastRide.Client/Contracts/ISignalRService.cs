@@ -45,7 +45,7 @@ public interface ISignalRService : IAsyncDisposable
     
     Task NotifyDriverArrivedAsync(string groupName);
 
-    Task AcceptRideAsync(string instanceId, string driverId, bool accepted);
+    Task AcceptRideAsync(string instanceId, string userId, bool accepted);
 
     Task CreateNewRideAsync(NewRideInput rideInput);
 
