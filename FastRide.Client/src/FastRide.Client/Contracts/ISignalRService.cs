@@ -19,7 +19,7 @@ public interface ISignalRService : IAsyncDisposable
     
     event Func<RatingRequest, Task> SendRating;
 
-    event Func<Task> DriverRideAccepted;
+    event Func<UserIdentifier, Task> DriverRideAccepted;
     
     event Func<Task> CancelRide;
     

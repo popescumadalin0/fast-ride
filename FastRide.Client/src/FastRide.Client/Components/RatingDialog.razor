@@ -1,0 +1,8 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudRating SelectedValue="@_rating" SelectedValueChanged="RatingChangedAsync"></MudRating>
+
+        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Clear"
+                       OnClick="@NoRatingAsync"></MudIconButton>
+    </DialogContent>
+</MudDialog>

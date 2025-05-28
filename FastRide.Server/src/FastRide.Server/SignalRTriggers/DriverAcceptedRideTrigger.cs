@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Constants;
+using FastRide.Server.Contracts.Models;
 using FastRide.Server.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask.Client;
@@ -38,7 +39,13 @@ public class DriverAcceptedRideTrigger
         {
             return new SignalRMessageAction(SignalRConstants.ServerDriverRideAccepted)
             {
-                Arguments = [],
+                Arguments =
+                [
+                    new UserIdentifier()
+                    {
+                        NameIdentifier = invocationContext.UserId,
+                    }
+                ],
                 UserId = userId,
             };
         }

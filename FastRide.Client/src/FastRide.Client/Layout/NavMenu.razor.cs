@@ -1,9 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FastRide.Client.Components;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Enums;
+using FastRide.Server.Contracts.Models;
+using FastRide.Server.Contracts.SignalRModels;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -30,13 +33,17 @@ public partial class NavMenu : IAsyncDisposable
     [Inject] private ICurrentRideState CurrentRideState { get; set; }
 
     [Inject] private ISnackbar Snackbar { get; set; }
-    
+
     [Inject] private OverlayState OverlayState { get; set; }
+
+    [Inject] private IDialogService DialogService { get; set; }
 
     public async ValueTask DisposeAsync()
     {
         DestinationState.OnChange -= DestinationStateOnOnChange;
         CurrentRideState.OnChange -= CurrentRideStateOnChange;
+        SignalRService.SendRating -= OpenRatingDialog;
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity?.IsAuthenticated ?? false)
         {
@@ -57,14 +64,22 @@ public partial class NavMenu : IAsyncDisposable
         DestinationState.OnChange += DestinationStateOnOnChange;
         SignalRService.CancelRide += CancelRideAsync;
         CurrentRideState.OnChange += CurrentRideStateOnChange;
+        SignalRService.SendRating += OpenRatingDialog;
+
+        await DialogService.ShowAsync<RatingDialog>("TEst your driver", new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            Position = DialogPosition.Center,
+        });
+
 
         await base.OnInitializedAsync();
     }
-    
+
     private Task CurrentRideStateOnChange()
     {
         StateHasChanged();
-        
+
         return Task.CompletedTask;
     }
 
@@ -97,8 +112,36 @@ public partial class NavMenu : IAsyncDisposable
         await SignalRService.CancelRideAsync(await UserGroupService.GetCurrentUserGroupNameAsync());
     }
 
-    private async Task DriverAcceptedRide()
+    private async Task DriverAcceptedRide(UserIdentifier userId)
     {
+        var dialogOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            Position = DialogPosition.Center,
+        };
+        var dialogParameters = new DialogParameters<DriverInformationDialog>
+        {
+            { x => x.UserIdentifier, userId }
+        };
+
+        await DialogService.ShowAsync<DriverInformationDialog>("Your driver is on the way!", dialogParameters,
+            dialogOptions);
+    }
+
+    private async Task OpenRatingDialog(RatingRequest request)
+    {
+        var dialogParameters = new DialogParameters<RatingDialog>
+        {
+            { x => x.InstanceId, request.InstanceId }
+        };
+
+        var dialogOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            Position = DialogPosition.Center,
+        };
+
+        await DialogService.ShowAsync<RatingDialog>("Rate your driver", dialogParameters, dialogOptions);
     }
 
     private async Task LogOutAsync()

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FastRide.Client.Contracts;
 using Microsoft.AspNetCore.Components;
 
-namespace FastRide.Client.Layout;
+namespace FastRide.Client.Components;
 
 public partial class InfoStatus : IDisposable
 {

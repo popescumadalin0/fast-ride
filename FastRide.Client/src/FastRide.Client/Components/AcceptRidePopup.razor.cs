@@ -10,7 +10,7 @@ using FastRide.Server.Contracts.SignalRModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace FastRide.Client.Layout;
+namespace FastRide.Client.Components;
 
 public partial class AcceptRidePopup : IDisposable
 {

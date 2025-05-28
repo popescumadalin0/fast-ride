@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FastRide.Client.Components;
 using FastRide.Client.Contracts;
 using FastRide.Client.State;
 using FastRide.Server.Contracts.Models;
@@ -12,7 +11,7 @@ using MudBlazor;
 using MudBlazor.Services;
 using Geolocation = FastRide.Server.Contracts.Models.Geolocation;
 
-namespace FastRide.Client.Layout;
+namespace FastRide.Client.Components;
 
 public partial class StartRideButton : IAsyncDisposable, IBrowserViewportObserver
 {

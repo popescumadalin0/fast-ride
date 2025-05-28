@@ -1,0 +1,13 @@
+﻿<MudDialog>
+    <DialogContent>
+        <img class="nav-link profile-image"
+             src="@_user.PictureUrl"
+             alt="@_user.Identifier.Email"/>
+        <div class="d-flex flex-column">
+            <div class="ellipsis-text destination-width fw-bold"
+                 title="@_user.Identifier.Email">@_user.Identifier.Email</div>
+            <spam class="text-muted">@_user.PhoneNumber</spam>
+        </div>
+        <MudRating SelectedValue="@(int)_user.Rating" ReadOnly></MudRating>
+    </DialogContent>
+</MudDialog>

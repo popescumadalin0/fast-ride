@@ -38,7 +38,7 @@ public class SignalRService : ISignalRService
     public event Func<RatingRequest, Task> SendRating;
 
     /// <inheritdoc />
-    public event Func<Task> DriverRideAccepted;
+    public event Func<UserIdentifier, Task> DriverRideAccepted;
 
     /// <inheritdoc />
     public event Func<Task> CancelRide;
@@ -136,12 +136,12 @@ public class SignalRService : ISignalRService
                 }
             });
 
-        _connection.On(SignalRConstants.ServerDriverRideAccepted,
-            async () =>
+        _connection.On<UserIdentifier>(SignalRConstants.ServerDriverRideAccepted,
+            async (user) =>
             {
                 if (DriverRideAccepted != null!)
                 {
-                    await DriverRideAccepted();
+                    await DriverRideAccepted(user);
                 }
             });
 

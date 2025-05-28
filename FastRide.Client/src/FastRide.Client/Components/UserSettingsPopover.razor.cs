@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
-namespace FastRide.Client.Layout;
+namespace FastRide.Client.Components;
 
 public partial class UserSettingsPopover
 {

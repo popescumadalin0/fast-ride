@@ -15,13 +15,26 @@ public class UserRepository : IUserRepository
     {
         this._userTable = userTable;
     }
-    
+
     public async Task<UserEntity> GetUserAsync(string nameIdentifier, string email)
     {
         if (!Guid.TryParse(nameIdentifier, out var id))
         {
             id = nameIdentifier.GenerateGuidFromString();
         }
+
+        if (email == null)
+        {
+            var userResponse = _userTable.GetBy(x => x.RowKey == id.ToString());
+            return userResponse.SingleOrDefault();
+        }
+
+        if (nameIdentifier == null)
+        {
+            var userResponse = _userTable.GetBy(x => x.PartitionKey == email);
+            return userResponse.SingleOrDefault();
+        }
+
         var user = await _userTable.GetAsync(email, id.ToString());
         return user is not { HasValue: true } ? null : user.Value;
     }
@@ -32,7 +45,8 @@ public class UserRepository : IUserRepository
         {
             id = nameIdentifier.GenerateGuidFromString();
         }
-        var user = _userTable.GetBy(x=> x.RowKey == id.ToString());
+
+        var user = _userTable.GetBy(x => x.RowKey == id.ToString());
         return await Task.FromResult(user.SingleOrDefault());
     }
 
