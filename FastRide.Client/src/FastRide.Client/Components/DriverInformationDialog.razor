@@ -1,13 +1,18 @@
 ﻿<MudDialog>
     <DialogContent>
-        <img class="nav-link profile-image"
-             src="@_user.PictureUrl"
-             alt="@_user.Identifier.Email"/>
-        <div class="d-flex flex-column">
-            <div class="ellipsis-text destination-width fw-bold"
-                 title="@_user.Identifier.Email">@_user.Identifier.Email</div>
-            <spam class="text-muted">@_user.PhoneNumber</spam>
+        <MudImage Src="@_user.PictureUrl" 
+                  Alt="User picture"
+                  Elevation="25"
+                  Class="rounded-lg"/>
+        <div class="d-flex flex-column py-1">
+            <div class="fw-bold">
+                @_user.UserName
+            </div>
+            <div class="fw-bold">
+                @_user.Identifier?.Email
+            </div>
+            <span class="text-muted">@_user.PhoneNumber</span>
         </div>
-        <MudRating SelectedValue="@(int)_user.Rating" ReadOnly></MudRating>
+        <MudRating SelectedValue="@((int)_user.Rating)" Disabled></MudRating>
     </DialogContent>
 </MudDialog>

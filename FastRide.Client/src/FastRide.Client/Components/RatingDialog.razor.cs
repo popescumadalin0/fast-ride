@@ -18,10 +18,6 @@ public partial class RatingDialog : IDisposable
 
     private int _rating;
 
-    public void Dispose()
-    {
-    }
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -43,5 +39,10 @@ public partial class RatingDialog : IDisposable
         await SignalRService.SendRatingAsync(InstanceId, rating);
 
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    public void Dispose()
+    {
+        MudDialog?.Dispose();
     }
 }

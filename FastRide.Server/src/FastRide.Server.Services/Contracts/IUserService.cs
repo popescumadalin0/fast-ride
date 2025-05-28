@@ -7,7 +7,7 @@ namespace FastRide.Server.Services.Contracts;
 
 public interface IUserService
 {
-    Task<ServiceResponse<User>> GetUserAsync(UserIdentifier user);
+    Task<ServiceResponse<User>> GetUserAsync(UserIdentifier user, string name = default);
     
     Task<ServiceResponse<User>> GetUserByUserIdAsync(string userId);
     

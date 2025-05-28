@@ -21,7 +21,7 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<User>> GetUserAsync(UserIdentifier user)
+    public async Task<ServiceResponse<User>> GetUserAsync(UserIdentifier user, string name = default)
     {
         try
         {
@@ -34,6 +34,7 @@ public class UserService : IUserService
                     UserType = UserType.User,
                     PartitionKey = user.Email,
                     RowKey = user.NameIdentifier,
+                    UserName = name,
                 };
                 var registerUser = await _userRepository.AddOrUpdateUserAsync(actualUser);
 
@@ -54,6 +55,7 @@ public class UserService : IUserService
                 Rating = actualUser.Rating,
                 PhoneNumber = actualUser.PhoneNumber,
                 PictureUrl = actualUser.PictureUrl,
+                UserName = actualUser.UserName,
             });
         }
         catch (Exception ex)
@@ -80,6 +82,7 @@ public class UserService : IUserService
                 Rating = actualUser.Rating,
                 PhoneNumber = actualUser.PhoneNumber,
                 PictureUrl = actualUser.PictureUrl,
+                UserName = actualUser.UserName,
             });
         }
         catch (Exception ex)
@@ -109,6 +112,7 @@ public class UserService : IUserService
                 Rating = actualUser.Rating,
                 PhoneNumber = updateUserPayload.PhoneNumber,
                 PictureUrl = pictureUrl,
+                UserName = actualUser.UserName,
             });
 
             if (response.IsError)

@@ -62,12 +62,14 @@ public class AuthenticationMiddleware : IFunctionsWorkerMiddleware
             
             var email = payload.Email;
             var nameIdentifier = payload.Subject;
-
+            var name = payload.Name;
+            
             var user = await _userService.GetUserAsync(new UserIdentifier()
             {
                 Email = email,
                 NameIdentifier = nameIdentifier
-            });
+            },
+            name);
 
             if (!user.Success)
             {

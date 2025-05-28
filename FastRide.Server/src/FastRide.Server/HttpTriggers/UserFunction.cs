@@ -36,10 +36,11 @@ public class UserFunction
         _logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger function processed a request.");
 
         var response = await _userService.GetUserAsync(new UserIdentifier()
-        {
-            NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
-            Email = req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
-        });
+            {
+                NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
+                Email = req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
+            },
+            req.HttpContext.User.Claims.Single(x => x.Type == "name").Value);
 
         if (response.Success)
         {

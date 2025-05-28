@@ -1,14 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using FastRide.Client.Contracts;
+using FastRide.Server.Contracts.Enums;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
+using FastRide.Server.Sdk.Refit;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace FastRide.Client.Components;
 
-public partial class DriverInformationDialog
+public partial class DriverInformationDialog : IDisposable
 {
     [Parameter] public UserIdentifier UserIdentifier { get; set; }
 
@@ -18,7 +20,7 @@ public partial class DriverInformationDialog
 
     [Inject] private ISnackbar SnackBar { get; set; }
 
-    private User _user;
+    private User _user = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,9 +34,11 @@ public partial class DriverInformationDialog
         }
 
         _user = user.Response;
+    }
 
-        await base.OnInitializedAsync();
-
-        StateHasChanged();
+    public void Dispose()
+    {
+        MudDialog?.Dispose();
+        SnackBar?.Dispose();
     }
 }
