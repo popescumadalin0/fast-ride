@@ -47,7 +47,6 @@ public class DriverAcceptedRideTrigger
                     }
                 ],
                 UserId = userId,
-                GroupName = instanceId,
             };
         }
 

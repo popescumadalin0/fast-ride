@@ -43,23 +43,15 @@ public partial class NavMenu : IAsyncDisposable
         DestinationState.OnChange -= DestinationStateChanged;
         CurrentRideState.OnChange -= CurrentRideStateOnChange;
         SignalRService.SendRating -= OpenRatingDialog;
-
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        if (authState.User.Identity?.IsAuthenticated ?? false)
-        {
-            SignalRService.DriverRideAccepted -= DriverAcceptedRide;
-            SignalRService.NotifyState -= UpdateRideState;
-        }
+        
+        SignalRService.DriverRideAccepted -= DriverAcceptedRide;
+        SignalRService.NotifyState -= UpdateRideState;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        if (authState.User.Identity?.IsAuthenticated ?? false)
-        {
-            SignalRService.DriverRideAccepted += DriverAcceptedRide;
-            SignalRService.NotifyState += UpdateRideState;
-        }
+        SignalRService.DriverRideAccepted += DriverAcceptedRide;
+        SignalRService.NotifyState += UpdateRideState;
 
         DestinationState.OnChange += DestinationStateChanged;
         SignalRService.CancelRide += CancelRideAsync;
