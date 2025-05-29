@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure;
@@ -37,6 +38,12 @@ public class UserRepository : IUserRepository
 
         var user = await _userTable.GetAsync(email, id.ToString());
         return user is not { HasValue: true } ? null : user.Value;
+    }
+
+    public List<UserEntity> GetUsers()
+    {
+        var users = _userTable.GetBy(_=> true);
+        return users;
     }
 
     public async Task<UserEntity> GetUserByUserNameIdentifierAsync(string nameIdentifier)

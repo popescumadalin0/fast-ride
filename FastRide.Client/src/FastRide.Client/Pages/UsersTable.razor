@@ -1,0 +1,92 @@
+﻿@attribute [Authorize(Roles = "Admin" )]
+@page "/admin"
+
+@using FastRide.Server.Contracts.Enums
+@using FastRide.Server.Contracts.Models
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>Admin</PageTitle>
+
+<MudTable Items="@_users" Hover Filter="new Func<User,bool>(FilterFunc)"
+          @bind-SelectedItem="_user"
+          SortLabel="Sort By"
+          CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="@(() => Snackbar.Add("User saved!"))" RowEditPreview="BackupItem"
+          CanCancelEdit
+          RowEditCancel="ResetItemToOriginalValues"
+          RowEditCommit="(x) => { ItemHasBeenCommittedAsync(x).GetAwaiter().GetResult(); }"
+          ApplyButtonPosition="TableApplyButtonPosition.End"
+          EditTrigger="@TableEditTrigger.RowClick">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Users</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width:50px;"/>
+        <col style="width:80px;"/>
+        <col style="width:50%;"/>
+        <col/>
+        <col/>
+        <col style="width:50px;"/>
+    </ColGroup>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending"
+                               SortBy="@(new Func<User, object>(x => x.Identifier.NameIdentifier))">Identifier
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="@(new Func<User, object>(x => x.Identifier.Email))">Email</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="@(new Func<User, object>(x => x.UserName))">User Name</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="@(new Func<User, object>(x => x.PhoneNumber))">Phone Number</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="@(new Func<User, object>(x => x.UserType))">Role</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="@(new Func<User, object>(x => x.Rating))">Rating</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="@(new Func<User, object>(x => x.PictureUrl))">Picture</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Identifier">@context.Identifier.NameIdentifier</MudTd>
+        <MudTd DataLabel="Email">@context.Identifier.Email</MudTd>
+        <MudTd DataLabel="UserName">@context.UserName</MudTd>
+        <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="UserType">@context.UserType</MudTd>
+        <MudTd DataLabel="Rating">@context.Rating</MudTd>
+        <MudTd DataLabel="PictureUrl">@context.PictureUrl</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Identifier">@context.Identifier.NameIdentifier</MudTd>
+        <MudTd DataLabel="Email">@context.Identifier.Email</MudTd>
+        <MudTd DataLabel="UserName">@context.UserName</MudTd>
+        <MudTd DataLabel="PhoneNumber">
+            <MudTextField @bind-Value="context.PhoneNumber" Required/>
+        </MudTd>
+        <MudTd DataLabel="UserType">
+            <MudSelect T="UserType" @bind-Value="context.UserType" Required>
+                <MudSelectItem Value="UserType.User">User</MudSelectItem>
+                <MudSelectItem Value="UserType.Driver">Driver</MudSelectItem>
+            </MudSelect>
+        </MudTd>
+        <MudTd DataLabel="Rating">@context.Rating</MudTd>
+        <MudTd DataLabel="PictureUrl">
+            <MudImage Src="@context.PictureUrl"
+                      Alt="User picture"
+                      Elevation="10"
+                      Class="rounded-lg"/>
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>

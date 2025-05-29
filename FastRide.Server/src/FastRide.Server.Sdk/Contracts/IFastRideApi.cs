@@ -17,6 +17,9 @@ public interface IFastRideApi
     [Get("/api/rides")]
     Task<List<Ride>> GetRidesByUserAsync();
     
+    [Get("/api/users")]
+    Task<List<User>> GetUsersAsync();
+    
     [Put("/api/user")]
     Task UpdateUserAsync([Body] UpdateUserPayload updatePayload);
 }

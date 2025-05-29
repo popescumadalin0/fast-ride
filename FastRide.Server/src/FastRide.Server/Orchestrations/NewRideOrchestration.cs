@@ -18,7 +18,7 @@ namespace FastRide.Server.Orchestrations;
 public class NewRideOrchestration
 {
     private readonly ILogger<NewRideOrchestration> _logger;
-    
+
     private readonly IUserService _userService;
 
     public NewRideOrchestration(ILogger<NewRideOrchestration> logger, IUserService userService)
@@ -86,15 +86,29 @@ public class NewRideOrchestration
         input.Status = InternRideStatus.GoingToUser;
         context.SetCustomStatus(input);
 
-        await context.WaitForExternalEvent<object>(SignalRConstants.ClientDriverArrived);
+        Geolocation geolocation;
+        const double tolerance = 0.0005;
+
+        do
+        {
+            geolocation = await context.WaitForExternalEvent<Geolocation>(SignalRConstants.ClientDriverArrived);
+        } while (Math.Abs(geolocation.Latitude - input.StartPoint.Latitude) > tolerance ||
+                 Math.Abs(geolocation.Longitude - input.StartPoint.Longitude) > tolerance);
+
         input.Status = InternRideStatus.GoingToDestination;
         context.SetCustomStatus(input);
 
-        await context.WaitForExternalEvent<object>(SignalRConstants.ClientDriverArrived);
+        do
+        {
+            geolocation = await context.WaitForExternalEvent<Geolocation>(SignalRConstants.ClientDriverArrived);
+        } while (Math.Abs(geolocation.Latitude - input.Destination.Latitude) > tolerance ||
+                 Math.Abs(geolocation.Longitude - input.Destination.Longitude) > tolerance);
+
         await FinishWorkflow(context, input);
     }
 
-    private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context, NewRideInput input)
+    private static async Task<double> PriceCalculationStepAsync(TaskOrchestrationContext context,
+        NewRideInput input)
     {
         await context.CallActivityAsync(
             nameof(SendPriceCalculationActivity),
@@ -106,12 +120,14 @@ public class NewRideOrchestration
                 StartPoint = input.StartPoint,
             });
 
-        var doubleAccepted = await context.WaitForExternalEvent<string>(SignalRConstants.ClientSendPriceCalculation);
+        var doubleAccepted =
+            await context.WaitForExternalEvent<string>(SignalRConstants.ClientSendPriceCalculation);
         var accepted = double.Parse(doubleAccepted);
         return accepted;
     }
 
-    private static async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input, double price)
+    private static async Task<bool> PaymentStepAsync(TaskOrchestrationContext context, NewRideInput input,
+        double price)
     {
         await context.CallActivityAsync(nameof(SendPaymentIntentActivity), new SendPaymentIntentActivityInput()
         {
@@ -124,7 +140,7 @@ public class NewRideOrchestration
 
         return acccepted;
     }
-    
+
     private static async Task<int> RatingStepAsync(TaskOrchestrationContext context, NewRideInput input)
     {
         await context.CallActivityAsync(nameof(SendRatingRequestActivity), new SendRatingRequestActivityInput()
@@ -150,7 +166,7 @@ public class NewRideOrchestration
                 {
                     InstanceId = context.InstanceId,
                     UserGeolocation = input.StartPoint,
-                    Destination = input.Destination, 
+                    Destination = input.Destination,
                     GroupName = input.GroupName,
                     ExcludeDrivers = excludeDriver
                 });
@@ -158,7 +174,7 @@ public class NewRideOrchestration
             {
                 return string.Empty;
             }
-            
+
             await context.CallActivityAsync(nameof(SendRideToDriverActivity), new SendRideToDriverActivityInput()
             {
                 RequestInput = new FindDriverActivityInput()
@@ -172,7 +188,7 @@ public class NewRideOrchestration
                 Driver = driver,
                 User = input.User
             });
-            
+
             var clientResponseTask =
                 context.WaitForExternalEvent<DriverAcceptResponse>(SignalRConstants.ClientDriverAcceptRide);
 
@@ -203,7 +219,7 @@ public class NewRideOrchestration
 
         return string.Empty;
     }
-    
+
     private async Task FinishWorkflow(TaskOrchestrationContext context, NewRideInput input)
     {
         input.Status = InternRideStatus.Finished;
@@ -214,7 +230,7 @@ public class NewRideOrchestration
             {
                 Seconds = 25
             });
-        
+
         var rating = await RatingStepAsync(context, input);
 
         if (rating != 0)
@@ -225,7 +241,7 @@ public class NewRideOrchestration
                 _logger.LogError(response.ErrorMessage);
             }
         }
-        
+
         input.Status = InternRideStatus.None;
         context.SetCustomStatus(input);
         await context.CallActivityAsync(nameof(DelayActivity),
@@ -235,7 +251,8 @@ public class NewRideOrchestration
             });
     }
 
-    private static async Task CancelWorkflow(TaskOrchestrationContext context, NewRideInput input, CompleteStatus completeStatus)
+    private static async Task CancelWorkflow(TaskOrchestrationContext context, NewRideInput input,
+        CompleteStatus completeStatus)
     {
         input.Status = InternRideStatus.Cancelled;
         input.CompleteStatus = completeStatus;

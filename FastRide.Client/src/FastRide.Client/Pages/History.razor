@@ -1,4 +1,6 @@
-﻿@page "/history"
+﻿@attribute [Authorize(Roles = "User, Driver" )]
+@page "/history"
+@using Microsoft.AspNetCore.Authorization
 
 <PageTitle>History</PageTitle>
 <div class="d-flex flex-column content gap-4">

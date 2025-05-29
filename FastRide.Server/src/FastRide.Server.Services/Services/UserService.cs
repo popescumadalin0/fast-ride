@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Contracts.SignalRModels;
@@ -65,12 +67,39 @@ public class UserService : IUserService
         }
     }
 
+    public ServiceResponse<List<User>> GetUsers()
+    {
+        try
+        {
+            var users = _userRepository.GetUsers();
+
+            return new ServiceResponse<List<User>>(users.Select(x => new User()
+            {
+                UserType = (Server.Contracts.Enums.UserType)x.UserType,
+                Identifier = new UserIdentifier()
+                {
+                    NameIdentifier = x.RowKey,
+                    Email = x.PartitionKey,
+                },
+                Rating = x.Rating,
+                PhoneNumber = x.PhoneNumber,
+                PictureUrl = x.PictureUrl,
+                UserName = x.UserName,
+            }).ToList());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return new ServiceResponse<List<User>>(ex);
+        }
+    }
+
     public async Task<ServiceResponse<User>> GetUserByUserIdAsync(string userId)
     {
         try
         {
             var actualUser = await _userRepository.GetUserByUserNameIdentifierAsync(userId);
-            
+
             return new ServiceResponse<User>(new User()
             {
                 UserType = (Server.Contracts.Enums.UserType)actualUser.UserType,
@@ -108,7 +137,9 @@ public class UserService : IUserService
             {
                 PartitionKey = actualUser.PartitionKey,
                 RowKey = actualUser.RowKey,
-                UserType = actualUser.UserType,
+                UserType = updateUserPayload.UserType == null
+                    ? actualUser.UserType
+                    : (UserType)updateUserPayload.UserType,
                 Rating = actualUser.Rating,
                 PhoneNumber = updateUserPayload.PhoneNumber,
                 PictureUrl = pictureUrl,
@@ -140,7 +171,7 @@ public class UserService : IUserService
                 return new ServiceResponse(errorMessage: "User not found");
             }
 
-            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity() 
+            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
             {
                 RowKey = userId,
                 Rating = CalculateRating(actualUser.Rating, rating)

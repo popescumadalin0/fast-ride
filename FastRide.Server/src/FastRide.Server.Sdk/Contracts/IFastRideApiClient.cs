@@ -15,4 +15,6 @@ public interface IFastRideApiClient
     Task<ApiResponseMessage<List<Ride>>> GetRidesByUserAsync();
     
     Task<ApiResponseMessage> UpdateUserAsync(UpdateUserPayload updateUserPayload);
+    
+    Task<ApiResponseMessage<List<User>>> GetUsersAsync();
 }

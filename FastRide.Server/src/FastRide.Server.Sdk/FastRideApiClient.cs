@@ -37,7 +37,7 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
             throw;
         }
     }
-    
+
     public async Task<ApiResponseMessage<User>> GetUserAsync(UserIdentifier userIdentifier)
     {
         try
@@ -52,7 +52,7 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
             throw;
         }
     }
-    
+
     public async Task<ApiResponseMessage<List<Ride>>> GetRidesByUserAsync()
     {
         try
@@ -67,7 +67,7 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
             throw;
         }
     }
-    
+
     public async Task<ApiResponseMessage> UpdateUserAsync(UpdateUserPayload updateUserPayload)
     {
         try
@@ -79,6 +79,21 @@ public class FastRideApiClient : RefitApiClient<IFastRideApi>, IFastRideApiClien
         catch (Exception e)
         {
             _logger.LogError(e, $"Error executing {nameof(UpdateUserAsync)}");
+            throw;
+        }
+    }
+
+    public async Task<ApiResponseMessage<List<User>>> GetUsersAsync()
+    {
+        try
+        {
+            var task = _apiClient.GetUsersAsync();
+            var result = await Execute(task);
+            return result;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error executing {nameof(GetUsersAsync)}");
             throw;
         }
     }

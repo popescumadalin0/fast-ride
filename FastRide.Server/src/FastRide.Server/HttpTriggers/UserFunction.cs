@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FastRide.Server.Authentication;
 using FastRide.Server.Contracts.Models;
@@ -88,6 +89,19 @@ public class UserFunction
         return ApiServiceResponse.ApiServiceResult(response);
     }
 
+    [Authorize(UserRoles = [UserType.Admin])]
+    [Function(nameof(GetUsers))]
+    public IActionResult GetUsers(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "users")]
+        HttpRequest req)
+    {
+        _logger.LogInformation($"{nameof(GetUsers)} HTTP trigger function processed a request.");
+
+        var response = _userService.GetUsers();
+
+        return ApiServiceResponse.ApiServiceResult(response);
+    }
+
     [Authorize(UserRoles = [UserType.User, UserType.Driver, UserType.Admin])]
     [Function(nameof(UpdateUserAsync))]
     public async Task<IActionResult> UpdateUserAsync(
@@ -103,6 +117,13 @@ public class UserFunction
         }
 
         var request = JsonConvert.DeserializeObject<UpdateUserPayload>(requestBody);
+
+        var userType = req.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value;
+
+        if (userType != UserType.Admin.ToString())
+        {
+            request.UserType = null;
+        }
 
         var response = await _userService.UpdateUserAsync(
             new UserIdentifier()
