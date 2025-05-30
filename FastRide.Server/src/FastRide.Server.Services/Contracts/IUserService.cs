@@ -14,7 +14,7 @@ public interface IUserService
     
     Task<ServiceResponse<User>> GetUserByUserIdAsync(string userId);
     
-    Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload, string pictureUrl);
+    Task<ServiceResponse> UpdateUserAsync(UpdateUserPayload updateUserPayload);
 
     Task<ServiceResponse> UpdateUserRatingAsync(string userId, int rating);
 }

@@ -1,9 +1,3 @@
-.destination-text{
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.destination-width{
-    width: 400px;    
+.table-content{
+    width: 100%;
 }

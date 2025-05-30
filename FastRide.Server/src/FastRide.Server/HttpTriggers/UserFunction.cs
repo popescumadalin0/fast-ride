@@ -47,16 +47,13 @@ public class UserFunction
         {
             if (response.Response.PictureUrl != req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value)
             {
-                var update = await _userService.UpdateUserAsync(new UserIdentifier()
-                    {
-                        NameIdentifier = response.Response.Identifier.NameIdentifier,
-                        Email = response.Response.Identifier.Email,
-                    },
+                var update = await _userService.UpdateUserAsync(
                     new UpdateUserPayload()
                     {
+                        User = response.Response.Identifier,
                         PhoneNumber = response.Response.PhoneNumber,
-                    },
-                    req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value);
+                        PictureUrl = req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value
+                    });
 
                 if (!update.Success)
                 {
@@ -118,21 +115,20 @@ public class UserFunction
 
         var request = JsonConvert.DeserializeObject<UpdateUserPayload>(requestBody);
 
-        var userType = req.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.Role).Value;
-
+        var user = await _userService.GetUserAsync(new UserIdentifier()
+        {
+            NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
+            Email =  req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
+        });
+        var userType = user.Response.UserType.ToString();
+        
         if (userType != UserType.Admin.ToString())
         {
             request.UserType = null;
         }
 
         var response = await _userService.UpdateUserAsync(
-            new UserIdentifier()
-            {
-                NameIdentifier = req.HttpContext.User.Claims.Single(x => x.Type == "sub").Value,
-                Email = req.HttpContext.User.Claims.Single(x => x.Type == "email").Value
-            },
-            request,
-            req.HttpContext.User.Claims.Single(x => x.Type == "picture").Value);
+            request);
 
         return ApiServiceResponse.ApiServiceResult(response);
     }

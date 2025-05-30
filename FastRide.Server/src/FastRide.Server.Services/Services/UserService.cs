@@ -121,12 +121,12 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<ServiceResponse> UpdateUserAsync(UserIdentifier user, UpdateUserPayload updateUserPayload,
-        string pictureUrl)
+    public async Task<ServiceResponse> UpdateUserAsync(UpdateUserPayload updateUserPayload)
     {
         try
         {
-            var actualUser = await _userRepository.GetUserAsync(user.NameIdentifier, user.Email);
+            var actualUser =
+                await _userRepository.GetUserAsync(updateUserPayload.User.NameIdentifier, updateUserPayload.User.Email);
 
             if (actualUser == null)
             {
@@ -141,8 +141,12 @@ public class UserService : IUserService
                     ? actualUser.UserType
                     : (UserType)updateUserPayload.UserType,
                 Rating = actualUser.Rating,
-                PhoneNumber = updateUserPayload.PhoneNumber,
-                PictureUrl = pictureUrl,
+                PhoneNumber = !string.IsNullOrEmpty(updateUserPayload.PhoneNumber)
+                    ? updateUserPayload.PhoneNumber
+                    : actualUser.PhoneNumber,
+                PictureUrl = !string.IsNullOrEmpty(updateUserPayload.PictureUrl)
+                    ? updateUserPayload.PictureUrl
+                    : actualUser.PictureUrl,
                 UserName = actualUser.UserName,
             });
 

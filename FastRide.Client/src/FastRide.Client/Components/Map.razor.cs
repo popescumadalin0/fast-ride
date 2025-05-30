@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
-namespace FastRide.Client.Pages;
+namespace FastRide.Client.Components;
 
 public partial class Map : ComponentBase, IAsyncDisposable
 {

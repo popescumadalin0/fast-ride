@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace FastRide.Client.Pages;
@@ -24,7 +25,7 @@ public partial class UsersTable
 
         if (!users.Success)
         {
-            Snackbar.Add("Something went wrong", Severity.Error);
+            Snackbar.Add($"Something went wrong: {users.ResponseMessage}", Severity.Error);
             return;
         }
 
@@ -44,13 +45,23 @@ public partial class UsersTable
         };
     }
 
-    private async Task ItemHasBeenCommittedAsync(object element)
+    private async Task ItemHasBeenCommittedAsync(MouseEventArgs args)
     {
-        await FastRideApiClient.UpdateUserAsync(new UpdateUserPayload()
+        var response = await FastRideApiClient.UpdateUserAsync(new UpdateUserPayload()
         {
-            PhoneNumber = ((User)element).PhoneNumber,
-            UserType = ((User)element).UserType
+            PhoneNumber = _user.PhoneNumber,
+            UserType = _user.UserType,
+            User = _user.Identifier
         });
+        if (response.Success)
+        {
+            Snackbar.Add("User saved!");
+        }
+        else
+        {
+            Snackbar.Add($"Something went wrong: {response.ResponseMessage}", Severity.Error);
+            ResetItemToOriginalValues(_user);
+        }
     }
 
     private void ResetItemToOriginalValues(object element)

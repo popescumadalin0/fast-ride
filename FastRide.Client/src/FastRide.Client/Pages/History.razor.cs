@@ -36,7 +36,7 @@ public partial class History : IDisposable
         var response = await FastRideApiClient.GetRidesByUserAsync();
         if (!response.Success)
         {
-            SnackBar.Add("Something went wrong", Severity.Error);
+            SnackBar.Add($"Something went wrong: {response.ResponseMessage}", Severity.Error);
             OverlayState.DataLoading = false;
             return;
         }

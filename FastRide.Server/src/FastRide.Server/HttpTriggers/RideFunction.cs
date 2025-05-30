@@ -31,7 +31,7 @@ public class RideFunction
         _logger = logger;
     }
 
-    [Authorize(UserRoles = [UserType.User, UserType.Driver])]
+    [Authorize(UserRoles = [UserType.User, UserType.Driver, UserType.Admin])]
     [Function(nameof(GetRidesByUserAsync))]
     public async Task<IActionResult> GetRidesByUserAsync(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "rides")]
