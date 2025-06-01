@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,15pt]{report}
 \usepackage[a4paper, top=2.54cm, bottom=2.54cm, left=2.54cm, right=2.54cm]{geometry}
 \usepackage{newtxtext,newtxmath}
 \usepackage{graphicx}
@@ -9,10 +9,13 @@
 \usepackage{xcolor}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[romanian]{babel}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage[style=apa,backend=biber,language=english]{biblatex}
+\addbibresource{Bibliography.bib}
 
 \justifying
-\onehalfspacing % 1.5 linii
+\onehalfspacing % 1.5 line
 \setlength{\parindent}{1.27cm}
 
 \newcommand{\headerpage}[1]
@@ -30,9 +33,8 @@
   \end{tabular}
 \end{center}
 
-\vspace{4cm} % spațiu până la mijlocul paginii
+\vspace{4cm}
 
-% Titlul lucrării
 \begin{center}
   {\fontsize{14pt}{14pt}\selectfont
    \textbf{#1} \\[1em]
@@ -42,7 +44,6 @@
 
 \vspace{3cm}
 
-% Text mai jos
 \begin{center}
    {\fontsize{12pt}{12pt}\selectfont
    \textbf{COORDONATOR ȘTIINȚIFIC} \\[1em]
@@ -50,10 +51,8 @@
    }
 \end{center}
 
-% Spațiu până jos
 \vfill
 
-% Data
 \begin{center}
   {\fontsize{12pt}{12pt}\selectfont Mai 2025 \\
   Craiova}
@@ -79,73 +78,29 @@
 
 \fancyhf{}
 \fancyhead[L]{Popescu Constantin-Mădălin}
-\fancyhead[R]{\nouppercase{\rightmark}}
+\fancyhead[R]{\nouppercase{\leftmark}}
 \renewcommand{\headrulewidth}{0pt}
 \fancyfoot[C]{\thepage}
 
 \tableofcontents
 \clearpage
 
-\chapter{INTRODUCERE}
-\section{Scopul principal}
-\section{Motivație}
+\include{IntroductionChapter.tex}
 
 \newpage
-\chapter{TEHNOLOGII ȘI FRAMEWORK-URI FOLOSITE}
-\section{C Charp}
-\section{.NET}
-\section{Azure Function}
-\section{Azure Table Storage}
-\subsection{Azurite}
-\section{LINQ}
-\section{HyperText Markup Language (HTML)}
-\section{Cascading Style SHeets (CSS)}
-\section{Bootstrap}
-\section{Blazor}
-\section{MudBlazor}
-\section{SignalR}
-\subsection{WebSockets}
-\subsection{SignalR Server Emulator}
-\section{Refit API}
-\section{Leaflet și Routing Machine}
-\section{Stripe}
+\include{TechnologyChapter.tex}
 \newpage
-\chapter {ELEMENTE SOFTWARE FOLOSITE}
-\section{JetBrains Rider IDE}
-\section{Microsoft Azure Storage Explorer}
-\section{Docker}
-\newpage
-\chapter{SPECIFICAȚII ȘI REPREZENTAREA APLICAȚIEI}
-poze doar cu cod
-\section{Arhitectura aplicației}
-\subsection{Stocare}
-ER si relation diagram
-ce tabele avem si cum populam
-\subsection{Server-side}
-durable orchestrations si cum functioneaza activitatile si restul
-\subsection{Client-side}
-blazor wasm si cum merge, cum apeleaza backendul
-despre map si background services
-\section{Comunicarea între componente}
-diagrama de cum comunica aplicatia
-\subsection{Autentificare și autorizare}
-\subsection{Pagina admin-ului}
-\chapter{UTILIZAREA APLICAȚIEI}
-poze doar cu UI
-\section{Instalarea aplicației}
-ce este in readme
-\section{Manual de utilizare}
-User-flows
-\subsection{Experiența utilizatorului}
-user case flow
-\subsection{Experiența șoferului}
-driver case flow
-\subsection{Experiența admin-ului}
-admin case flow
-\newpage
-\chapter{CONCLUZII}
-\newpage
-\chapter{BIBLIOGRAFIE}
+\include{SoftwareChapter.tex}
 
+\newpage
+\include{DesignAppChapter.tex}
+
+\newpage
+\include{UsageAppChapter.tex}
+
+\newpage
+\include{ConclusionChapter.tex}
+
+\printbibliography
 
 \end{document}
