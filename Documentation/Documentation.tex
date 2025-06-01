@@ -1,37 +1,151 @@
-\documentclass[12pt]{article}
-
-\usepackage{amsmath}
-
+\documentclass[a4paper,12pt]{report}
+\usepackage[a4paper, top=2.54cm, bottom=2.54cm, left=2.54cm, right=2.54cm]{geometry}
+\usepackage{newtxtext,newtxmath}
 \usepackage{graphicx}
-
-\usepackage{hyperref}
-
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{xcolor}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[romanian]{babel}
 
-\title{My LaTeX Title}
+\justifying
+\onehalfspacing % 1.5 linii
+\setlength{\parindent}{1.27cm}
 
-\author{Guillaume Blanchet}
+\newcommand{\headerpage}[1]
+{
+\begin{center}
+  \begin{tabular}{m{2cm} m{10cm} m{2cm}}
+    \includegraphics[width=1.7cm]{left-logo.png} &
+    \centering
+    {\fontsize{10pt}{10pt}\selectfont
+      \textbf{UNIVERSITATEA DIN CRAIOVA} \\[0.3em]
+      \textbf{FACULTATEA DE AUTOMATICĂ, CALCULATOARE ȘI ELECTRONICĂ} \\[0.7em]
+      \textbf{DEPARTAMENTUL DE CALCULATOARE ȘI TEHNOLOGIA INFORMAȚIEI}
+    } &
+    \includegraphics[width=1.7cm]{right-logo.png}
+  \end{tabular}
+\end{center}
 
-\date{2020–01–13}
+\vspace{4cm} % spațiu până la mijlocul paginii
+
+% Titlul lucrării
+\begin{center}
+  {\fontsize{14pt}{14pt}\selectfont
+   \textbf{#1} \\[1em]
+  {Popescu Constantin-Mădălin}
+  }
+\end{center}
+
+\vspace{3cm}
+
+% Text mai jos
+\begin{center}
+   {\fontsize{12pt}{12pt}\selectfont
+   \textbf{COORDONATOR ȘTIINȚIFIC} \\[1em]
+   {Asist. Dr. Cătălin Cerbulescu}
+   }
+\end{center}
+
+% Spațiu până jos
+\vfill
+
+% Data
+\begin{center}
+  {\fontsize{12pt}{12pt}\selectfont Mai 2025 \\
+  Craiova}
+\end{center}
+}
 
 \begin{document}
+\thispagestyle{empty}
+\headerpage{LUCRARE DE LICENȚĂ}
 
-\maketitle
+\newpage
+\thispagestyle{empty}
+\headerpage{FastRide. Aplicație de ride sharing}
 
-\section{Introduction}
+\newpage
+\thispagestyle{empty}
+\null
+\newpage
 
-Blah Blah Blah
+\pagenumbering{arabic}
+\setcounter{page}{4}
+\pagestyle{fancy}
 
-\begin{itemize}
+\fancyhf{}
+\fancyhead[L]{Popescu Constantin-Mădălin}
+\fancyhead[R]{\nouppercase{\rightmark}}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
 
-\item Hey
+\tableofcontents
+\clearpage
 
-\item Oh!
+\chapter{INTRODUCERE}
+\section{Scopul principal}
+\section{Motivație}
 
-\item Let’s
+\newpage
+\chapter{TEHNOLOGII ȘI FRAMEWORK-URI FOLOSITE}
+\section{C Charp}
+\section{.NET}
+\section{Azure Function}
+\section{Azure Table Storage}
+\subsection{Azurite}
+\section{LINQ}
+\section{HyperText Markup Language (HTML)}
+\section{Cascading Style SHeets (CSS)}
+\section{Bootstrap}
+\section{Blazor}
+\section{MudBlazor}
+\section{SignalR}
+\subsection{WebSockets}
+\subsection{SignalR Server Emulator}
+\section{Refit API}
+\section{Leaflet și Routing Machine}
+\section{Stripe}
+\newpage
+\chapter {ELEMENTE SOFTWARE FOLOSITE}
+\section{JetBrains Rider IDE}
+\section{Microsoft Azure Storage Explorer}
+\section{Docker}
+\newpage
+\chapter{SPECIFICAȚII ȘI REPREZENTAREA APLICAȚIEI}
+poze doar cu cod
+\section{Arhitectura aplicației}
+\subsection{Stocare}
+ER si relation diagram
+ce tabele avem si cum populam
+\subsection{Server-side}
+durable orchestrations si cum functioneaza activitatile si restul
+\subsection{Client-side}
+blazor wasm si cum merge, cum apeleaza backendul
+despre map si background services
+\section{Comunicarea între componente}
+diagrama de cum comunica aplicatia
+\subsection{Autentificare și autorizare}
+\subsection{Pagina admin-ului}
+\chapter{UTILIZAREA APLICAȚIEI}
+poze doar cu UI
+\section{Instalarea aplicației}
+ce este in readme
+\section{Manual de utilizare}
+User-flows
+\subsection{Experiența utilizatorului}
+user case flow
+\subsection{Experiența șoferului}
+driver case flow
+\subsection{Experiența admin-ului}
+admin case flow
+\newpage
+\chapter{CONCLUZII}
+\newpage
+\chapter{BIBLIOGRAFIE}
 
-\item Go!
-
-\end{itemize}
 
 \end{document}
