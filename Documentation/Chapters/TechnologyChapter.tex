@@ -3,8 +3,8 @@
 
 \section{.NET}
 \section{Azure Function}
- {\hspace*{1cm} Azure Functions este o platformă serverless dezvoltată de Microsoft care permite rularea codului în cloud fără a fi nevoie să gestionezi infrastructura de servere. Acest model facilitează dezvoltarea rapidă a aplicațiilor și serviciilor scalabile, concentrându-te doar pe logică, nu pe administrarea resurselor.}\parencite{azureFunctions}\\
-{Principalele caracteristici ale Azure Functions sunt:}
+Azure Functions este o platformă serverless dezvoltată de Microsoft care permite rularea codului în cloud fără a fi nevoie să gestionezi infrastructura de servere. Acest model facilitează dezvoltarea rapidă a aplicațiilor și serviciilor scalabile, concentrându-te doar pe logică, nu pe administrarea resurselor. \parencite{azureFunctions}
+\\Principalele caracteristici ale Azure Functions sunt:
 \begin{itemize}
     \item Execuție event-driven: Funcțiile sunt declanșate automat de evenimente, cum ar fi modificări în baza de date, mesaje din cozi, cereri HTTP, cronometre sau alte surse.
     \item Scalabilitate automată: Azure gestionează în mod automat scalarea funcțiilor în funcție de cerere, asigurând performanță optimă indiferent de volumul de trafic.
@@ -13,16 +13,18 @@
 \end{itemize}\parencite{azureFunctions}
 
 \subsection{Azure Durable Functions}
-{\hspace*{1cm} Azure Durable Functions reprezintă o extensie a platformei Azure Functions, dezvoltată de Microsoft pentru a facilita crearea de fluxuri de lucru pe termen lung și orchestrarea funcțiilor serverless într-un mod eficient și scalabil. Lansată oficial în 2017, această extensie adaugă capabilități suplimentare funcțiilor serverless tradiționale, permițând dezvoltatorilor să gestioneze procese complexe care implică mai multe funcții interdependente și executate în timp.}\parencite{azureDurableFunctions}\\
-{\hspace*{1cm} Azure Functions, lansat cu un an mai devreme (2016), face parte din suita de servicii serverless computing din Azure și permite rularea de cod fără a fi necesară administrarea explicită a infrastructurii. Totuși, aceste funcții standard au fost concepute pentru execuții rapide, de scurtă durată, ceea ce le făcea mai puțin potrivite pentru procesele care necesită menținerea stării și coordonarea pe termen lung.}\parencite{azureDurableFunctions}
-{Pentru a răspunde acestor nevoi, Durable Functions oferă următoarele capabilități:}
+Azure Durable Functions reprezintă o extensie a platformei Azure Functions, dezvoltată de Microsoft pentru a facilita crearea de fluxuri de lucru pe termen lung și orchestrarea funcțiilor serverless într-un mod eficient și scalabil. Lansată oficial în 2017, această extensie adaugă capabilități suplimentare funcțiilor serverless tradiționale, permițând dezvoltatorilor să gestioneze procese complexe care implică mai multe funcții interdependente și executate în timp. \parencite{azureDurableFunctions}
+
+Azure Functions, lansat cu un an mai devreme (2016), face parte din suita de servicii serverless computing din Azure și permite rularea de cod fără a fi necesară administrarea explicită a infrastructurii. Totuși, aceste funcții standard au fost concepute pentru execuții rapide, de scurtă durată, ceea ce le făcea mai puțin potrivite pentru procesele care necesită menținerea stării și coordonarea pe termen lung. \parencite{azureDurableFunctions}
+\\Pentru a răspunde acestor nevoi, Durable Functions oferă următoarele capabilități:
 \begin{itemize}
     \item Orchestrarea funcțiilor de scurtă durată, într-un mod automatizat și declarativ;
     \item Gestionarea stării între apelurile funcțiilor, pe parcursul execuției unui proces complex;
     \item Retry automat și suport pentru scenarii de compensare în caz de eșec.
 \end{itemize}\parencite{azureDurableFunctions}
-{Durable Functions este construit pe baza Durable Task Framework, permițând dezvoltatorilor să scrie cod orchestrat într-un stil secvențial, dar care este transformat automat în execuție asincronă și distribuită, cu păstrarea stării între pași.}\parencite{azureDurableFunctions}\\
-{Scenarii comune de utilizare:}
+
+Durable Functions este construit pe baza Durable Task Framework, permițând dezvoltatorilor să scrie cod orchestrat într-un stil secvențial, dar care este transformat automat în execuție asincronă și distribuită, cu păstrarea stării între pași. \parencite{azureDurableFunctions}
+\\Scenarii comune de utilizare:
 \begin{itemize}
     \item Orchestrarea fluxurilor de lucru
           O funcție orchestrator coordonează apelurile către alte funcții, în funcție de anumite condiții sau răspunsuri. De exemplu, poate apela o funcție care extrage date de la un API, apoi, în funcție de rezultat, lansează alte funcții în lanț.
@@ -38,6 +40,8 @@
           Orchestratorii pot programa funcții să ruleze după o întârziere sau la anumite intervale. Acestea sunt utile în procese automate, monitorizări periodice sau trimiterea de notificări programate.
 \end{itemize}\parencite{azureDurableFunctions}
 
+Lucrarea folosește Azure Functions, în special Azure Durable Functions pentru a face posibilă procesarea și menținerea legăturii între 2 utilizatori pe parcursul cursei, indiferent de circumstațele actuale (utilizatorul face Refresh sau aplicația își ia Restart).
+
 \section{Azure Table Storage}
 \subsection{Azurite}
 \section{LINQ}
@@ -45,14 +49,15 @@
 \section{Cascading Style SHeets (CSS)}
 \section{Bootstrap}
 \section{Blazor}
- {\hspace*{1cm} Blazor este un framework open-source dezvoltat de Microsoft, lansat oficial în 2018, ca parte a ecosistemului .NET. Numele „Blazor” este format din cuvintele „Browser” și „Razor”, evidențiind utilizarea motorului Razor pentru redarea componentelor web direct în browser.}\parencite{blazor}\\
-{\hspace*{1cm} Scopul principal al Blazor este de a permite dezvoltatorilor .NET să creeze aplicații web interactive fără a apela la JavaScript, oferind o alternativă la framework-uri front-end precum React, Angular sau Vue.js. Utilizând limbajul C\# și întreg ecosistemul .NET, Blazor a devenit rapid o opțiune atractivă pentru dezvoltatorii familiarizați cu tehnologiile Microsoft, facilitând dezvoltarea de aplicații full-stack doar cu .NET.}\parencite{blazor}\\
-{Blazor este disponibil în două variante principale:}
+Blazor este un framework open-source dezvoltat de Microsoft, lansat oficial în 2018, ca parte a ecosistemului .NET. Numele „Blazor” este format din cuvintele „Browser” și „Razor”, evidențiind utilizarea motorului Razor pentru redarea componentelor web direct în browser. \parencite{blazor}
+
+Scopul principal al Blazor este de a permite dezvoltatorilor .NET să creeze aplicații web interactive fără a apela la JavaScript, oferind o alternativă la framework-uri front-end precum React, Angular sau Vue.js. Utilizând limbajul C\# și întreg ecosistemul .NET, Blazor a devenit rapid o opțiune atractivă pentru dezvoltatorii familiarizați cu tehnologiile Microsoft, facilitând dezvoltarea de aplicații full-stack doar cu .NET. \parencite{blazor}
+\\Blazor este disponibil în două variante principale:
 \begin{itemize}
     \item Blazor Server (2019): Aplicația rulează pe server, iar interacțiunea cu utilizatorul este gestionată în timp real prin SignalR. Această variantă oferă performanțe ridicate și un consum redus de resurse pe client, dar necesită o conexiune constantă la server.
     \item Blazor WebAssembly (2020): Codul C\# este compilat în WebAssembly și rulează direct în browser, eliminând nevoia unei conexiuni continue la server. Aceasta permite dezvoltarea de aplicații web care pot funcționa și offline.
 \end{itemize}\parencite{blazor}
-{Utilizări principale ale Blazor:}
+\\Utilizări principale ale Blazor:
 \begin{itemize}
     \item Aplicații web interactive (SPA - Single Page Applications): Blazor permite dezvoltarea de aplicații de tip SPA, în care navigarea și interacțiunile cu utilizatorul se realizează fără reîncărcarea completă a paginii, oferind o experiență fluidă și modernă.
     \item Aplicații WebAssembly: Cu Blazor WebAssembly, aplicațiile pot rula complet în browser, reducând latențele și oferind posibilitatea de a crea aplicații offline sau cu funcționare locală.
@@ -61,6 +66,7 @@
 \end{itemize}\parencite{blazor}
 
 \section{MudBlazor}
+
 \section{SignalR}
  {\hspace*{1cm}WebSockets este un protocol de comunicație care permite o conexiune bidirecțională, persistentă și full-duplex între un client (de exemplu, un browser web) și un server, facilitând transmiterea rapidă și continuă a datelor în timp real fără a reîncarca pagina.}\parencite{signalR}\\
 {\hspace*{1cm} SignalR este o bibliotecă dezvoltată de Microsoft care facilitează comunicarea în timp real între aplicațiile web, mobile sau desktop și servere. Lansată în 2011 și integrată ulterior în ecosistemul ASP.NET Core, SignalR permite actualizări și notificări instantanee fără a fi nevoie să reîncarci paginile web.}\parencite{signalR}\\

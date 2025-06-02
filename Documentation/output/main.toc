@@ -1,0 +1,42 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}INTRODUCERE}{6}{}%
+\contentsline {section}{\numberline {1.1}Scopul principal}{6}{}%
+\contentsline {section}{\numberline {1.2}Motivație}{6}{}%
+\contentsline {chapter}{\numberline {2}TEHNOLOGII ȘI FRAMEWORK-URI FOLOSITE}{7}{}%
+\contentsline {section}{\numberline {2.1}C\#}{7}{}%
+\contentsline {section}{\numberline {2.2}.NET}{7}{}%
+\contentsline {section}{\numberline {2.3}Azure Function}{7}{}%
+\contentsline {subsection}{\numberline {2.3.1}Azure Durable Functions}{7}{}%
+\contentsline {section}{\numberline {2.4}Azure Table Storage}{8}{}%
+\contentsline {subsection}{\numberline {2.4.1}Azurite}{8}{}%
+\contentsline {section}{\numberline {2.5}LINQ}{8}{}%
+\contentsline {section}{\numberline {2.6}HyperText Markup Language (HTML)}{8}{}%
+\contentsline {section}{\numberline {2.7}Cascading Style SHeets (CSS)}{8}{}%
+\contentsline {section}{\numberline {2.8}Bootstrap}{8}{}%
+\contentsline {section}{\numberline {2.9}Blazor}{8}{}%
+\contentsline {section}{\numberline {2.10}MudBlazor}{9}{}%
+\contentsline {section}{\numberline {2.11}SignalR}{9}{}%
+\contentsline {subsection}{\numberline {2.11.1}SignalR Server Emulator}{10}{}%
+\contentsline {section}{\numberline {2.12}Refit API}{10}{}%
+\contentsline {section}{\numberline {2.13}Leaflet și Routing Machine}{10}{}%
+\contentsline {section}{\numberline {2.14}Stripe}{10}{}%
+\contentsline {chapter}{\numberline {3}ELEMENTE SOFTWARE FOLOSITE}{11}{}%
+\contentsline {section}{\numberline {3.1}JetBrains Rider IDE}{11}{}%
+\contentsline {section}{\numberline {3.2}Microsoft Azure Storage Explorer}{11}{}%
+\contentsline {section}{\numberline {3.3}Docker}{12}{}%
+\contentsline {chapter}{\numberline {4}SPECIFICAȚII ȘI REPREZENTAREA APLICAȚIEI}{13}{}%
+\contentsline {section}{\numberline {4.1}Arhitectura aplicației}{13}{}%
+\contentsline {subsection}{\numberline {4.1.1}Stocare}{13}{}%
+\contentsline {subsection}{\numberline {4.1.2}Server-side}{13}{}%
+\contentsline {subsection}{\numberline {4.1.3}Client-side}{13}{}%
+\contentsline {section}{\numberline {4.2}Comunicarea între componente}{13}{}%
+\contentsline {subsection}{\numberline {4.2.1}Autentificare și autorizare}{13}{}%
+\contentsline {subsection}{\numberline {4.2.2}Pagina admin-ului}{13}{}%
+\contentsline {chapter}{\numberline {5}UTILIZAREA APLICAȚIEI}{14}{}%
+\contentsline {section}{\numberline {5.1}Instalarea aplicației}{14}{}%
+\contentsline {section}{\numberline {5.2}Manual de utilizare}{14}{}%
+\contentsline {subsection}{\numberline {5.2.1}Experiența utilizatorului}{14}{}%
+\contentsline {subsection}{\numberline {5.2.2}Experiența șoferului}{14}{}%
+\contentsline {subsection}{\numberline {5.2.3}Experiența admin-ului}{14}{}%
+\contentsline {chapter}{\numberline {6}CONCLUZII}{15}{}%
+\contentsline {chapter}{\numberline {7}Tabel de indexare}{17}{}%

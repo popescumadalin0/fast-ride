@@ -7,15 +7,15 @@
 \contentsline {section}{\numberline {2.2}.NET}{7}{}%
 \contentsline {section}{\numberline {2.3}Azure Function}{7}{}%
 \contentsline {subsection}{\numberline {2.3.1}Azure Durable Functions}{7}{}%
-\contentsline {section}{\numberline {2.4}Azure Table Storage}{9}{}%
-\contentsline {subsection}{\numberline {2.4.1}Azurite}{9}{}%
-\contentsline {section}{\numberline {2.5}LINQ}{9}{}%
-\contentsline {section}{\numberline {2.6}HyperText Markup Language (HTML)}{9}{}%
-\contentsline {section}{\numberline {2.7}Cascading Style SHeets (CSS)}{9}{}%
-\contentsline {section}{\numberline {2.8}Bootstrap}{9}{}%
-\contentsline {section}{\numberline {2.9}Blazor}{9}{}%
-\contentsline {section}{\numberline {2.10}MudBlazor}{10}{}%
-\contentsline {section}{\numberline {2.11}SignalR}{10}{}%
+\contentsline {section}{\numberline {2.4}Azure Table Storage}{8}{}%
+\contentsline {subsection}{\numberline {2.4.1}Azurite}{8}{}%
+\contentsline {section}{\numberline {2.5}LINQ}{8}{}%
+\contentsline {section}{\numberline {2.6}HyperText Markup Language (HTML)}{8}{}%
+\contentsline {section}{\numberline {2.7}Cascading Style SHeets (CSS)}{8}{}%
+\contentsline {section}{\numberline {2.8}Bootstrap}{8}{}%
+\contentsline {section}{\numberline {2.9}Blazor}{8}{}%
+\contentsline {section}{\numberline {2.10}MudBlazor}{9}{}%
+\contentsline {section}{\numberline {2.11}SignalR}{9}{}%
 \contentsline {subsection}{\numberline {2.11.1}SignalR Server Emulator}{10}{}%
 \contentsline {section}{\numberline {2.12}Refit API}{10}{}%
 \contentsline {section}{\numberline {2.13}Leaflet și Routing Machine}{10}{}%
@@ -39,3 +39,4 @@
 \contentsline {subsection}{\numberline {5.2.2}Experiența șoferului}{13}{}%
 \contentsline {subsection}{\numberline {5.2.3}Experiența admin-ului}{13}{}%
 \contentsline {chapter}{\numberline {6}CONCLUZII}{14}{}%
+\contentsline {chapter}{\numberline {7}Tabel de indexare}{15}{}%
