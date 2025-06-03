@@ -43,7 +43,26 @@ Durable Functions este construit pe baza Durable Task Framework, permițând dez
 Lucrarea folosește Azure Functions, în special Azure Durable Functions pentru a face posibilă procesarea și menținerea legăturii între 2 utilizatori pe parcursul cursei, indiferent de circumstațele actuale (utilizatorul face Refresh sau aplicația își ia Restart).
 
 \section{Azure Table Storage}
+Azure Table Storage este un serviciu creat de Microsoft ca parte a suitei Azure Storage, gândit pentru a oferi o soluție simplă, scalabilă și extrem de rapidă pentru stocarea datelor structurate în format NoSQL. Table Storage nu impune o schemă fixă, ceea ce înseamnă că fiecare entitate dintr-o tabelă poate avea un set diferit de proprietăți. Acest lucru îl face ideal pentru scenarii în care datele sunt variabile sau când flexibilitatea contează mai mult decât relațiile complexe dintre entități. \parencite{azureStorage}
+
+A fost introdus în jurul anului 2010, într-o perioadă în care Microsoft își contura strategia cloud și începea să ofere servicii care să concureze cu AWS. A fost conceput pentru a servi aplicații la scară mare, care necesită o cantitate mare de scrieri și citiri, dar fără nevoia de tranzacții complexe sau relații între tabele. Scenariile clasice includ loguri, telemetrie, date despre utilizatori, mesaje sau orice tip de evenimente care trebuie stocate rapid și recuperate eficient. \parencite{azureStorage}
+
+Table Storage folosește o structură bazată pe tabele care conțin entități, fiecare identificată printr-o combinație unică de PartitionKey și RowKey. Această combinație asigură performanță crescută la căutare, mai ales atunci când datele sunt distribuite corect în funcție de PartitionKey. Fiind un serviciu NoSQL, nu există conceptul de join-uri sau constrângeri între entități, dar în schimb se câștigă foarte mult la capitolul viteză și scalabilitate. \parencite{azureStorage}
+
+În timp, Table Storage a devenit o alegere populară pentru aplicațiile moderne, în special cele distribuite, microservicii sau orice alt sistem care are nevoie de o bază de date simplă, ieftină și elastică. Este integrat profund în ecosistemul Azure, ceea ce înseamnă că poate fi combinat ușor cu alte servicii precum Azure Functions, Logic Apps sau Azure Event Grid, făcându-l extrem de versatil în arhitecturi cloud-native. \parencite{azureStorage}
+
+Azure Storage reprezintă structura de stocare pentru lucrarea de față, datorită numărului scăzut de dependințe și tabele utilizate și vitezei de care dispune.
+
 \subsection{Azurite}
+
+Azurite este un emulator local creat de Microsoft pentru serviciile de stocare din Azure. A fost conceput ca un instrument de dezvoltare care le permite programatorilor să lucreze cu Azure Blob Storage, Queue Storage și Table Storage pe propriul calculator, fără a avea nevoie de o conexiune activă la platforma Azure. Practic, simulează comportamentul serviciilor reale, oferind o experiență de dezvoltare aproape identică cu mediul de producție. \parencite{azurite}
+
+A apărut ca succesor al emulatorului mai vechi Microsoft Azure Storage Emulator, care era limitat la Windows. Azurite, în schimb, este cross-platform, fiind scris în Node.js și disponibil ca pachet NPM sau container Docker. Asta îl face ideal pentru proiecte care rulează pe macOS, Linux sau Windows, fie în linie de comandă, fie integrat în Visual Studio Code. \parencite{azurite}
+
+Oferă un mediu de testare local rapid și fără costuri, în care dezvoltatorii pot simula citiri, scrieri, partajări și alerte, fără riscul de a consuma resurse reale în Azure sau de a introduce erori în datele live. E extrem de valoros în timpul dezvoltării și al testării automate, mai ales în scenarii unde aplicația interacționează frecvent cu Table Storage sau Blob-uri. \parencite{azurite}
+
+Azurite ajută la accelerarea dezvoltării, reduce costurile și elimină nevoia de conexiune constantă la cloud, păstrând în același timp consistența cu ceea ce se întâmplă în Azure real. Din acest motiv este folosit și în proiectul curent.
+
 \section{LINQ}
 \section{HyperText Markup Language (HTML)}
 \section{Cascading Style SHeets (CSS)}
