@@ -1,7 +1,36 @@
 \chapter{TEHNOLOGII ȘI FRAMEWORK-URI FOLOSITE}
 \section{C\#}
 
+C\# este un limbaj de programare modern, orientat pe obiect, dezvoltat de Microsoft și lansat în anul 2000, ca parte a inițiativei .NET. A fost creat sub conducerea lui Anders Hejlsberg, același care a contribuit la dezvoltarea limbajului Delphi. Scopul principal al C\# a fost să combine puterea și flexibilitatea limbajelor precum C++ cu simplitatea și siguranța limbajelor moderne, cum ar fi Java. \parencite{charp}
+
+C\# este un limbaj conceput pentru a fi ușor de învățat și folosit, dar suficient de robust pentru aplicații complexe. Este ideal pentru dezvoltarea de aplicații desktop, web, mobile, jocuri (cu Unity), dar și servicii cloud, microservicii și funcții serverless, în special atunci când este combinat cu platforma .NET. \parencite{charp}
+
+Limbajul C\# este orientat pe obiect, adică permite organizarea codului în clase și obiecte, facilitând reutilizarea și întreținerea codului. De asemenea, are suport nativ pentru asincronism (prin async/await), LINQ pentru interogarea datelor într-un mod elegant și declarativ, și pattern matching pentru expresivitate crescută. \parencite{charp}
+
+De-a lungul timpului, C\# a evoluat constant, adăugând funcționalități moderne care îl fac competitiv cu cele mai populare limbaje de programare. Ultimele versiuni aduc îmbunătățiri semnificative în ceea ce privește performanța, claritatea sintaxei și siguranța codului. \parencite{charp}
+
+Este adesea folosit în mediul enterprise datorită integrării excelente cu serviciile Microsoft (Azure, SQL Server, Active Directory etc.) și a ecosistemului .NET, care oferă o platformă stabilă, multiplatformă și bine întreținută. \parencite{charp}
+
+Un aspect esențial în dezvoltarea aplicațiilor C\# este organizarea codului, iar aici intervin conceptele de design patterns, care oferă soluții reutilizabile pentru probleme comune de arhitectură software. \parencite{charp}
+
+Una dintre cele mai utilizate structuri este separarea aplicației în straturi distincte: \textit{Repository} și \textit{Service}. Acest model este specific abordărilor precum Clean Architecture și Domain-Driven Design. \parencite{designPatterns}
+
+Repository-ul este responsabil pentru interacțiunea cu sursa de date, fie că este o bază de date relațională, un storage NoSQL sau un API extern. El oferă o interfață clară pentru operații precum adăugarea, citirea, actualizarea sau ștergerea entităților, abstractizând detaliile concrete de stocare. \parencite{designPatterns}
+
+Service-ul vine deasupra repository-ului și conține logica de business a aplicației. Aici sunt implementate regulile și fluxurile aplicației, validările și transformările de date. Service-ul folosește repository-ul ca sursă de date, dar nu se ocupă direct cu modul în care acestea sunt stocate sau obținute. \parencite{designPatterns}
+
 \section{.NET}
+
+.NET este o platformă de dezvoltare creată de Microsoft, concepută pentru a permite dezvoltatorilor să construiască aplicații moderne, sigure și performante pentru o varietate largă de dispozitive și sisteme. A fost lansată oficial în anul 2002 sub numele de .NET Framework, fiind destinată exclusiv sistemelor Windows. Scopul principal era de a oferi un cadru unitar, stabil și coerent în care dezvoltatorii să poată crea aplicații desktop și web într-un mod eficient, folosind limbaje precum C\# și VB.NET. \parencite{dotnet}
+
+Pe măsură ce tehnologia a evoluat, Microsoft a început procesul de modernizare a platformei, orientându-se către dezvoltarea multiplatformă și open-source. Astfel, în 2016 a fost lansat .NET Core, o versiune rescrisă și modulară a platformei, capabilă să ruleze pe Windows, Linux și macOS. Aceasta a oferit o arhitectură mai flexibilă și un sistem de distribuție mai eficient, prin intermediul pachetelor NuGet. \parencite{dotnet}
+
+Începând cu .NET 5, lansat în 2020, Microsoft a unificat direcțiile .NET Framework și .NET Core într-o singură platformă, denumită simplu .NET. Această versiune unificată continuă să evolueze, cu îmbunătățiri constante aduse în performanță, suportul pentru limbaje, instrumente de dezvoltare și capabilități cloud. Versiunile recente, cum ar fi .NET 6, .NET 7 și .NET 8, sunt toate versiuni LTS (Long Term Support) sau standard, folosite pe scară largă în industrie. \parencite{dotnet}
+
+.NET se bazează pe concepte precum CLR (Common Language Runtime), care este motorul de execuție ce gestionează rularea aplicațiilor, și BCL (Base Class Library), o colecție vastă de librării care oferă funcționalități esențiale: lucrul cu fișiere, colecții, rețea, criptare, baze de date și multe altele. De asemenea, platforma oferă suport excelent pentru programarea asincronă, gestionarea memoriei automate prin Garbage Collection, precum și o integrare nativă cu servicii și tehnologii moderne precum Azure, Docker și Kubernetes. \parencite{dotnet}
+
+Prin intermediul .NET, dezvoltatorii pot crea aplicații web (cu ASP.NET), desktop (cu WPF și WinForms), mobile (cu .NET MAUI și Xamarin), servicii API, aplicații cloud, jocuri (prin Unity) și chiar soluții de inteligență artificială sau machine learning. \parencite{dotnet}
+
 \section{Azure Function}
 Azure Functions este o platformă serverless dezvoltată de Microsoft care permite rularea codului în cloud fără a fi nevoie să gestionezi infrastructura de servere. Acest model facilitează dezvoltarea rapidă a aplicațiilor și serviciilor scalabile, concentrându-te doar pe logică, nu pe administrarea resurselor. \parencite{azureFunctions}
 \\Principalele caracteristici ale Azure Functions sunt:

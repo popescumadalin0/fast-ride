@@ -3,10 +3,19 @@ Aplicația Fast Ride este construită folosind o arhitectură scalabilă, bazat�
 
 \includegraphics[width=14cm]{Assets/componentsComunication.png}
 \section{Arhitectura aplicației}
+Aplicația dispunde de trei nivele:
+\begin{itemize}
+    \item stocare - unde se păstrează informațiile
+    \item server-side - unde se prelucrează toate infomațiile
+    \item client-side - unde se afisează toate informațiile către utilizatori
+\end{itemize}
+
 \subsection{Stocare}
 
 Azure Table Storage este o bază de date NoSQL, ideală pentru scenarii în care se lucrează cu volume mari de date structurate,
 dar fără relații complexe între entități. În cazul aplicației Fast Ride, fiecare entitate: utilizatori, curse, șoferi online și instanțele de orchestrare, este reprezentată ca o tabelă separată în Table Storage. Fiecare înregistrare (sau entitate) dintr-o tabelă este identificată în mod unic printr-o combinație de PartitionKey și RowKey, ceea ce asigură o distribuire eficientă și acces rapid la date.
+
+\includegraphics[width=14cm]{Assets/ER.png}
 
 Aplicația Fast Ride conține trei entități, fiecare reflectând o componentă critică a 
 funcționalității sistemului: utilizatorii, cursele și șoferii online.
@@ -55,6 +64,8 @@ de flexibil pentru a susține dezvoltări ulterioare, cum ar fi introducerea pl�
 sau programării curselor în avans.
 
 \subsection{Server-side}
+
+
 durable orchestrations si cum functioneaza activitatile si restul
 \subsection{Client-side}
 blazor wasm si cum merge, cum apeleaza backendul
