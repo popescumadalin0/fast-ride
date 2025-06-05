@@ -5,13 +5,13 @@ C\# este un limbaj de programare modern, orientat pe obiect, dezvoltat de Micros
 
 C\# este un limbaj conceput pentru a fi ușor de învățat și folosit, dar suficient de robust pentru aplicații complexe. Este ideal pentru dezvoltarea de aplicații desktop, web, mobile, jocuri (cu Unity), dar și servicii cloud, microservicii și funcții serverless, în special atunci când este combinat cu platforma .NET. \parencite{charp}
 
-Limbajul C\# este orientat pe obiect, adică permite organizarea codului în clase și obiecte, facilitând reutilizarea și întreținerea codului. De asemenea, are suport nativ pentru asincronism (prin async/await), LINQ pentru interogarea datelor într-un mod elegant și declarativ, și pattern matching pentru expresivitate crescută. \parencite{charp}
+Limbajul C\# este orientat pe obiect, adică permite organizarea codului în clase și obiecte, facilitând reutilizarea și întreținerea codului. De asemenea, are suport nativ pentru asincronism (prin \textit{async}/\textit{await}), LINQ pentru interogarea datelor într-un mod elegant și declarativ, și pattern matching pentru expresivitate crescută. \parencite{charp}
 
-De-a lungul timpului, C\# a evoluat constant, adăugând funcționalități moderne care îl fac competitiv cu cele mai populare limbaje de programare. Ultimele versiuni aduc îmbunătățiri semnificative în ceea ce privește performanța, claritatea sintaxei și siguranța codului. \parencite{charp}
+C\# a evoluat constant, adăugând funcționalități care îl fac competitiv cu cele mai populare limbaje de programare. Ultimele versiuni aduc îmbunătățiri semnificative în ceea ce privește performanța, claritatea sintaxei și siguranța codului. \parencite{charp}
 
 Este adesea folosit în mediul enterprise datorită integrării excelente cu serviciile Microsoft (Azure, SQL Server, Active Directory etc.) și a ecosistemului .NET, care oferă o platformă stabilă, multiplatformă și bine întreținută. \parencite{charp}
 
-Un aspect esențial în dezvoltarea aplicațiilor C\# este organizarea codului, iar aici intervin conceptele de design patterns, care oferă soluții reutilizabile pentru probleme comune de arhitectură software. \parencite{charp}
+În dezvoltarea aplicațiilor C\#, pentru organizarea codului există conceptele de design patterns, care oferă soluții reutilizabile pentru probleme comune de arhitectură software. \parencite{charp}
 
 Una dintre cele mai utilizate structuri este separarea aplicației în straturi distincte: \textit{Repository} și \textit{Service}. Acest model este specific abordărilor precum Clean Architecture și Domain-Driven Design. \parencite{designPatterns}
 
@@ -21,7 +21,7 @@ Service-ul vine deasupra repository-ului și conține logica de business a aplic
 
 \section{.NET}
 
-.NET este o platformă de dezvoltare creată de Microsoft, concepută pentru a permite dezvoltatorilor să construiască aplicații moderne, sigure și performante pentru o varietate largă de dispozitive și sisteme. A fost lansată oficial în anul 2002 sub numele de .NET Framework, fiind destinată exclusiv sistemelor Windows. Scopul principal era de a oferi un cadru unitar, stabil și coerent în care dezvoltatorii să poată crea aplicații desktop și web într-un mod eficient, folosind limbaje precum C\# și VB.NET. \parencite{dotnet}
+.NET este o platformă de dezvoltare creată de Microsoft, concepută pentru a permite dezvoltatorilor să construiască aplicații performante pentru o varietate largă de dispozitive și sisteme. A fost lansată oficial în anul 2002 sub numele de .NET Framework, fiind destinată exclusiv sistemelor Windows. Scopul principal era de a oferi un cadru unitar, stabil și coerent în care dezvoltatorii să poată crea aplicații desktop și web într-un mod eficient, folosind limbaje precum C\# și VB.NET. \parencite{dotnet}
 
 Pe măsură ce tehnologia a evoluat, Microsoft a început procesul de modernizare a platformei, orientându-se către dezvoltarea multiplatformă și open-source. Astfel, în 2016 a fost lansat .NET Core, o versiune rescrisă și modulară a platformei, capabilă să ruleze pe Windows, Linux și macOS. Aceasta a oferit o arhitectură mai flexibilă și un sistem de distribuție mai eficient, prin intermediul pachetelor NuGet. \parencite{dotnet}
 
@@ -32,7 +32,7 @@ Pe măsură ce tehnologia a evoluat, Microsoft a început procesul de modernizar
 Prin intermediul .NET, dezvoltatorii pot crea aplicații web (cu ASP.NET), desktop (cu WPF și WinForms), mobile (cu .NET MAUI și Xamarin), servicii API, aplicații cloud, jocuri (prin Unity) și chiar soluții de inteligență artificială sau machine learning. \parencite{dotnet}
 
 \section{Azure Function}
-Azure Functions este o platformă serverless dezvoltată de Microsoft care permite rularea codului în cloud fără a fi nevoie să gestionezi infrastructura de servere. Acest model facilitează dezvoltarea rapidă a aplicațiilor și serviciilor scalabile, concentrându-te doar pe logică, nu pe administrarea resurselor. \parencite{azureFunctions}
+Azure Functions este o platformă serverless dezvoltată de Microsoft care permite rularea codului în cloud fără a fi nevoie să gestionezi infrastructura de servere. Acest model facilitează dezvoltarea rapidă a aplicațiilor și serviciilor scalabile, concentrându-se doar pe logică, nu pe administrarea resurselor. \parencite{azureFunctions}
 \\Principalele caracteristici ale Azure Functions sunt:
 \begin{itemize}
     \item Execuție event-driven: Funcțiile sunt declanșate automat de evenimente, cum ar fi modificări în baza de date, mesaje din cozi, cereri HTTP, cronometre sau alte surse.
@@ -55,18 +55,12 @@ Azure Functions, lansat cu un an mai devreme (2016), face parte din suita de ser
 Durable Functions este construit pe baza Durable Task Framework, permițând dezvoltatorilor să scrie cod orchestrat într-un stil secvențial, dar care este transformat automat în execuție asincronă și distribuită, cu păstrarea stării între pași. \parencite{azureDurableFunctions}
 \\Scenarii comune de utilizare:
 \begin{itemize}
-    \item Orchestrarea fluxurilor de lucru
-          O funcție orchestrator coordonează apelurile către alte funcții, în funcție de anumite condiții sau răspunsuri. De exemplu, poate apela o funcție care extrage date de la un API, apoi, în funcție de rezultat, lansează alte funcții în lanț.
-    \item 	Function Chaining (lanțuri de funcții)
-          Mai multe funcții sunt apelate secvențial, iar rezultatul fiecărei funcții este transmis mai departe către următoarea funcție din lanț.
-    \item 	Fan-out/Fan-in
-          O funcție poate declanșa mai multe funcții în paralel (fan-out), după care agregă rezultatele într-un punct comun (fan-in). Acest model este ideal pentru procesarea paralelă a unor seturi mari de date.
-    \item 	Gestionarea proceselor de lungă durată
-          Durable Functions permite execuția de fluxuri care pot dura ore, zile sau chiar luni, menținând starea între pași. Este util în scenarii precum aprobări, procese de onboarding, migrare de date sau procese distribuite în timp.
-    \item 	Compensarea acțiunilor (Saga Pattern)
-          În fluxuri unde mai multe acțiuni trebuie executate într-o ordine strictă, Durable Functions permite implementarea de logici de rollback sau compensare în caz de eșec, asigurând consistența procesului.
-    \item 	Funcții temporizate (Timer Functions)
-          Orchestratorii pot programa funcții să ruleze după o întârziere sau la anumite intervale. Acestea sunt utile în procese automate, monitorizări periodice sau trimiterea de notificări programate.
+    \item Orchestrarea fluxurilor de lucru - o funcție orchestrator coordonează apelurile către alte funcții, în funcție de anumite condiții sau răspunsuri. De exemplu, poate apela o funcție care extrage date de la un API, apoi, în funcție de rezultat, lansează alte funcții în lanț.
+    \item 	Function Chaining (lanțuri de funcții) - mai multe funcții sunt apelate secvențial, iar rezultatul fiecărei funcții este transmis mai departe către următoarea funcție din lanț.
+    \item 	Fan-out/Fan-in - o funcție poate declanșa mai multe funcții în paralel (fan-out), după care agregă rezultatele într-un punct comun (fan-in). Acest model este ideal pentru procesarea paralelă a unor seturi mari de date.
+    \item 	Gestionarea proceselor de lungă durată - Durable Functions permite execuția de fluxuri care pot dura ore, zile sau chiar luni, menținând starea între pași. Este util în scenarii precum aprobări, procese de onboarding, migrare de date sau procese distribuite în timp.
+    \item 	Compensarea acțiunilor (Saga Pattern) - În fluxuri unde mai multe acțiuni trebuie executate într-o ordine strictă, Durable Functions permite implementarea de logici de rollback sau compensare în caz de eșec, asigurând consistența procesului.
+    \item 	Funcții temporizate (Timer Functions) - Orchestratorii pot programa funcții să ruleze după o întârziere sau la anumite intervale. Acestea sunt utile în procese automate, monitorizări periodice sau trimiterea de notificări programate.
 \end{itemize}\parencite{azureDurableFunctions}
 
 Lucrarea folosește Azure Functions, în special Azure Durable Functions pentru a face posibilă procesarea și menținerea legăturii între 2 utilizatori pe parcursul cursei, indiferent de circumstațele actuale (utilizatorul face Refresh sau aplicația își ia Restart).
@@ -76,7 +70,7 @@ Azure Table Storage este un serviciu creat de Microsoft ca parte a suitei Azure 
 
 A fost introdus în jurul anului 2010, într-o perioadă în care Microsoft își contura strategia cloud și începea să ofere servicii care să concureze cu AWS. A fost conceput pentru a servi aplicații la scară mare, care necesită o cantitate mare de scrieri și citiri, dar fără nevoia de tranzacții complexe sau relații între tabele. Scenariile clasice includ loguri, telemetrie, date despre utilizatori, mesaje sau orice tip de evenimente care trebuie stocate rapid și recuperate eficient. \parencite{azureStorage}
 
-Table Storage folosește o structură bazată pe tabele care conțin entități, fiecare identificată printr-o combinație unică de PartitionKey și RowKey. Această combinație asigură performanță crescută la căutare, mai ales atunci când datele sunt distribuite corect în funcție de PartitionKey. Fiind un serviciu NoSQL, nu există conceptul de join-uri sau constrângeri între entități, dar în schimb se câștigă foarte mult la capitolul viteză și scalabilitate. \parencite{azureStorage}
+Table Storage folosește o structură bazată pe tabele care conțin entități, fiecare identificată printr-o combinație unică de \textit{PartitionKey} și \textit{RowKey}. Această combinație asigură performanță crescută la căutare, mai ales atunci când datele sunt distribuite corect în funcție de \textit{PartitionKey}. Fiind un serviciu NoSQL, nu există conceptul de join-uri sau constrângeri între entități, dar în schimb se câștigă foarte mult la capitolul viteză și scalabilitate. \parencite{azureStorage}
 
 În timp, Table Storage a devenit o alegere populară pentru aplicațiile moderne, în special cele distribuite, microservicii sau orice alt sistem care are nevoie de o bază de date simplă, ieftină și elastică. Este integrat profund în ecosistemul Azure, ceea ce înseamnă că poate fi combinat ușor cu alte servicii precum Azure Functions, Logic Apps sau Azure Event Grid, făcându-l extrem de versatil în arhitecturi cloud-native. \parencite{azureStorage}
 
@@ -88,11 +82,29 @@ Azurite este un emulator local creat de Microsoft pentru serviciile de stocare d
 
 A apărut ca succesor al emulatorului mai vechi Microsoft Azure Storage Emulator, care era limitat la Windows. Azurite, în schimb, este cross-platform, fiind scris în Node.js și disponibil ca pachet NPM sau container Docker. Asta îl face ideal pentru proiecte care rulează pe macOS, Linux sau Windows, fie în linie de comandă, fie integrat în Visual Studio Code. \parencite{azurite}
 
-Oferă un mediu de testare local rapid și fără costuri, în care dezvoltatorii pot simula citiri, scrieri, partajări și alerte, fără riscul de a consuma resurse reale în Azure sau de a introduce erori în datele live. E extrem de valoros în timpul dezvoltării și al testării automate, mai ales în scenarii unde aplicația interacționează frecvent cu Table Storage sau Blob-uri. \parencite{azurite}
+Oferă un mediu de testare local rapid și fără costuri, în care dezvoltatorii pot simula citiri, scrieri, partajări și alerte, fără riscul de a consuma resurse reale în Azure sau de a introduce erori în datele live. Este frecvent folosit în timpul dezvoltării și al testării automate, mai ales în scenarii unde aplicația interacționează frecvent cu Table Storage sau Blob-uri. \parencite{azurite}
 
 Azurite ajută la accelerarea dezvoltării, reduce costurile și elimină nevoia de conexiune constantă la cloud, păstrând în același timp consistența cu ceea ce se întâmplă în Azure real. Din acest motiv este folosit și în proiectul curent.
 
 \section{LINQ}
+
+LINQ (Language Integrated Query) este o componentă a limbajului C\# care permite interogarea colecțiilor de date într-un mod declarat, expresiv și tip-safe, folosind o sintaxă integrată direct în limbaj. LINQ oferă o punte între programarea orientată pe obiecte și interogarea datelor, permițând manipularea colecțiilor precum liste, array-uri, baze de date sau fișiere XML. \parencite{linq}
+
+Prin LINQ, sintaxa este similară celei din SQL, dar adaptată paradigmei C\# și poate fi aplicată atât în memorie (de exemplu, asupra listelor), cât și asupra surselor externe, cum ar fi Entity Framework sau XML. \parencite{linq}
+
+În contextul Azure Table Storage, LINQ poate fi folosit pentru a interoga datele stocate într-un mod expresiv, dar trebuie menționat că suportul LINQ este mai limitat comparativ cu interogările LINQ în memorie sau cu Entity Framework. Azure Table Storage este un sistem NoSQL key-value, iar interogările se bazează pe filtrarea entităților în funcție de \textit{PartitionKey}, \textit{RowKey} și alte proprietăți. \parencite{linq}
+
+Pentru a lucra cu LINQ în Azure Table Storage, se folosește de regulă SDK-ul oficial (\textit{Azure.Data.Tables}) și clase ca \textit{TableClient} sau \textit{TableServiceClient}.  \parencite{linq}
+
+Utilizarea LINQ peste \textit{TableQueryable<T>} (în SDK-uri mai vechi) sau direct cu \textit{TableClient.Query<T>()} în SDK-ul modern, există access la o subset de metode LINQ compatibile cu server-side query translation. Cele mai importante metode disponibile sunt:
+\begin{itemize}
+    \item Where() – pentru a filtra datele după proprietăți simple
+    \item Take() – pentru a limita numărul de rezultate returnate
+    \item Select() – parțial suportat, pentru a proiecta obiectele într-o formă nouă
+    \item OrderBy() și OrderByDescending() – doar în anumite condiții și nu întotdeauna disponibile, în funcție de SDK
+\end{itemize}
+\parencite{linq}
+
 \section{HyperText Markup Language (HTML)}
 \section{Cascading Style SHeets (CSS)}
 \section{Bootstrap}
@@ -113,31 +125,51 @@ Scopul principal al Blazor este de a permite dezvoltatorilor .NET să creeze apl
     \item Aplicații enterprise: Datorită integrării excelente cu ecosistemul .NET, Blazor este preferat în mediul enterprise pentru reutilizarea codului existent, integrarea ușoară a logicii de business, autentificării, bazelor de date și serviciilor API.
 \end{itemize}\parencite{blazor}
 
+Proiectul de licență folosește Blazor WebAssembly pentru ca se doreste o platfoma destul de light pentru utilizator care poate fi folosită și în zone scăzute de internet.
+Blazor Server folosește comunicarea cu un server comun prin SignalR ceea ce necesită o conexiune permanentă la internet. Iar la un volum mare de utilizatori, acest canal poate deveni lent.
+
 \section{MudBlazor}
 
 \section{SignalR}
- {\hspace*{1cm}WebSockets este un protocol de comunicație care permite o conexiune bidirecțională, persistentă și full-duplex între un client (de exemplu, un browser web) și un server, facilitând transmiterea rapidă și continuă a datelor în timp real fără a reîncarca pagina.}\parencite{signalR}\\
-{\hspace*{1cm} SignalR este o bibliotecă dezvoltată de Microsoft care facilitează comunicarea în timp real între aplicațiile web, mobile sau desktop și servere. Lansată în 2011 și integrată ulterior în ecosistemul ASP.NET Core, SignalR permite actualizări și notificări instantanee fără a fi nevoie să reîncarci paginile web.}\parencite{signalR}\\
-{Înainte de SignalR, comunicarea bidirecțională în timp real era dificilă și adesea implementată prin tehnici ineficiente precum polling sau long-polling, care consumau multe resurse. SignalR a simplificat acest proces prin integrarea automată a protocolului WebSockets, care oferă o conexiune persistentă și eficientă între client și server.}\parencite{signalR}\\
-{Cu apariția ASP.NET Core, SignalR a fost reproiectat pentru a fi mai performant și scalabil, suportând diverse metode de transport și oferind o experiență optimă indiferent de mediu.}\parencite{signalR}\\
-{SignalR folosește automat cel mai potrivit mecanism de comunicare, în funcție de capabilitățile clientului și ale serverului:}
+WebSockets este un protocol de comunicație care permite o conexiune bidirecțională, persistentă și full-duplex între un client (de exemplu, un browser web) și un server, facilitând transmiterea rapidă și continuă a datelor în timp real fără a reîncarca pagina. \parencite{signalR}
+
+SignalR este o bibliotecă dezvoltată de Microsoft care facilitează comunicarea în timp real între aplicațiile web, mobile sau desktop și servere. Lansată în 2011 și integrată ulterior în ecosistemul ASP.NET Core, SignalR permite actualizări și notificări instantanee fără a fi nevoie de reîncărcarea paginile web. \parencite{signalR}
+
+Înainte de SignalR, comunicarea bidirecțională în timp real era dificilă și adesea implementată prin tehnici ineficiente precum polling sau long-polling, care consumau multe resurse. SignalR a simplificat acest proces prin integrarea automată a protocolului WebSockets, care oferă o conexiune persistentă și eficientă între client și server. \parencite{signalR}
+
+Cu apariția ASP.NET Core, SignalR a fost reproiectat pentru a fi mai performant și scalabil, suportând diverse metode de transport și oferind o experiență optimă indiferent de mediu. \parencite{signalR}
+\\SignalR folosește automat cel mai potrivit mecanism de comunicare, în funcție de capabilitățile clientului și ale serverului:
 \begin{itemize}
     \item WebSockets: Protocolul principal, oferind o conexiune rapidă și bidirecțională.
     \item Server-Sent Events (SSE): Permite serverului să trimită actualizări către client printr-o conexiune HTTP deschisă.
     \item Long Polling: Metoda de rezervă, în care clientul face cereri repetate pentru a verifica noutățile atunci când celelalte opțiuni nu sunt disponibile.
 \end{itemize}\parencite{signalR}
-{SignalR este ideal pentru aplicații care necesită actualizări în timp real, cum ar fi chat-uri, notificări, dashboard-uri live sau colaborare online.}
+
+SignalR este ideal pentru aplicații care necesită actualizări în timp real, cum ar fi chat-uri, notificări, dashboard-uri live sau colaborare online.
+Acesta ajută componentele proiectului FastRide să comunice fără a fi nevoie de acțiuni manuale ale utilizatorului sau reîncărcarea paginii.
+
 \subsection{SignalR Server Emulator}
 \section{Refit API}
 \section{Leaflet și Routing Machine}
 \section{Stripe}
- {\hspace*{1cm} Stripe este o platformă globală de procesare a plăților, fondată în 2010 de frații Patrick și
-  John Collison. Aceasta a fost creată pentru a permite afacerilor și dezvoltatorilor să accepte plăți
-  online în mod simplu și sigur. Stripe a devenit rapid unul dintre cei mai populari furnizori de
-  soluții de plăți digitale, datorită ușurinței de integrare, suportului pentru diverse metode de plată
-  și disponibilității în multiple țări.}\parencite{stripe}\\
-{\hspace*{1cm} Stripe a fost fondată într-o perioadă în care comerțul online era în creștere, dar soluțiile de
+Stripe este o platformă globală de procesare a plăților, fondată în 2010 de frații Patrick și
+John Collison. Aceasta a fost creată pentru a permite afacerilor și dezvoltatorilor să accepte plăți
+online în mod simplu și sigur. Stripe a devenit rapid unul dintre cei mai populari furnizori de
+soluții de plăți digitale, datorită ușurinței de integrare, suportului pentru diverse metode de plată
+și disponibilității în multiple țări. \parencite{stripe}
+
+Stripe a fost fondată într-o perioadă în care comerțul online era în creștere, dar soluțiile de
 plată disponibile erau adesea greoaie sau complexe de implementat. Frații Collison au observat o
 oportunitate de a crea o platformă care să facă procesul de integrare a plăților în site-uri web și
 aplicații mult mai simplu pentru dezvoltatori. Stripe a fost lansată oficial în 2011, cu misiunea de
-a moderniza plățile online și de a oferi soluții intuitive pentru afaceri de toate dimensiunile.}\parencite{stripe}
+a moderniza plățile online și de a oferi soluții intuitive pentru afaceri de toate dimensiunile. \parencite{stripe}
+
+Stripe este o platformă populară pentru procesarea plăților online, iar în cod, interacțiunea cu Stripe se face de obicei prin intermediul unui SDK oficial (cum ar fi Stripe.net în C\#), care comunică cu API-ul Stripe. Tot fluxul pornește de la inițierea unei acțiuni de plată sau de verificare a cardului, iar implementarea în cod respectă pașii tipici ai unui flux de plată securizat și asincron. \parencite{stripe}
+
+Într-un flux obișnuit, aplicația backend creează un \textit{PaymentIntent} sau un \textit{SetupIntent}, în funcție de ceea ce se dorește, adică dacă se vrea să se încaseze o sumă sau doar să se verifice și să se salveze un card pentru o plată ulterioară. Odată ce intent-ul a fost creat, backend-ul primește un \textit{client\_secret}, care este trimis către frontend. \parencite{stripe}
+
+Pe frontend, Stripe.js sau Stripe Elements este folosit pentru a colecta datele cardului și a le trimite către Stripe, fără ca serverul să vadă sau să stocheze datele sensibile. Cu acel \textit{client\_secret}, frontend-ul finalizează interacțiunea și Stripe se ocupă de autorizarea plății sau a cardului. \parencite{stripe}
+
+După ce Stripe procesează totul, trimite un răspuns către backend prin webhook-uri (de exemplu, când o plată a fost finalizată cu succes, sau când un card a fost salvat), iar aplicația poate reacționa la aceste evenimente, de exemplu, salvând un ID de client Stripe sau marcând o comandă ca fiind plătită. \parencite{stripe}
+
+Codul doar configurează cererea, transmite comenzile către Stripe și reacționează la rezultatele oferite de Stripe prin webhook-uri. Acest model oferă securitate, scalabilitate și conformitate cu standardele precum PCI-DSS.

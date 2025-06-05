@@ -13,11 +13,11 @@ Aplicația dispunde de trei nivele:
 \subsection{Stocare}
 
 Azure Table Storage este o bază de date NoSQL, ideală pentru scenarii în care se lucrează cu volume mari de date structurate,
-dar fără relații complexe între entități. În cazul aplicației Fast Ride, fiecare entitate: utilizatori, curse, șoferi online și instanțele de orchestrare, este reprezentată ca o tabelă separată în Table Storage. Fiecare înregistrare (sau entitate) dintr-o tabelă este identificată în mod unic printr-o combinație de PartitionKey și RowKey, ceea ce asigură o distribuire eficientă și acces rapid la date.
+dar fără relații complexe între entități. În cazul aplicației FastRide, fiecare entitate: utilizatori, curse, șoferi online și instanțele de orchestrare, este reprezentată ca o tabelă separată în Table Storage. Fiecare înregistrare (sau entitate) dintr-o tabelă este identificată în mod unic printr-o combinație de \textit{PartitionKey} și \textit{RowKey}, ceea ce asigură o distribuire eficientă și acces rapid la date.
 
 \includegraphics[width=14cm]{Assets/ER.png}
 
-Aplicația Fast Ride conține trei entități, fiecare reflectând o componentă critică a 
+Aplicația FastRide conține trei entități, fiecare reflectând o componentă critică a 
 funcționalității sistemului: utilizatorii, cursele și șoferii online.
 
 Totul pornește de la entitatea \textit{Users}, care stochează informațiile de bază ale fiecărui utilizator autentificat prin Google.
@@ -42,7 +42,7 @@ caracterizată de un status:
     \item \textit{None} - state-ul inițial
 \end{itemize}
 Mereu după ce cursa se termina, aceasta se setează pe state-ul inițial.
-Pentru a vedea face vizibil în continuare statusul final al cursei, această memorează și un CompletedStatus:
+Pentru a face vizibil în continuare statusul final al cursei, această memorează și un \textit{CompletedStatus} :
 \begin{itemize}
     \item \textit{DriverNotFound} - nu s-a găsit niciun șofer pentru a finaliza cursa
     \item \textit{PaymentRefused} - clientul a refuzat plata (disponibilă doar cu cardul)
