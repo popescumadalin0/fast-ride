@@ -1,7 +1,13 @@
 \chapter{SPECIFICAȚII ȘI REPREZENTAREA APLICAȚIEI}
 Aplicația Fast Ride este construită folosind o arhitectură scalabilă, bazată pe microservicii și servicii în cloud. Tehnologiile principale utilizate sunt Blazor WebAssembly pentru interfața utilizator și Azure Durable Functions pentru logica de backend. Comunicarea dintre cele două componente este realizată prin API-uri HTTP și prin WebSocket-uri cu ajutorul SignalR.
 
-\includegraphics[width=14cm]{Assets/componentsComunication.png}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=14cm]{Assets/componentsComunication.png}
+    \caption{Comunicarea dintre componentele proiectului}
+    \label{fig:comunicare}
+\end{figure}
+
 \section{Arhitectura aplicației}
 Aplicația dispunde de trei nivele:
 \begin{itemize}
@@ -15,23 +21,28 @@ Aplicația dispunde de trei nivele:
 Azure Table Storage este o bază de date NoSQL, ideală pentru scenarii în care se lucrează cu volume mari de date structurate,
 dar fără relații complexe între entități. În cazul aplicației FastRide, fiecare entitate: utilizatori, curse, șoferi online și instanțele de orchestrare, este reprezentată ca o tabelă separată în Table Storage. Fiecare înregistrare (sau entitate) dintr-o tabelă este identificată în mod unic printr-o combinație de \textit{PartitionKey} și \textit{RowKey}, ceea ce asigură o distribuire eficientă și acces rapid la date.
 
-\includegraphics[width=14cm]{Assets/ER.png}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=14cm]{Assets/ER.png}
+    \caption{Diagrama ER pentru baza de date.}
+    \label{fig:ER}
+\end{figure}
 
-Aplicația FastRide conține trei entități, fiecare reflectând o componentă critică a 
+Aplicația FastRide conține trei entități, fiecare reflectând o componentă critică a
 funcționalității sistemului: utilizatorii, cursele și șoferii online.
 
 Totul pornește de la entitatea \textit{Users}, care stochează informațiile de bază ale fiecărui utilizator autentificat prin Google.
 Fiecare utilizator este identificat în mod unic prin \textit{NameIdentifier} și \textit{Email}, iar alături de acesta se păstrează date precum numele (Username), tipul de utilizator (\textit{Driver}, \textit{User} sau \textit{Admin}), ratingul acumulat de-a lungul timpului, numărul de telefon și o eventuală poză de profil (\textit{PictureUrl}).
 
 În momentul în care un utilizator rezervă sau preia o cursă, se creează o relație între acesta și instanțele de orchestrare.
-Aici intervin tabelele \textit{TaskHubInstances} și \textit{TaskHubHistory}, care reflectă intern mecanismul 
-de orchestrare al Azure Durable Functions. Fiecare instanță a unei funcții durabile este stocată în \textit{TaskHubInstances}, iar starea 
-sa (\textit{CustomStatus}) este utilizată pentru a reflecta progresul unei curse (\textit{Ride}). În paralel, \textit{TaskHubHistory} păstrează detaliile cronologice ale 
-execuției, istoricul exact al fiecărei acțiuni legate de instanța respectivă. Ambele entități sunt identificate prin \textit{PartitionKey}, iar 
+Aici intervin tabelele \textit{TaskHubInstances} și \textit{TaskHubHistory}, care reflectă intern mecanismul
+de orchestrare al Azure Durable Functions. Fiecare instanță a unei funcții durabile este stocată în \textit{TaskHubInstances}, iar starea
+sa (\textit{CustomStatus}) este utilizată pentru a reflecta progresul unei curse (\textit{Ride}). În paralel, \textit{TaskHubHistory} păstrează detaliile cronologice ale
+execuției, istoricul exact al fiecărei acțiuni legate de instanța respectivă. Ambele entități sunt identificate prin \textit{PartitionKey}, iar
 în cazul istoricului, și prin \textit{RowKey}.
 
-Starea unei curse este gestionată de modelul \textit{Ride}, care este corelat cu Users prin câmpul \textit{UserIdentifier}, indicând clientul 
-care a inițiat cererea. Dacă un șofer acceptă cursa, acesta este reprezentat prin \textit{DriverIdentifier}. Fiecare cursă este 
+Starea unei curse este gestionată de modelul \textit{Ride}, care este corelat cu Users prin câmpul \textit{UserIdentifier}, indicând clientul
+care a inițiat cererea. Dacă un șofer acceptă cursa, acesta este reprezentat prin \textit{DriverIdentifier}. Fiecare cursă este
 caracterizată de un status:
 \begin{itemize}
     \item \textit{NewRideAvailable} - status-ul inițial al cursei
@@ -46,11 +57,11 @@ Pentru a face vizibil în continuare statusul final al cursei, această memoreaz
 \begin{itemize}
     \item \textit{DriverNotFound} - nu s-a găsit niciun șofer pentru a finaliza cursa
     \item \textit{PaymentRefused} - clientul a refuzat plata (disponibilă doar cu cardul)
-    \item \textit{Cancelled} - cursa este anulată din orice alte motive 
+    \item \textit{Cancelled} - cursa este anulată din orice alte motive
     \item \textit{Completed} - cursa a fost terminată cu success
 \end{itemize}
 În infomațiile cursei se mai regăsesc și punctul de plecare (\textit{StartPoint}),
-destinația (\textit{Destination}) și costul asociat. \textit{GroupName} este folosit pentru a lega această entitate de sesiunea real-time 
+destinația (\textit{Destination}) și costul asociat. \textit{GroupName} este folosit pentru a lega această entitate de sesiunea real-time
 corespunzătoare, utilă pentru actualizări prin SignalR, astfel încât, doar șoferii din același grup cu clientul ce a inițiat cursa pot interacționa.
 
 
@@ -60,11 +71,10 @@ Fiecare șofer online este identificat prin \textit{NameIdentifier} și asociat 
 permițând localizarea sa pe hartă.
 
 Azure Table Storage oferă performanță, scalabilitate și costuri reduse, iar modelul este suficient
-de flexibil pentru a susține dezvoltări ulterioare, cum ar fi introducerea plăților reale, recenziilor textuale 
+de flexibil pentru a susține dezvoltări ulterioare, cum ar fi introducerea plăților reale, recenziilor textuale
 sau programării curselor în avans.
 
 \subsection{Server-side}
-
 
 durable orchestrations si cum functioneaza activitatile si restul
 \subsection{Client-side}

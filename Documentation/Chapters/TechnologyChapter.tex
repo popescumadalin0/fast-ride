@@ -106,8 +106,85 @@ Utilizarea LINQ peste \textit{TableQueryable<T>} (în SDK-uri mai vechi) sau dir
 \parencite{linq}
 
 \section{HyperText Markup Language (HTML)}
+
+HTML, prescurtarea de la HyperText Markup Language, este limbajul standard folosit pentru a structura și
+a afișa conținut pe web. A apărut la începutul anilor ’90, dezvoltat de Tim Berners-Lee, și a stat la baza
+creării primelor pagini web din internetul modern. HTML nu este un limbaj de programare propriu-zis, ci un
+limbaj de marcare, ceea ce înseamnă că este folosit pentru a indica browserului cum să interpreteze și să
+afișeze diverse elemente: titluri, paragrafe, imagini, linkuri, liste, formulare și multe altele. \parencite{htmlcss}
+
+Documentele HTML sunt compuse din etichete (tag-uri) care înconjoară conținutul pentru a-i da semnificație.
+De exemplu, \textit{<p>} definește un paragraf, \textit{<a>} un link, iar \textit{<img>} o imagine. Acestea sunt în mod obișnuit
+organizate într-o structură ierarhică, pornind de la o etichetă principală \textit{<html>}, care conține două secțiuni:
+\textit{<head>} (cu metadate, titlu, legături către stiluri și scripturi) și \textit{<body>} (unde se află efectiv conținutul
+afișat în pagină). \parencite{htmlcss}
+
+HTML este strâns legat de CSS (pentru stilizare) și JavaScript (pentru interactivitate). Împreună, aceste trei
+tehnologii formează „scheletul” oricărei aplicații web. De-a lungul timpului, HTML a evoluat semnificativ,
+ajungând astăzi la versiunea HTML5, care introduce elemente semantice precum \textit{<article>}, \textit{<section>}, \textit{<header>},
+dar și suport nativ pentru video, audio, canvas și multe altele. \parencite{htmlcss}
+
 \section{Cascading Style SHeets (CSS)}
+
+CSS, prescurtare de la Cascading Style Sheets, este limbajul folosit pentru a stiliza și prezenta elementele
+HTML pe paginile web. A fost creat pentru a separa structura (HTML) de aspect (culori, fonturi, poziționare),
+permițând dezvoltatorilor să creeze interfețe coerente, atractive și responsive. \parencite{htmlcss}
+
+CSS funcționează pe baza regulilor, fiecare formată dintr-un selector (care stabilește ce elemente HTML vor
+fi afectate) și un bloc de declarații (care definesc stilul, de exemplu: culoare, dimensiune, margini etc.).
+De exemplu, o regulă simplă care colorează tot textul paragrafelor în roșu ar arăta:
+\begin{verbatim}
+p {
+    color: red;
+}  
+\end{verbatim}
+
+Fiind „cascading” (în cascadă), CSS aplică regulile în funcție de mai mulți factori: specificitate, ordinea
+de apariție, și dacă stilurile sunt definite inline, în fișiere externe sau într-un \textit{<style>} din HTML. \parencite{htmlcss}
+\\CSS permite:
+\begin{itemize}
+    \item controlul layout-ului paginii (prin \textit{Flexbox}, \textit{Grid} etc.);
+    \item personalizarea completă a vizualului (fonturi, tranziții, animații);
+    \item adaptarea conținutului pentru diferite dispozitive (prin media queries, pentru responsive design).
+\end{itemize}
+\parencite{htmlcss}
+
+CSS poate fi organizat și modularizat cu ajutorul unor preprocesatoare (ex. SASS, LESS)
+sau poate fi gestionat direct în fișierele componentelor, cum se întâmplă în Blazor, React sau Angular. În
+Blazor, de exemplu, pot exista fișiere \textit{.razor.css} care afectează stilul unei componente fără a influența alte
+părți ale aplicației. \parencite{htmlcss}
+
+CSS este responsabil de aspectul și senzația vizuală a aplicației, completând structura oferită
+de HTML și funcționalitatea livrată de C\#, JavaScript sau alte limbaje. \parencite{htmlcss}
+
 \section{Bootstrap}
+
+
+Bootstrap este un framework front-end open-source dezvoltat inițial de Twitter, lansat pentru prima dată
+în 2011, cu scopul de a oferi un set unitar și rapid de unelte pentru crearea interfețelor web moderne.
+Este construit în jurul a trei tehnologii principale: HTML, CSS și JavaScript, și oferă o colecție de
+componente predefinite, stiluri și funcționalități interactive care pot fi integrate rapid într-o aplicație. \parencite{htmlcss}
+
+Unul dintre cele mai importante avantaje ale Bootstrap este sistemul său de grid responsive (bazat inițial
+pe 12 coloane), care permite construirea layout-urilor flexibile, adaptabile pentru orice dimensiune de
+ecran, de la telefoane mobile până la monitoare mari. \parencite{htmlcss}
+\\Bootstrap include o varietate de:
+\begin{itemize}
+    \item componente UI (buttoane, formulare, alerte, carduri, navigație etc.),
+    \item plugin-uri JavaScript (dropdown-uri, carusele, modale, tooltip-uri etc.),
+    \item variabile și mixin-uri Sass pentru personalizare avansată.
+\end{itemize}
+\parencite{htmlcss}
+
+Dezvoltatorii pot folosi clase CSS predefinite (ex: \textit{btn btn-primary}, \textit{d-flex}, \textit{text-center}) pentru a aplica
+rapid stiluri fără a scrie cod CSS de la zero. Această abordare reduce timpul de dezvoltare și asigură un
+aspect uniform al aplicației.\parencite{htmlcss}
+
+În Blazor, Bootstrap este frecvent utilizat pentru a stiliza rapid componentele \textit{.razor}. Fiind un framework
+agnostic (nu depinde de un anumit limbaj de programare back-end), poate fi integrat cu ușurință și în proiecte
+.NET, ASP.NET sau Blazor. În special în Blazor WebAssembly, este obișnuit să se includă Bootstrap direct în
+\textit{index.html} și să se aplice clasele Bootstrap componentelor din \textit{.razor}.
+
 \section{Blazor}
 Blazor este un framework open-source dezvoltat de Microsoft, lansat oficial în 2018, ca parte a ecosistemului .NET. Numele „Blazor” este format din cuvintele „Browser” și „Razor”, evidențiind utilizarea motorului Razor pentru redarea componentelor web direct în browser. \parencite{blazor}
 
@@ -125,10 +202,60 @@ Scopul principal al Blazor este de a permite dezvoltatorilor .NET să creeze apl
     \item Aplicații enterprise: Datorită integrării excelente cu ecosistemul .NET, Blazor este preferat în mediul enterprise pentru reutilizarea codului existent, integrarea ușoară a logicii de business, autentificării, bazelor de date și serviciilor API.
 \end{itemize}\parencite{blazor}
 
+În Blazor, HTML-ul este folosit într-un contextpuțin diferit: HTML-ul devine parte dintr-un fișier .razor,
+care combină markup-ul (HTML) cu C\# într-o singură componentă.
+
+Blazor este un framework dezvoltat de Microsoft, parte din ecosistemul .NET, care permite scrierea de
+aplicații web interactive folosind C\# în loc de JavaScript. Cu toate acestea, interfața aplicației tot
+cu HTML se definește. De exemplu, pentru a creea un buton, un formular, o listă sau un container de
+conținut, vse vor folosi aceleași etichete HTML standard, ca în orice aplicație web tradițională. \parencite{blazor}
+\\Diferența esențială e că în Blazor:
+\begin{itemize}
+    \item  se pot lega date (\textit{data binding}) direct în HTML folosind sintaxa @ (ex. @someProperty);
+    \item  se poate interacționa cu evenimente ca \textit{@onclick}, \textit{@oninput}, etc., legându-le direct la metode din C\#;
+    \item  se pot include componente (echivalente cu funcții sau clase UI reutilizabile) folosind HTML-like tags:
+          \textit{<MyComponent />}.
+\end{itemize}
+\parencite{blazor}
+
+De exemplu, în loc să se scrie un buton cu JavaScript care să modifice o valoare, în Blazor se va scrie un
+buton HTML cu un \textit{@onclick} care apelează o metodă C\#.
+
 Proiectul de licență folosește Blazor WebAssembly pentru ca se doreste o platfoma destul de light pentru utilizator care poate fi folosită și în zone scăzute de internet.
 Blazor Server folosește comunicarea cu un server comun prin SignalR ceea ce necesită o conexiune permanentă la internet. Iar la un volum mare de utilizatori, acest canal poate deveni lent.
 
 \section{MudBlazor}
+
+MudBlazor este o bibliotecă de componente UI open-source pentru Blazor, construită cu scopul de a oferi o
+experiență modernă și coerentă de design bazată pe Material Design, dar adaptată complet ecosistemului .NET.
+A fost creată pentru a permite dezvoltatorilor să construiască aplicații Blazor atractive și funcționale fără
+a apela la JavaScript extern sau framework-uri CSS precum Bootstrap. \parencite{mudblazor}
+
+MudBlazor a fost gândit pentru Blazor și folosește avantajele acestuia, cum ar fi bindingul bidirecțional și
+componentizarea simplă, pentru a crea o experiență de dezvoltare fluidă. \parencite{mudblazor}
+\\Cu MudBlazor, se pot folosi componente precum:
+\begin{itemize}
+    \item MudButton, MudTextField, MudSelect, MudDialog, MudTable, MudCard
+    \item MudLayout și MudDrawer pentru crearea de interfețe responsive
+    \item MudTheme pentru personalizare ușoară a temei aplicației (culori, fonturi, spacing)
+\end{itemize}
+\parencite{mudblazor}
+
+Un mare avantaj este că toate componentele sunt complet compatibile cu codul C\# și interacțiunile din Blazor,
+nu e nevoie de JavaScript pentru funcționalități precum dialoguri, notificări, meniuri sau validarea
+formularelor. \parencite{mudblazor}
+\\MudBlazor vine și cu suport pentru:
+\begin{itemize}
+    \item Dark mode nativ
+    \item Validare fluentă a formularelor
+    \item Tablouri de bord moderne cu grafică, animații și layout-uri fluide
+\end{itemize}
+\parencite{mudblazor}
+
+Este ideal pentru aplicații enterprise sau proiecte în care se dorește o interfață consistentă și ușor de
+întreținut în timp. \parencite{mudblazor}
+\\De asemenea, documentația MudBlazor este completă și oferă exemple clare pentru toate
+componentele.
 
 \section{SignalR}
 WebSockets este un protocol de comunicație care permite o conexiune bidirecțională, persistentă și full-duplex între un client (de exemplu, un browser web) și un server, facilitând transmiterea rapidă și continuă a datelor în timp real fără a reîncarca pagina. \parencite{signalR}
@@ -149,8 +276,43 @@ SignalR este ideal pentru aplicații care necesită actualizări în timp real, 
 Acesta ajută componentele proiectului FastRide să comunice fără a fi nevoie de acțiuni manuale ale utilizatorului sau reîncărcarea paginii.
 
 \subsection{SignalR Server Emulator}
+
+SignalR este o bibliotecă dezvoltată de Microsoft care facilitează comunicarea bidirecțională în timp real între server și client. Este folosită în aplicații precum chat-uri, sisteme de notificare live, jocuri multiplayer sau aplicații colaborative.
+\parencite{signalREmulator}
+\\În timpul dezvoltării, conectarea la un serviciu SignalR real (precum Azure SignalR Service) poate fi:
+\begin{itemize}
+    \item mai costisitoare (în special pentru testare frecventă),
+    \item dependentă de internet sau de configurări complexe,
+    \item dificil de controlat în ceea ce privește scenarii de test (ex. simularea mai multor utilizatori sau pierderi de conexiune).
+\end{itemize}
+\parencite{signalREmulator}
+
+SignalR Server Emulator este un instrument util în special în etapa de dezvoltare și testare a aplicațiilor web sau mobile care folosesc comunicarea în timp real prin SignalR. Scopul său este să emuleze comportamentul unui server SignalR real, astfel încât dezvoltatorii să poată testa interacțiuni în timp real (mesaje, notificări, actualizări de stare etc.) fără a depinde de un backend implementat complet sau de infrastructura Azure. \parencite{signalREmulator}
+
+SignalR Server Emulator rezolvă probleme enumerate prin rularea locală, oferirea unei interfețe sau API-uri care simulează semnalarea și transmiterea mesajelor, integrarea ușoară cu aplicațiile existente care folosesc SignalR. \parencite{signalREmulator}
+
+Emulatorul pornește un hub SignalR local (de obicei într-un ASP.NET Core server simplificat) care acceptă conexiuni WebSocket de la clienți (browser sau aplicații mobile), trimite mesaje simulate (manual sau automat), permite testarea scenariilor cum ar fi broadcast, mesaje către grupuri, reconectări sau deconectări. \parencite{signalREmulator}
+
+Totuși emulatorul nu înlocuiește complet un serviciu real precum Azure SignalR. Nu oferă scalabilitate mare, autentificare complexă, routing distribuit sau integrare cu alte servicii cloud. \parencite{signalREmulator}
+
+Pentru a putea face posibilă testarea aplicației prezente cu o conexiune SignalR, atunci se folosește SignalR Emulator.
+
 \section{Refit API}
+
+Refit (abreviere de la Rest Service Interface) este o bibliotecă open-source pentru platforma .NET, dezvoltată cu scopul de a simplifica interacțiunea aplicațiilor cu API-uri REST. Aceasta permite definirea interfețelor API într-un mod declarativ, bazat pe atribute, înlocuind codul tradițional de apel HTTP scris manual cu o abordare mult mai concisă și lizibilă. \parencite{refit}
+
+Refit a fost inspirat de biblioteca Retrofit, utilizată în ecosistemul Android. A fost creată de Paul Betts și continuă să fie întreținută de comunitatea .NET. Scopul său este acela de a automatiza procesul de trimitere a cererilor HTTP și de a deserializa răspunsurile în obiecte C\#, oferind astfel o metodă elegantă și productivă de a lucra cu API-uri externe. \parencite{refit}
+
+Refit se bazează pe conceptul de interfață C\# decorată cu atribute, care definește metodele corespunzătoare endpoint-urilor unui serviciu REST. La momentul execuției, biblioteca generează automat o implementare a acestei interfețe folosind \textit{RestService.For<T>()}. Această implementare utilizează intern \textit{HttpClient}, dar ascunde complet complexitatea acestuia. \parencite{refit}
+
 \section{Leaflet și Routing Machine}
+
+Leaflet este o bibliotecă JavaScript open-source pentru hărți interactive, recunoscută pentru dimensiunea redusă, performanța ridicată și ușurința în utilizare. A fost creată pentru a fi ușor de integrat în aplicații web și este folosită pe scară largă în proiecte care necesită afișarea hărților și a datelor geospațiale într-un mod interactiv. Datorită versatilității sale, Leaflet poate funcționa eficient pe toate browserele moderne și oferă suport nativ pentru interacțiuni uzuale precum zoom, pan, adăugarea de markere și pop-up-uri. \parencite{leaflet}
+
+Pentru aplicațiile care necesită trasarea unei rute între două sau mai multe puncte, se poate integra pluginul Leaflet Routing Machine, care adaugă funcționalitatea de navigare și calcul de rute direct în hartă. Acesta se bazează în general pe servicii externe precum OSRM (Open Source Routing Machine), GraphHopper sau Mapbox Directions pentru a calcula rutele, oferind o funcționalitate ce include afișarea traseelor, inclusiv cu indicații pas cu pas și actualizări în timp real. \parencite{leaflet}
+
+Într-o aplicație web, Leaflet și Routing Machine pot lucra împreună pentru a permite utilizatorilor să vizualizeze pe hartă locații relevante, să genereze rute între puncte selectate și să primească detalii despre distanță, durată și drumuri parcurse și totul gratis, de aceea se utilizează și în proiectul FastRide.
+
 \section{Stripe}
 Stripe este o platformă globală de procesare a plăților, fondată în 2010 de frații Patrick și
 John Collison. Aceasta a fost creată pentru a permite afacerilor și dezvoltatorilor să accepte plăți
