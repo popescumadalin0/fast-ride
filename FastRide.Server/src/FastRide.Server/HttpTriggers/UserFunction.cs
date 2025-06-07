@@ -34,7 +34,7 @@ public class UserFunction
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "user")]
         HttpRequest req)
     {
-        _logger.LogInformation($"{nameof(GetUserAsync)} HTTP trigger function processed a request.");
+        _logger.LogInformation($"{nameof(GetCurrentUserAsync)} HTTP trigger function processed a request.");
 
         var response = await _userService.GetUserAsync(new UserIdentifier()
             {

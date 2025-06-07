@@ -14,8 +14,7 @@
 \usepackage[style=apa,backend=biber,language=english]{biblatex}
 \usepackage{indentfirst}
 \usepackage{titlesec}
-\usepackage[labelfont=bf,labelsep=period]{caption}
-\renewcommand{\figurename}{Fig.}
+\usepackage{float}
 
 \titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{1em}{}
 \addbibresource{Bibliography.bib}
@@ -23,7 +22,10 @@
 \justifying
 \onehalfspacing % 1.5 line
 \setlength{\parindent}{1.27cm}
-\setlength{\parskip}{0em}   
+\setlength{\parskip}{0em}  
+
+\usepackage[labelfont=bf,labelsep=period]{caption}
+\renewcommand{\figurename}{Fig.}
 
 \begin{document}
 
