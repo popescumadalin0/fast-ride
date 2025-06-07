@@ -8,7 +8,6 @@ using Microsoft.Azure.Functions.Worker.Middleware;
 
 namespace FastRide.Server.Authentication;
 
-
 public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
 {
     public async Task Invoke(
@@ -28,7 +27,7 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
             context.SetHttpResponseStatusCode(HttpStatusCode.Unauthorized);
             return;
         }
-        
+
         var isValid = await IsAccessTokenValidAsync(accessToken);
 
         if (!isValid)
@@ -43,7 +42,9 @@ public class AuthorizationMiddleware : IFunctionsWorkerMiddleware
     private static async Task<bool> IsAccessTokenValidAsync(string accessToken)
     {
         using var client = new HttpClient();
-        var response = await client.GetAsync($"{Environment.GetEnvironmentVariable("Google:Api")}tokeninfo?access_token={accessToken}");
+        var response =
+            await client.GetAsync(
+                $"{Environment.GetEnvironmentVariable("Google:Api")}tokeninfo?access_token={accessToken}");
 
         return response.IsSuccessStatusCode;
     }

@@ -120,9 +120,9 @@ public class NewRideOrchestration
                 StartPoint = input.StartPoint,
             });
 
-        var doubleAccepted =
+        var priceAccepted =
             await context.WaitForExternalEvent<string>(SignalRConstants.ClientSendPriceCalculation);
-        var accepted = double.Parse(doubleAccepted);
+        var accepted = double.Parse(priceAccepted);
         return accepted;
     }
 

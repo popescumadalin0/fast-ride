@@ -128,7 +128,139 @@ Metodele HTTP disponibile pentru Client sunt:
     \item \textit{GetRidesByUserAsync} pentru a afișa cursele unui utilizator
 \end{itemize}
 
-Pentru a autoriza 
+Pentru a autoriza aceste endpoint-uri, în Azure Functions se pot înregistra \textit{middleware} pentru 
+a verifica token-ul. Astfel \textit{AuthenticationMiddleware} și \textit{AuthorizationMiddleware} se ocupă de autentificarea 
+și autorizarea API-ului, luând JWT token-ul din \textit{Authorization} header, și îl validează
+folosind API-ul de la Google.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/GoogleAuthorization.png}
+    \caption{Verificare \textit{AccessToken} folosind Google API.}
+    \label{fig:GoogleAuthorization}
+\end{figure}
+
+Pentru a face Google API conștient despre existența aplicației și token-ului pe care user-ul îl obține
+prin autentificarea pe Client, în Google Console, se creează un \textit{Credential} pentru proiect.
+Redirect URIs și request browser sunt reprezentate de Client URL (de acolo se apelează autentificarea).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/GoogleConfig.png}
+    \caption{Configurația Google Credentials.}
+    \label{fig:GoogleConfig}
+\end{figure}
+
+\textit{TimeTrigger} functions reprezintă funcțiile ce se auto-apelează la o perioadă de timp configurată.
+FastRide folosește un acest tip de function pentru a interoga din 5 în 5 secunde tabelul generat
+de Durable Orchestation în scopul de a găsi curse ce se află în progres și de a le notfica 
+Client-ului prin SignalR.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/TimeTrigger.png}
+    \caption{TimeTrigger function ce interoghează Durable tables și notifică utilizatorii despre curse lor ce sunt în desfășurare.}
+    \label{fig:TimeTrigger}
+\end{figure}
+Aceasta caută orchestrările ce se află în \textit{Pending}, \textit{Running} sau \textit{Suspended},
+citește proprietatea \textit{CustomStatus} unde se regăsesc informațiile complete ale cursei și 
+le returnează pentru fiecare grup de utilizatori ce se află în parcursul unei curse (\textit{GroupName} este \textit{ride.Id}).
+
+\textit{SignalRTrigger} sunt function-urile ce ascultă la un canal WebSocket pentru SignalR, dar sunt și capabile să returneze
+un mesaj pe acest canal. Acestea sunt folosite pentru comunicarea în timp real cu Client-ul și au rolul de a notifica 
+utilizatorii despre diferite acțiuni ce trebuie sa le facă (ex: plată, acceptare cursă, etc).
+Acest tip de funcții folosesc un \textit{eventType} ca și identificator pentru a notifica utilizatorii ce sunt
+conectați la canal. Utilizatorii pot fi grupați pe în grupuri pentru a trimite mesaje doar către un 
+anumit grup, însă se pot trimite mesaje și direct către un utilizator specific.
+
+FastRide folosește grupurile pentru a grupa utilizatorii per orașe, astfel cei din Craiova nu pot 
+vedea și nu pot primi mesaje de la cei din București, spre exemplu. Grupurile se mai folosesc și 
+pentru a identifica doi utilizatori ce se află într-o cursă, astfel în momentul în care o cursă se inițiază,
+atât șoferul cât și clientul, părăsesc automat gurpul din care fac parte (o combinație dintre țară, județ și oraș) 
+și se înscriu la grupul ce se formează din ID-ul cursei generat la creeare.
+
+Pentru a se conecta la canalul de SignalR și pentru a se înscrie într-un grup sau pentru
+a părăsi un grup, Client-ul trebui sa apeleze câteva metode care indică aceste \textit{actions}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/JoinUser.png}
+    \includegraphics[width=14cm]{Assets/RemoveUser.png}
+    \caption{Înscrierea și ștergerea unui utilizator din grup.}
+    \label{fig:JoinRemoveUser}
+\end{figure}
+
+Pentru ca server-ul SignalR să înregistreze acțiunile aferente, Server-ul 
+trebuie să returneze un \textit{SignalRGroupAction}. Pentru restul notificările 
+se folosește \textit{SignalRMessageAction}.
+
+Conectarea la SignalR de către utilizator și notificarea că a fost conectat sau 
+deconectat cu succes se fac prin metodele de mai jos:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/negotiate.png}
+    \includegraphics[width=14cm]{Assets/onconnected.png}
+    \includegraphics[width=14cm]{Assets/ondisconnected.png}
+    \caption{Negotiate, conectarea și deconectarea unui utilizator de la conexiune SignalR.}
+    \label{fig:negotiateConnectDisconnect}
+\end{figure}
+Astfel, în momentul în care un șofer este conectat sau deconectat, se poate actualiza
+tabela \textit{OnlineDrivers}.
+
+\textit{Orchestrations} sunt Azure Functions ce pot rula mai mult de 5 minute, ce își păstrează
+state-ul în tabele, astfel încât indiferent de ce se întâmplă cu runtime-ul aplicației,
+acestea își continuă execuția fără a relua tot procesul.
+
+În proiect, există o singură funcție de acest gen, ce se ocupă cu flow management-ul unei curse.
+Astfel, ea primește ca și input, un request ce conține \textit{User} (clientul), locul de unde se inițiază
+cursa și destinația dorită. La fiecare pas, aceste infomații se actualizează și 
+se salvează în coloana specială a Durable Orchestrations, \textit{CustomStatus}, totodată, modificând și status-ul
+cursei.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/saveCustomStatus.png}
+    \caption{Salvarea în \textit{CustomStatus} a request-ului inițial.}
+    \label{fig:saveCustomStatus}
+\end{figure}
+
+Mai departe, aplicația calculează prețul cursei și trimite către utilizator un request de confirmare a cursei.
+Pentru a aștepta răspuns, Durable Orchestrations folosesc evenimente pe care le așteaptă:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/waitForEvent.png}
+    \caption{Trimiterea confimării către utilizator și așteptarea răspunsului.}
+    \label{fig:waitForEvent}
+\end{figure}
+Pentru a calcula prețul se folosește următoarea formulă:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/calculatePrice.png}
+    \caption{Calcularea prețului cursei.}
+    \label{fig:calculatePrice}
+\end{figure}
+Dacă s-a acceptat, urmează să se inițieze plata, astfel, Server-ul se ocupă cu creearea
+unui \textit{PaymentIntent} ce se poate folosi pentru a se realiza plata cu succes. Fără acest intenționare,
+Stripe nu știe să autentifice request-ul de plată.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/intent.png}
+    \caption{Crearea \textit{PaymentIntent}-utului prin Stripe.}
+    \label{fig:intent}
+\end{figure}
+Mai departe, după ce plata s-a procesat cu success, începe să se caute un șofer pentru cursă.
+todo
+
+La orice pas, dacă utilizatorul anulează fie confirmarea, fie plata, fie nu se găsește un șofer, cursa intră într-un status
+terminal, setând proprietatea \textit{CompletedStatus} cu un status aferent acțiunii.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/cancelFlow.png}
+    \caption{Anularea cursei dacă plata nu s-a procesat, a fost intenționat anulată sau nu s-a găsit un șofer.}
+    \label{fig:cancelFlow}
+\end{figure}
+Delay-urile au rolul de a face posibilă așteptarea ca și utilizatorul să primească aceste informații, altfel totul ar fi instant.
+
 
 \subsection{Client-side}
 blazor wasm si cum merge, cum apeleaza backendul
