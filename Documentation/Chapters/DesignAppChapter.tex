@@ -232,7 +232,8 @@ Pentru a aștepta răspuns, Durable Orchestrations folosesc evenimente pe care l
     \caption{Trimiterea confimării către utilizator și așteptarea răspunsului.}
     \label{fig:waitForEvent}
 \end{figure}
-Pentru a calcula prețul se folosește următoarea formulă:
+Pentru a calcula prețul se folosește următoarea formulă (distanța dintre 2 puncte în spațiu, estimarea timpului de
+parcurgere cu un timp comun și prețul configurat pentru fiecare kilometru și minut adunat cu o sumă inițială):
 \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{Assets/calculatePrice.png}
@@ -240,7 +241,7 @@ Pentru a calcula prețul se folosește următoarea formulă:
     \label{fig:calculatePrice}
 \end{figure}
 Dacă s-a acceptat, urmează să se inițieze plata, astfel, Server-ul se ocupă cu creearea
-unui \textit{PaymentIntent} ce se poate folosi pentru a se realiza plata cu succes. Fără acest intenționare,
+unui \textit{PaymentIntent} ce se poate folosi pentru a se realiza plata cu succes. Fără acestă intenționare,
 Stripe nu știe să autentifice request-ul de plată.
 \begin{figure}[H]
     \centering
@@ -249,7 +250,19 @@ Stripe nu știe să autentifice request-ul de plată.
     \label{fig:intent}
 \end{figure}
 Mai departe, după ce plata s-a procesat cu success, începe să se caute un șofer pentru cursă.
-todo
+Algoritmul de căutare se folosește de tabelul \textit{OnlineDrivers} pentru a identifica poziția
+fiecărui șofer și a îi calcula distanța de la client la acesta. Șoferii se iau în ordine până se găsește 
+unul sau niciunul. Dacă șoferul nu acceptă cursa în timp de 35 secunde, se consideră ca și respinsă.
+Pentru a face acest lucru posbil, se creează o listă de \textit{Task}, returnată de \textit{WaitForExternalEvent},
+și așteaptă ca cel puțin unul din task-uri să se completeze. În funcție de task-ul completat, se alege
+acțiunea de a merge mai departe sau de a căuta alt șofer.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/WaitForDriver.png}
+    \caption{Așteptarea răspunsului de la șofer și cronometrarea timpului de acceptare.}
+    \label{fig:WaitForDriver}
+\end{figure}
 
 La orice pas, dacă utilizatorul anulează fie confirmarea, fie plata, fie nu se găsește un șofer, cursa intră într-un status
 terminal, setând proprietatea \textit{CompletedStatus} cu un status aferent acțiunii.
@@ -259,8 +272,61 @@ terminal, setând proprietatea \textit{CompletedStatus} cu un status aferent ac�
     \caption{Anularea cursei dacă plata nu s-a procesat, a fost intenționat anulată sau nu s-a găsit un șofer.}
     \label{fig:cancelFlow}
 \end{figure}
-Delay-urile au rolul de a face posibilă așteptarea ca și utilizatorul să primească aceste informații, altfel totul ar fi instant.
+Delay-urile au rolul de a face posibilă așteptarea ca și utilizatorul să primească aceste informații, altfel totul ar fi instant,
+iar utlizatorul nu ar vedea niciun feedback.
 
+Funcțiile durabile de orchestrare trebuie să fie deterministice, astfel încât dacă aplicația repornește
+sau un proces de resetare intervine, codul să rezulte același rezultat. Pnetru asta, trebuie evitate în contextul
+orchestration-ului să se genereze valori random sau să se apeleze service-uri. Totuși, este nevoie să se apeleze service-uri precum
+calcularea pretului cursei sau căutarea unui șofer. Pnetru a face posibil acest lucru, intervin activtățile.
+
+\textit{Activity functions} sunt funcții ce au rol de a menține pasul la care orchestration-ul rulează.
+Pentru fiecare acțiune necesară în orchestration, există o activitate, astfel:
+\begin{itemize}
+    \item \textit{CancelRideActivity} - folosită pentru trimite cererea de anulare a cursei către toți participanții;
+    \item \textit{DelayActivity} - folosită pentru a suspenda orchestration-ul pentru \textit{n} secunde;
+    \item \textit{FindDriverActivity} - activitatea ce caută un șofer pentru cursa trimisă. Totodată, se trimite și lista de șoferi ce au fost excluși, datorită respingeri cererii;
+    \item \textit{NotifyDriverTimeoutActivity} - notifică șoferul că perioada de acceptare a cursei a expirat;
+    \item \textit{SendPaymentIntentActivity} - creează \textit{PaymentIntent}-ul și îl trimite către client;
+    \item \textit{SendPriceCalculationActivity} - calculează prețul cursei și îl notifică pe client despre acesta;
+    \item \textit{SendRatingRequestActivity} - la finalul cursei, clienții trebuie să ofere un notă șoferului, această activitate ocupându-se de această sarcină;
+    \item \textit{SendRideToDriverActivity} - notifică șoferul despre cursă, acesta fiind nevoit să decidă dacă acceptă cursa sau nu.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/activities.png}
+    \caption{Declararea activității ce pune orchestration-ul să aștepte \textit{n} secunde.}
+    \label{fig:activities}
+\end{figure}
+
+Pentru a structura logica, separat de activități, se folosesc servicii. \textit{Services} sunt instanțe de clase înregistrate în
+contextul aplicației pentru a putea fi injectate mai târziu, și folosite ca să execută diferită logică.
+Spre exemplu, calcularea distanței dintre două puncte este o metodă dintr-un service înregistrat \textit{Scoped} (se generează o instanță nouă
+la fiecare request inițiat). Alte servicii ce se regăsesc în proiect sunt pentru calcularea prețului, pentru 
+a găsi șoferi apropiați de un client și de a intermedia operațiile \textit{CRUD} (Create Read Update Delete) pentru utilizatori și curse.
+Toate serviciile folosesc o structură comună de returnare a datelor, răspunsul fiind încapsulat într-un \textit{ServiceResponse}
+ce conține payload-ul, un mesaj de eroare sau o excepție, dacă există și dacă totul s-a executat cu succes sau nu. Acest tip de răspuns
+ajută la handle-uirea răspunsului și încapsularea lui într-un \textit{ApiResponse}.
+
+Configurarea proiectului se face prin \textit{Environment Variables}, local, definindu-se prin
+\textit{local.settings.json}. Această configurație este alcătuită din:
+\begin{itemize}
+    \item Google Credentials - pentru a reuși validarea token-ului de acces ce vine pe request;
+    \item Distance Configuration - ce conțin prețurile pentru un kilometru, un minut, prețul inițial și viteza medie de calcul pentru distanță;
+    \item Stripe Secret Key - folosit pentru generarea inteționării de plată;
+    \item Storage Connection String - conexiunea la Azure Storage.
+    \item SignalR Connection String - conexiunea la server-ul SignalR
+\end{itemize}
+
+Microsoft, loghează fiecare activitate ce se execută, iar în caz de deployment pe o infrastructură ce permite logging (spre exemplu Azure),
+este necesar să se specifice ce anume să se logheze pentru a nu se ajunge la costuri mari
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/configLogging.png}
+    \caption{Filtrarea log-urilor din Azure.}
+    \label{fig:configLogging}
+\end{figure}
 
 \subsection{Client-side}
 blazor wasm si cum merge, cum apeleaza backendul
