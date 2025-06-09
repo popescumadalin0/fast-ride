@@ -329,8 +329,50 @@ este necesar să se specifice ce anume să se logheze pentru a nu se ajunge la c
 \end{figure}
 
 \subsection{Client-side}
-blazor wasm si cum merge, cum apeleaza backendul
-despre map si background serv§ices
+
+Client-side-ul se ocupă cu afișarea informațiilor procesate pe Server. La bază, stă
+Blazor WASM, ce funcționează ca dintr-o singură bucată, fără să instanțieze
+două componente de comunicare. Toate asset-urile se descarcă la utilizator
+în cache-ul browserului și poate funcționa fără conexiune la internet.
+
+Folderul \textit{wwwroot} este rădăcina conținutului static al aplicației Blazor WebAssembly. 
+Tot ce se află în acest folder (sau în subfolderele lui) este expus publicului și servit direct browserului, fără procesare pe server.
+Aici se regăsesc configurația proiectului pentru debugging, stilurile CSS, logica JavaScript, dar și datele mock pentru debugging.
+
+Configurația proiectului conține informațiile de autentificare pentru Google (ClientId, Authority, Scopes, etc)
+setări predefinite pentru hartă, conexiunea cu server-ul și PublishKey-ul pentru Stripe.
+
+Sistemul de hărți este susținut de Leaflet, combinat cu modului Routing Machine pentru calcularea traseului.
+Există un Nuget Package pentru Blazor însă suportul pentru Routing nu vine inclus. De aceea se folosește librăria așa
+cum vine ea, prin JavaScript.
+
+Pentru a face legătura dintre Blazor (C\#) și JavaScript, există JSInterop. JSInterop 
+(JavaScript Interop) este mecanismul prin care aplicațiile Blazor pot comunica cu 
+JavaScript. Prin JSInterop, codul scris în C\# poate apela funcții JavaScript, iar 
+JavaScript poate la rândul său să invoce metode din C\#. Acest mecanism este esențial 
+atunci când Blazor nu oferă suport direct pentru anumite funcționalități disponibile 
+doar prin API-urile browserului sau prin biblioteci JavaScript externe. Interacțiunea 
+este asincronă și se realizează prin intermediul interfeței \textit{IJSRuntime}, fiind 
+disponibilă atât în Blazor WebAssembly, cât și în Blazor Server. \parencite{blazor} 
+
+Urmând pașii de folosire a hărții Leaflet, s-a creat un script în JS, pentru a putea fi
+apelat din Blazor și a inițializa harta. Totul s-a încapsulat într-o componentă \textit{Map.razor}.
+După ce componenta se randează, se construiește harta, care suprascrie un \textit{div} tag cu ID-ul \textit{map}, instanțiază
+un \textit{.Net Object Reference} pentru a putea fi apelat codul .Net din JS și informațiile despre locația curentă, zoom-ul 
+pe hartă și alte setări.
+
+Pentru a pune un \textit{pin}, exită metoda \textit{SetPinLocationAsync} ce adaugă un \textit{marker} pe hartă cu \textit{asset-ul de pin}.
+Toate asset-urile se află în \textit{wwwwroot/icons}: /textit{pin}, /textit{human}, /textit{driver} și /textit{currentCar} (ce indică că atât clientul cât și șoferul se află în mașină).
+Metodele \textit{DrawRoute} și \textit{AddUser/Driver} ajută la trasarea traseului și adăugarea unui utilizator pe hartă. Orice iconiță adăugată pe hartă
+sunt un /textit{marker} cu o imagine ca și înfățișare.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/icons.png}
+    \caption{Dicționarul ce face legătura dintre tipul de marker și imaginea de îl reprezintă.}
+    \label{fig:icons}
+\end{figure}
+
 \section{Comunicarea între componente}
 diagrama de cum comunica aplicatia
 \subsection{Autentificare și autorizare}
