@@ -3,8 +3,8 @@
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
-% This file may safely be deleted. It will be recreated by
-% biber as required.
+% This file may safely be deleted. It will be recreated as
+% required.
 %
 \begingroup
 \makeatletter
@@ -16,510 +16,401 @@
   {}
 \endgroup
 
+\datalist[entry]{nty/global//global/global/global}
+  \entry{docker}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=D}{%
+         family={Docker},
+         familyi={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{D1}
+    \strng{fullhash}{D1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{title}{Docker Desktop}
+    \verb{url}
+    \verb https://docs.docker.com/desktop/
+    \endverb
+    \field{year}{2024}
+  \endentry
 
-\refsection{0}
-  \datalist[entry]{apa/apasortcite//global/global/global}
-    \entry{docker}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=c5fd214cdd0d2b3b4272e73b022ba5c2}{%
-           family={Docker},
-           familyi={D\bibinitperiod}}}%
-      }
-      \strng{namehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{fullhash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{fullhashraw}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{bibnamehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authorbibnamehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authornamehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authorfullhash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authorfullhashraw}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \field{sortinit}{D}
-      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Docker Desktop}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://docs.docker.com/desktop/
-      \endverb
-      \verb{url}
-      \verb https://docs.docker.com/desktop/
-      \endverb
-    \endentry
-    \entry{rider}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=b6a77f3f5bead76a495a90d63703e1f9}{%
-           family={JetBrains},
-           familyi={J\bibinitperiod}}}%
-      }
-      \strng{namehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{fullhash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{fullhashraw}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{bibnamehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authorbibnamehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authornamehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authorfullhash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authorfullhashraw}{b6a77f3f5bead76a495a90d63703e1f9}
-      \field{sortinit}{J}
-      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{First steps with JetBrains Rider﻿}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://www.jetbrains.com/help/rider/First_Steps.html#power-alt-enter
-      \endverb
-      \verb{url}
-      \verb https://www.jetbrains.com/help/rider/First_Steps.html#power-alt-enter
-      \endverb
-    \endentry
-    \entry{blazor}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{1}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{ASP.NET Core Blazor}
-      \field{year}{2024}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0
-      \endverb
-    \endentry
-    \entry{azureDurableFunctions}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{2}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{1}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Durable Functions overview}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=in-process%2Cnodejs-v3%2Cv1-model&pivots=csharp
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=in-process%2Cnodejs-v3%2Cv1-model&pivots=csharp
-      \endverb
-    \endentry
-    \entry{azureFunctions}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{3}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{2}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{What is Azure Functions?}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview
-      \endverb
-    \endentry
-    \entry{azureStorageExplorer}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{4}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{1}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Azure Storage Explorer documentation}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/azure/storage/storage-explorer/vs-azure-tools-storage-manage-with-storage-explorer?tabs=macos
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/azure/storage/storage-explorer/vs-azure-tools-storage-manage-with-storage-explorer?tabs=macos
-      \endverb
-    \endentry
-    \entry{signalR}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{5}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{2}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{CSignalR documentation}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-6.0
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-6.0
-      \endverb
-    \endentry
-    \entry{stripe}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=ce7566d1d08cc094b74cf283cf9c56a5}{%
-           family={Stripe},
-           familyi={S\bibinitperiod}}}%
-      }
-      \strng{namehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{fullhash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{fullhashraw}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{bibnamehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authorbibnamehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authornamehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authorfullhash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authorfullhashraw}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \field{sortinit}{S}
-      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{API Reference}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://stripe.com/docs/api
-      \endverb
-      \verb{url}
-      \verb https://stripe.com/docs/api
-      \endverb
-    \endentry
-  \enddatalist
-  \datalist[entry]{apa/global//global/global/global}
-    \entry{docker}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=c5fd214cdd0d2b3b4272e73b022ba5c2}{%
-           family={Docker},
-           familyi={D\bibinitperiod}}}%
-      }
-      \strng{namehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{fullhash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{fullhashraw}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{bibnamehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authorbibnamehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authornamehash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authorfullhash}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \strng{authorfullhashraw}{c5fd214cdd0d2b3b4272e73b022ba5c2}
-      \field{sortinit}{D}
-      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Docker Desktop}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://docs.docker.com/desktop/
-      \endverb
-      \verb{url}
-      \verb https://docs.docker.com/desktop/
-      \endverb
-    \endentry
-    \entry{rider}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=b6a77f3f5bead76a495a90d63703e1f9}{%
-           family={JetBrains},
-           familyi={J\bibinitperiod}}}%
-      }
-      \strng{namehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{fullhash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{fullhashraw}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{bibnamehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authorbibnamehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authornamehash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authorfullhash}{b6a77f3f5bead76a495a90d63703e1f9}
-      \strng{authorfullhashraw}{b6a77f3f5bead76a495a90d63703e1f9}
-      \field{sortinit}{J}
-      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{First steps with JetBrains Rider﻿}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://www.jetbrains.com/help/rider/First_Steps.html#power-alt-enter
-      \endverb
-      \verb{url}
-      \verb https://www.jetbrains.com/help/rider/First_Steps.html#power-alt-enter
-      \endverb
-    \endentry
-    \entry{blazor}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{1}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{ASP.NET Core Blazor}
-      \field{year}{2024}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0
-      \endverb
-    \endentry
-    \entry{azureDurableFunctions}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{2}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{1}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Durable Functions overview}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=in-process%2Cnodejs-v3%2Cv1-model&pivots=csharp
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=in-process%2Cnodejs-v3%2Cv1-model&pivots=csharp
-      \endverb
-    \endentry
-    \entry{azureFunctions}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{3}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{2}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{What is Azure Functions?}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview
-      \endverb
-    \endentry
-    \entry{azureStorageExplorer}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{4}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{1}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Azure Storage Explorer documentation}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/azure/storage/storage-explorer/vs-azure-tools-storage-manage-with-storage-explorer?tabs=macos
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/azure/storage/storage-explorer/vs-azure-tools-storage-manage-with-storage-explorer?tabs=macos
-      \endverb
-    \endentry
-    \entry{signalR}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=140864078aeca1c7c35b4beb33c53c34}{%
-           family={Microsoft},
-           familyi={M\bibinitperiod}}}%
-      }
-      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
-      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{5}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{extradate}{2}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{CSignalR documentation}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-6.0
-      \endverb
-      \verb{url}
-      \verb https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-6.0
-      \endverb
-    \endentry
-    \entry{stripe}{online}{}{}
-      \name{author}{1}{}{%
-        {{un=0,uniquepart=base,hash=ce7566d1d08cc094b74cf283cf9c56a5}{%
-           family={Stripe},
-           familyi={S\bibinitperiod}}}%
-      }
-      \strng{namehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{fullhash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{fullhashraw}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{bibnamehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authorbibnamehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authornamehash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authorfullhash}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \strng{authorfullhashraw}{ce7566d1d08cc094b74cf283cf9c56a5}
-      \field{sortinit}{S}
-      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \true{uniqueprimaryauthor}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{API Reference}
-      \field{year}{n.d.}
-      \verb{urlraw}
-      \verb https://stripe.com/docs/api
-      \endverb
-      \verb{url}
-      \verb https://stripe.com/docs/api
-      \endverb
-    \endentry
-  \enddatalist
-\endrefsection
+  \entry{htmlcss}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=DJ}{%
+         family={Duckett},
+         familyi={D\bibinitperiod},
+         given={Jon},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {John Wiley \& Sons}%
+    }
+    \strng{namehash}{DJ1}
+    \strng{fullhash}{DJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{edition}{First Edition}
+    \field{isbn}{978-1118008188}
+    \field{title}{HTML and CSS: Design and Build Websites}
+    \field{year}{2011}
+  \endentry
+
+  \entry{designPatterns}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=GR}{%
+         family={Guru},
+         familyi={G\bibinitperiod},
+         given={Refactoring},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GR1}
+    \strng{fullhash}{GR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{Design Patterns}
+    \verb{url}
+    \verb https://refactoring.guru/design-patterns/what-is-pattern
+    \endverb
+    \field{year}{2020}
+  \endentry
+
+  \entry{rider}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=J}{%
+         family={JetBrains},
+         familyi={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{J1}
+    \strng{fullhash}{J1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{J}
+    \field{sortinithash}{J}
+    \field{title}{First steps with JetBrains Rider}
+    \verb{url}
+    \verb https://www.jetbrains.com/help/rider/First_Steps.html#power-alt-enter
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{leaflet}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=L}{%
+         family={Leaflet},
+         familyi={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{L1}
+    \strng{fullhash}{L1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{title}{Leaflet API reference}
+    \verb{url}
+    \verb https://leafletjs.com/reference.html
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{blazor}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{ASP.NET Core Blazor}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore
+    \verb -6.0
+    \endverb
+    \field{year}{2024}
+  \endentry
+
+  \entry{azureStorageExplorer}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Azure Storage Explorer documentation}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/azure/storage/storage-explorer/vs-a
+    \verb zure-tools-storage-manage-with-storage-explorer?tabs=macos
+    \endverb
+    \field{year}{2023}
+  \endentry
+
+  \entry{azureDurableFunctions}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Durable Functions overview}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/azure/azure-functions/durable/durab
+    \verb le-functions-overview?tabs=in-process%2Cnodejs-v3%2Cv1-model&pivots=c
+    \verb sharp
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{charp}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Introduction to C\#}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/tutori
+    \verb als
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{dotnet}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Introduction to .NET}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/dotnet/core/introduction
+    \endverb
+    \field{year}{2024}
+  \endentry
+
+  \entry{linq}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Language Integrated Query (LINQ)}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/dotnet/csharp/linq/
+    \endverb
+    \field{year}{2023}
+  \endentry
+
+  \entry{signalR}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{SignalR documentation}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction?vi
+    \verb ew=aspnetcore-6.0
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{signalREmulator}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Use Azure SignalR Local Emulator for serverless development}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/azure/azure-signalr/signalr-howto-e
+    \verb mulator
+    \endverb
+    \field{year}{2024}
+  \endentry
+
+  \entry{azurite}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Use the Azurite emulator for local Azure Storage development}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/azure/storage/common/storage-use-az
+    \verb urite?tabs=visual-studio%2Cblob-storage
+    \endverb
+    \field{year}{2024}
+  \endentry
+
+  \entry{azureFunctions}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{What is Azure Functions?}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/azure/azure-functions/functions-ove
+    \verb rview
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{azureStorage}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={Microsoft},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M1}
+    \strng{fullhash}{M1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{What is Azure Table storage?}
+    \verb{url}
+    \verb https://learn.microsoft.com/en-us/azure/storage/tables/table-storage-
+    \verb overview
+    \endverb
+    \field{year}{2022}
+  \endentry
+
+  \entry{mudblazor}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=M}{%
+         family={MudBlazor},
+         familyi={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{M2}
+    \strng{fullhash}{M2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Explore MudBlazor}
+    \verb{url}
+    \verb https://mudblazor.com/getting-started/installation#online-playground
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{refit}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=R}{%
+         family={Refit},
+         familyi={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{R1}
+    \strng{fullhash}{R1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{The automatic type-safe REST library for .NET Core, Xamarin and .NET}
+    \verb{url}
+    \verb https://github.com/reactiveui/refit
+    \endverb
+    \field{year}{2024}
+  \endentry
+
+  \entry{stripe}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=S}{%
+         family={Stripe},
+         familyi={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{S1}
+    \strng{fullhash}{S1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{title}{API Reference}
+    \verb{url}
+    \verb https://stripe.com/docs/api
+    \endverb
+    \field{year}{2022}
+  \endentry
+\enddatalist
 \endinput
-
