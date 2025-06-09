@@ -1,4 +1,4 @@
-\documentclass[a4paper]{report}
+\documentclass[a4paper,12pt]{report}
 \usepackage[a4paper, top=2.54cm, bottom=2.54cm, left=2.54cm, right=2.54cm]{geometry}
 \usepackage{newtxtext,newtxmath}
 \usepackage{graphicx}
@@ -9,23 +9,24 @@
 \usepackage{xcolor}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[english]{babel}
+\usepackage[romanian]{babel}
 \usepackage{csquotes}
-\usepackage[style=apa,backend=biber,language=english]{biblatex}
 \usepackage{indentfirst}
 \usepackage{titlesec}
 \usepackage{float}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage[labelfont=bf,labelsep=period]{caption}
 
-\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter.}{1em}{}
+\titleformat{\chapter}[hang]{\bfseries\Large}{\thechapter.}{1em}{}
+\titlespacing*{\chapter}{0pt}{-10pt}{20pt}
+
 \addbibresource{Bibliography.bib}
-
 \justifying
-\onehalfspacing % 1.5 line
+\onehalfspacing
 \setlength{\parindent}{1.27cm}
 \setlength{\parskip}{0em}  
 
-\usepackage[labelfont=bf,labelsep=period]{caption}
-\renewcommand{\figurename}{Fig.}
+\addto\captionsromanian{\renewcommand{\figurename}{Fig.}}
 
 \begin{document}
 
@@ -40,6 +41,8 @@
 \fancyhead[R]{\nouppercase{\leftmark}}
 \renewcommand{\headrulewidth}{0pt}
 \fancyfoot[C]{\thepage}
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 
 \tableofcontents
 \clearpage

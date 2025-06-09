@@ -26,8 +26,7 @@ dar fără relații complexe între entități. În cazul aplicației FastRide, 
     \label{fig:ER}
 \end{figure}
 
-Aplicația FastRide conține trei entități, fiecare reflectând o componentă critică a
-funcționalității sistemului: utilizatorii, cursele și șoferii online.
+Aplicația FastRide conține trei entități, fiecare reflectând o componentă critică a funcționalității sistemului: utilizatorii, cursele și șoferii online.
 
 Totul pornește de la entitatea \textit{Users}, care stochează informațiile de bază ale fiecărui utilizator autentificat prin Google.
 Fiecare utilizator este identificat în mod unic prin \textit{NameIdentifier} și \textit{Email}, iar alături de acesta se păstrează date precum numele (\textit{Username}), tipul de utilizator (\textit{Driver}, \textit{User} sau \textit{Admin}), ratingul acumulat de-a lungul timpului, numărul de telefon și o eventuală poză de profil (\textit{PictureUrl}).
@@ -331,15 +330,21 @@ este necesar să se specifice ce anume să se logheze pentru a nu se ajunge la c
 \subsection{Client-side}
 
 Client-side-ul se ocupă cu afișarea informațiilor procesate pe Server. La bază, stă
-Blazor WASM, ce funcționează ca dintr-o singură bucată, fără să instanțieze
-două componente de comunicare. Toate asset-urile se descarcă la utilizator
-în cache-ul browserului și poate funcționa fără conexiune la internet.
+Blazor WASM, ce funcționează fără a avea nevoie de o componentă de server sau să instanțieze
+două componente de comunicare. Toate asset-urile se descarcă în browserul utilizatorului și poate funcționa fără conexiune la internet.
 
 Folderul \textit{wwwroot} este rădăcina conținutului static al aplicației Blazor WebAssembly. 
 Tot ce se află în acest folder (sau în subfolderele lui) este expus publicului și servit direct browserului, fără procesare pe server.
 Aici se regăsesc configurația proiectului pentru debugging, stilurile CSS, logica JavaScript, dar și datele mock pentru debugging.
 
-Configurația proiectului conține informațiile de autentificare pentru Google (ClientId, Authority, Scopes, etc)
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{Assets/wwwroot.png}
+    \caption{Conținutul folderului \textit{wwwwroot}.}
+    \label{fig:wwwroot}
+\end{figure}
+
+\textit{Configurația proiectului} conține informațiile de autentificare pentru Google (ClientId, Authority, Scopes, etc)
 setări predefinite pentru hartă, conexiunea cu server-ul și PublishKey-ul pentru Stripe.
 
 Sistemul de hărți este susținut de Leaflet, combinat cu modului Routing Machine pentru calcularea traseului.
@@ -361,16 +366,46 @@ După ce componenta se randează, se construiește harta, care suprascrie un \te
 un \textit{.Net Object Reference} pentru a putea fi apelat codul .Net din JS și informațiile despre locația curentă, zoom-ul 
 pe hartă și alte setări.
 
-Pentru a pune un \textit{pin}, exită metoda \textit{SetPinLocationAsync} ce adaugă un \textit{marker} pe hartă cu \textit{asset-ul de pin}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/initLeaflet.png}
+    \caption{Inițializarea hărții după ce componenta s-a randat.}
+    \label{fig:initLeaflet}
+\end{figure}
+
+Orice iconiță adăugată pe hartă sunt un \textit{marker} cu o imagine ca și înfățișare. Pentru a pune un \textit{pin} spre exemplu, există o metodă numită \textit{SetPinLocationAsync} ce adaugă un \textit{marker} pe hartă cu \textit{asset-ul de pin}.
 Toate asset-urile se află în \textit{wwwwroot/icons}: /textit{pin}, /textit{human}, /textit{driver} și /textit{currentCar} (ce indică că atât clientul cât și șoferul se află în mașină).
-Metodele \textit{DrawRoute} și \textit{AddUser/Driver} ajută la trasarea traseului și adăugarea unui utilizator pe hartă. Orice iconiță adăugată pe hartă
-sunt un /textit{marker} cu o imagine ca și înfățișare.
+Metodele \textit{DrawRoute} și \textit{AddUser/Driver} ajută la trasarea traseului și adăugarea unui utilizator pe hartă.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{Assets/icons.png}
     \caption{Dicționarul ce face legătura dintre tipul de marker și imaginea de îl reprezintă.}
     \label{fig:icons}
+\end{figure}
+
+Același mecanism de afișare îl folosește și dialog-ul pentru a introduce cardul bancar. 
+Se atașează input-urile de elementul \textit{div} cu ID-ul \textit{payment-element}. Acesta
+validează un card bancar folosind API-ul Stripe, iar pentru a putea autoriza acest request,
+se folosește de \textit{PublishKey} din dashboard-ul Stripe.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/stripeMount.png}
+    \caption{Atașarea input-ului pentru card bancar de elementul cu ID-ul \textit{payment-element}.}
+    \label{fig:stripeMount}
+\end{figure}
+
+Toate tranzacțiile sunt se pot vedea în platfoma, dacă au fost cu succes, ce card a fost folosit sau de către ce customer.
+Fiind în modul de testare, se poate folosi doar cardul cu numărul: \textit{4242 4242 4242 4242}, restul informațiilor
+trebuind doar să fie corecte, nu să și existe.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/stripeSite.png}
+    \includegraphics[width=14cm]{Assets/stripeHistory.png}
+    \caption{Configurarea Stripe în dashboard-ul platformei și istoricul tranzacțiilor.}
+    \label{fig:stripeSiteHistory}
 \end{figure}
 
 \section{Comunicarea între componente}
