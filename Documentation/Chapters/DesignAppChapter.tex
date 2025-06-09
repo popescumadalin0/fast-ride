@@ -1,18 +1,18 @@
 \chapter{SPECIFICAȚII ȘI REPREZENTAREA APLICAȚIEI}
-Aplicația Fast Ride este construită folosind o arhitectură scalabilă, bazată pe microservicii și servicii în cloud. Tehnologiile principale utilizate sunt Blazor WebAssembly pentru interfața utilizator și Azure Durable Functions pentru logica de backend. Comunicarea dintre cele două componente este realizată prin API-uri HTTP și prin WebSocket-uri cu ajutorul SignalR.
+Aplicația FastRide este construită folosind o arhitectură scalabilă, bazată pe microservicii și servicii în cloud. Tehnologiile principale utilizate sunt Blazor WebAssembly pentru interfața utilizator și Azure Durable Functions pentru logica de backend. Comunicarea dintre cele două componente este realizată prin API-uri HTTP și prin WebSocket-uri cu ajutorul SignalR.
 \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{Assets/componentsComunication.png}
-    \caption{Comunicarea dintre componentele proiectului}
+    \caption{Comunicarea dintre componentele proiectului.}
     \label{fig:componentsComunication}
 \end{figure}
 
 \section{Arhitectura aplicației}
-Aplicația dispunde de trei nivele:
+Aplicația dispune de trei nivele:
 \begin{itemize}
-    \item stocare - unde se păstrează informațiile
-    \item server-side - unde se prelucrează toate infomațiile
-    \item client-side - unde se afisează toate informațiile către utilizatori
+    \item stocare - unde se păstrează informațiile;
+    \item server-side - unde se prelucrează toate infomațiile;
+    \item client-side - unde se afișează toate informațiile către utilizatori.
 \end{itemize}
 
 \subsection{Stocare}
@@ -21,7 +21,7 @@ Azure Table Storage este o bază de date NoSQL, ideală pentru scenarii în care
 dar fără relații complexe între entități. În cazul aplicației FastRide, fiecare entitate: utilizatori, curse, șoferi online și instanțele de orchestrare, este reprezentată ca o tabelă separată în Table Storage. Fiecare înregistrare (sau entitate) dintr-o tabelă este identificată în mod unic printr-o combinație de \textit{PartitionKey} și \textit{RowKey}, ceea ce asigură o distribuire eficientă și acces rapid la date.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/ER.png}
+    \includegraphics[width=16cm]{Assets/ER.png}
     \caption{Diagrama ER pentru baza de date.}
     \label{fig:ER}
 \end{figure}
@@ -42,20 +42,20 @@ Starea unei curse este gestionată de modelul \textit{Ride}, care este corelat c
 care a inițiat cererea. Dacă un șofer acceptă cursa, acesta este reprezentat prin \textit{DriverIdentifier}. Fiecare cursă este
 caracterizată de un status:
 \begin{itemize}
-    \item \textit{NewRideAvailable} - status-ul inițial al cursei
-    \item \textit{GoingToUser} - momentul în care șoferul acceptă cursa și navighează către client
-    \item \textit{GoingToDestination} - atunci când șoferul merge spre destinație împreună cu pasagerul
-    \item \textit{Finished} - cursa este finalizată cu success
-    \item \textit{Cancelled} - cursa a fost anulată
-    \item \textit{None} - state-ul inițial
+    \item \textit{NewRideAvailable} - status-ul inițial al cursei;
+    \item \textit{GoingToUser} - șoferul acceptă cursa și navighează către client;
+    \item \textit{GoingToDestination} - șoferul merge spre destinație împreună cu pasagerul;
+    \item \textit{Finished} - cursa este finalizată cu success;
+    \item \textit{Cancelled} - cursa a fost anulată;
+    \item \textit{None} - state-ul inițial.
 \end{itemize}
-Mereu după ce cursa se termina, aceasta se setează pe state-ul inițial.
-Pentru a face vizibil în continuare statusul final al cursei, această memorează și un \textit{CompletedStatus} :
+Mereu după ce cursa se termină, aceasta se setează pe state-ul inițial datorită evitării de a complica infrastructura proiectului.
+Pentru a face vizibil în continuare statusul final al cursei, aceasta memorează și un \textit{CompletedStatus}:
 \begin{itemize}
-    \item \textit{DriverNotFound} - nu s-a găsit niciun șofer pentru a finaliza cursa
-    \item \textit{PaymentRefused} - clientul a refuzat plata (disponibilă doar cu cardul)
-    \item \textit{Cancelled} - cursa este anulată din orice alte motive
-    \item \textit{Completed} - cursa a fost terminată cu success
+    \item \textit{DriverNotFound} - nu s-a găsit niciun șofer pentru a finaliza cursa;
+    \item \textit{PaymentRefused} - clientul a refuzat plata (disponibilă doar cu cardul);
+    \item \textit{Cancelled} - cursa este anulată din orice alte motive;
+    \item \textit{Completed} - cursa a fost terminată cu success.
 \end{itemize}
 În infomațiile cursei se mai regăsesc și punctul de plecare (\textit{StartPoint}),
 destinația (\textit{Destination}) și costul asociat. \textit{GroupName} este folosit pentru a lega această entitate de sesiunea real-time
@@ -79,23 +79,23 @@ Totul pornește de la faptul că aplicația este construită într-un mod în ca
 (Blazor WebAssembly) comunică prin HTTP și SignalR cu backendul, trimițând cereri sau
 ascultând în timp real anumite evenimente.
 
-Structura proiectului Server, este cuprinsă din mai multe layere: function triggers, orchestrations,
+Structura proiectului Server, este cuprinsă din mai multe niveluri: function triggers, orchestrations,
 activities, services și repositories.
 
 \textit{Function triggers} sunt de 3 tipuri: \textit{HttpTrigger}, \textit{TimeTrigger} și \textit{SignalRTrigger}.
 
-HttpTriggers sunt folosite pentru comunicarea cu Client-side, și sunt requesturi de tipul Get/Post și Put.
+\textit{HttpTriggers} sunt folosite pentru comunicarea cu Client-side, și sunt requesturi de tipul \textit{Get}/\textit{Post} și \textit{Put}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/HttpTrigger.png}
+    \includegraphics[width=16cm]{Assets/HttpTrigger.png}
     \caption{Exemplu de metodă GET pentru HttpTrigger function.}
     \label{fig:HttpTrigger}
 \end{figure}
 
-Aceste request-uri sunt autorizate prin Google token. Astfel s-a creat un atribut custom,
-ce poate fi folosit doar pe methods, unde se pot defini o listă de \textit{roles} ce pot
+Aceste request-uri sunt autorizate prin JWT token obținut de la Google. Astfel s-a creat un atribut custom,
+ce poate fi folosit doar pe metode, unde se pot defini o listă de \textit{roles} ce pot
 accesa metoda respectivă.
-Ca și request, body-ul este incapsulat în modelul \textit{HttpRequest} și poate fi deserializat
+Ca și request, body-ul este încapsulat în modelul \textit{HttpRequest} și poate fi deserializat
 astfel:
 \begin{figure}[H]
     \centering
@@ -104,10 +104,10 @@ astfel:
     \label{fig:DeserializeRequest}
 \end{figure}
 
-Ca și răspuns, toate Http functions întorc un \textit{IActionResult} ce este mapat dintr-un extension
-pentru un \textit{ServiceResponse}. Acest model conține statusul request-ului, mesajul de eroare (dacă
-există) și payload-ul response-ului. Toate service-urile conțin returnează un \textit{ServiceResponse}
-care la fel, conține payload-ul, dacă este cu succes sau nu și mesajul de eroare împreună cu excepții.
+Ca și răspuns, toate funcțiile HTTP întorc un \textit{IActionResult} ce este mapat printr-o extensie
+a unui \textit{ServiceResponse}. Acest model conține status-ul request-ului, mesajul de eroare (dacă
+există) și payload-ul response-ului. Toate service-urile returnează un \textit{ServiceResponse}
+care, la fel, conține payload-ul, dacă este cu succes sau nu și mesajul de eroare împreună cu excepții.
 Dacă există mesaj de eroare atunci rezultatul este un \textit{Bad Request (400)}, iar dacă există
 excepție atunci se traduce ca \textit{Internal Server Error (500)}.
 
@@ -134,7 +134,7 @@ folosind API-ul de la Google.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/GoogleAuthorization.png}
+    \includegraphics[width=16cm]{Assets/GoogleAuthorization.png}
     \caption{Verificare \textit{AccessToken} folosind Google API.}
     \label{fig:GoogleAuthorization}
 \end{figure}
@@ -151,40 +151,40 @@ Redirect URIs și request browser sunt reprezentate de Client URL (de acolo se a
 \end{figure}
 
 \textit{TimeTrigger} functions reprezintă funcțiile ce se auto-apelează la o perioadă de timp configurată.
-FastRide folosește un acest tip de function pentru a interoga din 5 în 5 secunde tabelul generat
-de Durable Orchestation în scopul de a găsi curse ce se află în progres și de a le notfica 
+FastRide folosește un acest tip de funcție pentru a interoga din 5 în 5 secunde tabelul generat
+de Durable Orchestation în scopul de a găsi curse ce se află în progres și de a le notifica 
 Client-ului prin SignalR.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/TimeTrigger.png}
+    \includegraphics[width=16cm]{Assets/TimeTrigger.png}
     \caption{TimeTrigger function ce interoghează Durable tables și notifică utilizatorii despre curse lor ce sunt în desfășurare.}
     \label{fig:TimeTrigger}
 \end{figure}
-Aceasta caută orchestrările ce se află în \textit{Pending}, \textit{Running} sau \textit{Suspended},
+Această funcție caută orchestrările ce se află în \textit{Pending}, \textit{Running} sau \textit{Suspended},
 citește proprietatea \textit{CustomStatus} unde se regăsesc informațiile complete ale cursei și 
-le returnează pentru fiecare grup de utilizatori ce se află în parcursul unei curse (\textit{GroupName} este \textit{ride.Id}).
+le returnează pentru fiecare grup de utilizatori ce se află în parcursul cursei respective (în acest caz, \textit{GroupName} devine \textit{ride.Id} - ID-ul cursei).
 
 \textit{SignalRTrigger} sunt function-urile ce ascultă la un canal WebSocket pentru SignalR, dar sunt și capabile să returneze
-un mesaj pe acest canal. Acestea sunt folosite pentru comunicarea în timp real cu Client-ul și au rolul de a notifica 
-utilizatorii despre diferite acțiuni ce trebuie sa le facă (ex: plată, acceptare cursă, etc).
-Acest tip de funcții folosesc un \textit{eventType} ca și identificator pentru a notifica utilizatorii ce sunt
-conectați la canal. Utilizatorii pot fi grupați pe în grupuri pentru a trimite mesaje doar către un 
+un mesaj către acest canal. Acestea sunt folosite pentru comunicarea în timp real cu Client-ul și au rolul de a notifica 
+utilizatorii despre diferite acțiuni ce trebuie să le facă (ex: să plătească, să accepte o cursă, etc).
+Acest tip de funcții folosesc un \textit{eventType} ca și identificator pentru a notxifica utilizatorii ce sunt
+conectați la canal. Utilizatorii pot fi grupați în grupuri pentru a trimite mesaje doar către un 
 anumit grup, însă se pot trimite mesaje și direct către un utilizator specific.
 
 FastRide folosește grupurile pentru a grupa utilizatorii per orașe, astfel cei din Craiova nu pot 
-vedea și nu pot primi mesaje de la cei din București, spre exemplu. Grupurile se mai folosesc și 
+vedea și nu pot primi sau trimite mesaje de la sau către cei din București, spre exemplu. Grupurile se mai folosesc și 
 pentru a identifica doi utilizatori ce se află într-o cursă, astfel în momentul în care o cursă se inițiază,
-atât șoferul cât și clientul, părăsesc automat gurpul din care fac parte (o combinație dintre țară, județ și oraș) 
-și se înscriu la grupul ce se formează din ID-ul cursei generat la creeare.
+atât șoferul cât și clientul, părăsesc automat grupul din care fac parte (o combinație dintre țară, județ și oraș) 
+și se înscriu la grupul ce se formează din ID-ul cursei generat la creare.
 
 Pentru a se conecta la canalul de SignalR și pentru a se înscrie într-un grup sau pentru
 a părăsi un grup, Client-ul trebui sa apeleze câteva metode care indică aceste \textit{actions}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/JoinUser.png}
-    \includegraphics[width=14cm]{Assets/RemoveUser.png}
+    \includegraphics[width=16cm]{Assets/JoinUser.png}
+    \includegraphics[width=16cm]{Assets/RemoveUser.png}
     \caption{Înscrierea și ștergerea unui utilizator din grup.}
     \label{fig:JoinRemoveUser}
 \end{figure}
@@ -194,24 +194,29 @@ trebuie să returneze un \textit{SignalRGroupAction}. Pentru restul notificăril
 se folosește \textit{SignalRMessageAction}.
 
 Conectarea la SignalR de către utilizator și notificarea că a fost conectat sau 
-deconectat cu succes se fac prin metodele de mai jos:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=14cm]{Assets/negotiate.png}
-    \includegraphics[width=14cm]{Assets/onconnected.png}
-    \includegraphics[width=14cm]{Assets/ondisconnected.png}
-    \caption{Negotiate, conectarea și deconectarea unui utilizator de la conexiune SignalR.}
-    \label{fig:negotiateConnectDisconnect}
-\end{figure}
+deconectat cu succes se face prin metodele din imaginile din fig. \ref{fig:negotiateConnectDisconnect}.
 Astfel, în momentul în care un șofer este conectat sau deconectat, se poate actualiza
 tabela \textit{OnlineDrivers}.
+
+Se observă faptul că este nevoie de un identificator al utilizatorului, acesta fiind \textit{NameIdentifier}-ul
+din storage, care este totodată și claim-ul \textit{sub} din JWT token-ul de la Google, doar că hash-uit (SHA256).
+Hash-ul se aplică pentru a obține o structură de \textit{GUID}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{Assets/negotiate.png}
+    \includegraphics[width=16cm]{Assets/onconnected.png}
+    \includegraphics[width=16cm]{Assets/ondisconnected.png}
+    \caption{\textit{Negotiate}, conectarea și deconectarea unui utilizator de la conexiune SignalR.}
+    \label{fig:negotiateConnectDisconnect}
+\end{figure}
 
 \textit{Orchestrations} sunt Azure Functions ce pot rula mai mult de 5 minute, ce își păstrează
 state-ul în tabele, astfel încât indiferent de ce se întâmplă cu runtime-ul aplicației,
 acestea își continuă execuția fără a relua tot procesul.
 
 În proiect, există o singură funcție de acest gen, ce se ocupă cu flow management-ul unei curse.
-Astfel, ea primește ca și input, un request ce conține \textit{User} (clientul), locul de unde se inițiază
+Astfel, ea primește ca și input, un request ce conține un \textit{User} (clientul), locul de unde se inițiază
 cursa și destinația dorită. La fiecare pas, aceste infomații se actualizează și 
 se salvează în coloana specială a Durable Orchestrations, \textit{CustomStatus}, totodată, modificând și status-ul
 cursei.
@@ -227,15 +232,15 @@ Mai departe, aplicația calculează prețul cursei și trimite către utilizator
 Pentru a aștepta răspuns, Durable Orchestrations folosesc evenimente pe care le așteaptă:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/waitForEvent.png}
+    \includegraphics[width=16cm]{Assets/waitForEvent.png}
     \caption{Trimiterea confimării către utilizator și așteptarea răspunsului.}
     \label{fig:waitForEvent}
 \end{figure}
 Pentru a calcula prețul se folosește următoarea formulă (distanța dintre 2 puncte în spațiu, estimarea timpului de
-parcurgere cu un timp comun și prețul configurat pentru fiecare kilometru și minut adunat cu o sumă inițială):
+parcurgere cu un timp comun și prețul configurat pentru fiecare kilometru și minut, totul adunat cu o sumă inițială):
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/calculatePrice.png}
+    \includegraphics[width=15cm]{Assets/calculatePrice.png}
     \caption{Calcularea prețului cursei.}
     \label{fig:calculatePrice}
 \end{figure}
@@ -244,7 +249,7 @@ unui \textit{PaymentIntent} ce se poate folosi pentru a se realiza plata cu succ
 Stripe nu știe să autentifice request-ul de plată.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/intent.png}
+    \includegraphics[width=16cm]{Assets/intent.png}
     \caption{Crearea \textit{PaymentIntent}-utului prin Stripe.}
     \label{fig:intent}
 \end{figure}
@@ -252,13 +257,13 @@ Mai departe, după ce plata s-a procesat cu success, începe să se caute un șo
 Algoritmul de căutare se folosește de tabelul \textit{OnlineDrivers} pentru a identifica poziția
 fiecărui șofer și a îi calcula distanța de la client la acesta. Șoferii se iau în ordine până se găsește 
 unul sau niciunul. Dacă șoferul nu acceptă cursa în timp de 35 secunde, se consideră ca și respinsă.
-Pentru a face acest lucru posbil, se creează o listă de \textit{Task}, returnată de \textit{WaitForExternalEvent},
-și așteaptă ca cel puțin unul din task-uri să se completeze. În funcție de task-ul completat, se alege
+Pentru a face acest lucru posbil, se creează o listă de \textit{Task}-uri, returnată de \textit{WaitForExternalEvent}-urile,
+și așteaptă ca cel puțin unul dintre task-uri să se completeze. În funcție de task-ul completat, se alege
 acțiunea de a merge mai departe sau de a căuta alt șofer.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/WaitForDriver.png}
+    \includegraphics[width=16cm]{Assets/WaitForDriver.png}
     \caption{Așteptarea răspunsului de la șofer și cronometrarea timpului de acceptare.}
     \label{fig:WaitForDriver}
 \end{figure}
@@ -267,7 +272,7 @@ La orice pas, dacă utilizatorul anulează fie confirmarea, fie plata, fie nu se
 terminal, setând proprietatea \textit{CompletedStatus} cu un status aferent acțiunii.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/cancelFlow.png}
+    \includegraphics[width=16cm]{Assets/cancelFlow.png}
     \caption{Anularea cursei dacă plata nu s-a procesat, a fost intenționat anulată sau nu s-a găsit un șofer.}
     \label{fig:cancelFlow}
 \end{figure}
@@ -275,16 +280,16 @@ Delay-urile au rolul de a face posibilă așteptarea ca și utilizatorul să pri
 iar utlizatorul nu ar vedea niciun feedback.
 
 Funcțiile durabile de orchestrare trebuie să fie deterministice, astfel încât dacă aplicația repornește
-sau un proces de resetare intervine, codul să rezulte același rezultat. Pnetru asta, trebuie evitate în contextul
+sau un proces de resetare intervine, codul să rezulte același rezultat. Pentru asta, trebuie evitate în contextul
 orchestration-ului să se genereze valori random sau să se apeleze service-uri. Totuși, este nevoie să se apeleze service-uri precum
-calcularea pretului cursei sau căutarea unui șofer. Pnetru a face posibil acest lucru, intervin activtățile.
+calcularea pretului cursei sau căutarea unui șofer. Pentru a face posibil acest lucru, intervin activtățile.
 
 \textit{Activity functions} sunt funcții ce au rol de a menține pasul la care orchestration-ul rulează.
 Pentru fiecare acțiune necesară în orchestration, există o activitate, astfel:
 \begin{itemize}
-    \item \textit{CancelRideActivity} - folosită pentru trimite cererea de anulare a cursei către toți participanții;
-    \item \textit{DelayActivity} - folosită pentru a suspenda orchestration-ul pentru \textit{n} secunde;
-    \item \textit{FindDriverActivity} - activitatea ce caută un șofer pentru cursa trimisă. Totodată, se trimite și lista de șoferi ce au fost excluși, datorită respingeri cererii;
+    \item \textit{CancelRideActivity} - trimite cererea de anulare a cursei către toți participanții;
+    \item \textit{DelayActivity} - suspendă orchestration-ul pentru \textit{n} secunde;
+    \item \textit{FindDriverActivity} - caută un șofer pentru cursa trimisă. Totodată, se așteată să primească și lista de șoferi ce au fost excluși, datorită faptului că au respins deja cererea;
     \item \textit{NotifyDriverTimeoutActivity} - notifică șoferul că perioada de acceptare a cursei a expirat;
     \item \textit{SendPaymentIntentActivity} - creează \textit{PaymentIntent}-ul și îl trimite către client;
     \item \textit{SendPriceCalculationActivity} - calculează prețul cursei și îl notifică pe client despre acesta;
@@ -294,16 +299,16 @@ Pentru fiecare acțiune necesară în orchestration, există o activitate, astfe
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/activities.png}
+    \includegraphics[width=15cm]{Assets/activities.png}
     \caption{Declararea activității ce pune orchestration-ul să aștepte \textit{n} secunde.}
     \label{fig:activities}
 \end{figure}
 
 Pentru a structura logica, separat de activități, se folosesc servicii. \textit{Services} sunt instanțe de clase înregistrate în
-contextul aplicației pentru a putea fi injectate mai târziu, și folosite ca să execută diferită logică.
+contextul aplicației pentru a putea fi injectate mai târziu, și folosite să execute diferită logică.
 Spre exemplu, calcularea distanței dintre două puncte este o metodă dintr-un service înregistrat \textit{Scoped} (se generează o instanță nouă
 la fiecare request inițiat). Alte servicii ce se regăsesc în proiect sunt pentru calcularea prețului, pentru 
-a găsi șoferi apropiați de un client și de a intermedia operațiile \textit{CRUD} (Create Read Update Delete) pentru utilizatori și curse.
+a găsi șoferi în zonă apropiată de un client și de a intermedia operațiile \textit{CRUD} (Create Read Update Delete) pentru utilizatori și curse.
 Toate serviciile folosesc o structură comună de returnare a datelor, răspunsul fiind încapsulat într-un \textit{ServiceResponse}
 ce conține payload-ul, un mesaj de eroare sau o excepție, dacă există și dacă totul s-a executat cu succes sau nu. Acest tip de răspuns
 ajută la handle-uirea răspunsului și încapsularea lui într-un \textit{ApiResponse}.
@@ -313,7 +318,7 @@ Configurarea proiectului se face prin \textit{Environment Variables}, local, def
 \begin{itemize}
     \item Google Credentials - pentru a reuși validarea token-ului de acces ce vine pe request;
     \item Distance Configuration - ce conțin prețurile pentru un kilometru, un minut, prețul inițial și viteza medie de calcul pentru distanță;
-    \item Stripe Secret Key - folosit pentru generarea inteționării de plată;
+    \item Stripe Secret Key - folosit pentru generarea intenționării de plată;
     \item Storage Connection String - conexiunea la Azure Storage.
     \item SignalR Connection String - conexiunea la server-ul SignalR
 \end{itemize}
@@ -322,7 +327,7 @@ Microsoft, loghează fiecare activitate ce se execută, iar în caz de deploymen
 este necesar să se specifice ce anume să se logheze pentru a nu se ajunge la costuri mari
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/configLogging.png}
+    \includegraphics[width=16cm]{Assets/configLogging.png}
     \caption{Filtrarea log-urilor din Azure.}
     \label{fig:configLogging}
 \end{figure}
@@ -335,7 +340,7 @@ două componente de comunicare. Toate asset-urile se descarcă în browserul uti
 
 Folderul \textit{wwwroot} este rădăcina conținutului static al aplicației Blazor WebAssembly. 
 Tot ce se află în acest folder (sau în subfolderele lui) este expus publicului și servit direct browserului, fără procesare pe server.
-Aici se regăsesc configurația proiectului pentru debugging, stilurile CSS, logica JavaScript, dar și datele mock pentru debugging.
+Aici se regăseștex configurația proiectului pentru debugging, stilurile CSS, logica JavaScript, dar și datele mock pentru debugging.
 
 \begin{figure}[H]
     \centering
@@ -344,14 +349,14 @@ Aici se regăsesc configurația proiectului pentru debugging, stilurile CSS, log
     \label{fig:wwwroot}
 \end{figure}
 
-\textit{Configurația proiectului} conține informațiile de autentificare pentru Google (ClientId, Authority, Scopes, etc)
-setări predefinite pentru hartă, conexiunea cu server-ul și PublishKey-ul pentru Stripe.
+\textit{Configurația proiectului} conține informațiile de autentificare pentru Google (\textit{ClientId}, \textit{Authority}, \textit{Scopes}, etc),
+setări predefinite pentru hartă, conexiunea cu server-ul și \textit{PublishKey}-ul pentru Stripe.
 
-Sistemul de hărți este susținut de Leaflet, combinat cu modului Routing Machine pentru calcularea traseului.
+Sistemul de hărți este susținut de Leaflet, combinat cu modulul Routing Machine pentru calcularea traseului.
 Există un Nuget Package pentru Blazor însă suportul pentru Routing nu vine inclus. De aceea se folosește librăria așa
-cum vine ea, prin JavaScript.
+cum vine ea, fără alte pachete instalate, doar prin JavaScript.
 
-Pentru a face legătura dintre Blazor (C\#) și JavaScript, există JSInterop. JSInterop 
+Pentru a face legătura dintre Blazor (C\#) și JavaScript, există JSInterop. \textit{JSInterop} 
 (JavaScript Interop) este mecanismul prin care aplicațiile Blazor pot comunica cu 
 JavaScript. Prin JSInterop, codul scris în C\# poate apela funcții JavaScript, iar 
 JavaScript poate la rândul său să invoce metode din C\#. Acest mecanism este esențial 
@@ -363,19 +368,19 @@ disponibilă atât în Blazor WebAssembly, cât și în Blazor Server. \parencit
 Urmând pașii de folosire a hărții Leaflet, s-a creat un script în JS, pentru a putea fi
 apelat din Blazor și a inițializa harta. Totul s-a încapsulat într-o componentă \textit{Map.razor}.
 După ce componenta se randează, se construiește harta, care suprascrie un \textit{div} tag cu ID-ul \textit{map}, instanțiază
-un \textit{.Net Object Reference} pentru a putea fi apelat codul .Net din JS și informațiile despre locația curentă, zoom-ul 
-pe hartă și alte setări.
+un \textit{.NET Object Reference} (pentru a putea fi apelat codul .NET din JS) și se folosește de informațiile despre locația curentă, zoom-ul 
+pe hartă și alte setări pentru configurare.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/initLeaflet.png}
+    \includegraphics[width=16cm]{Assets/initLeaflet.png}
     \caption{Inițializarea hărții după ce componenta s-a randat.}
     \label{fig:initLeaflet}
 \end{figure}
 
-Orice iconiță adăugată pe hartă sunt un \textit{marker} cu o imagine ca și înfățișare. Pentru a pune un \textit{pin} spre exemplu, există o metodă numită \textit{SetPinLocationAsync} ce adaugă un \textit{marker} pe hartă cu \textit{asset-ul de pin}.
-Toate asset-urile se află în \textit{wwwwroot/icons}: /textit{pin}, /textit{human}, /textit{driver} și /textit{currentCar} (ce indică că atât clientul cât și șoferul se află în mașină).
-Metodele \textit{DrawRoute} și \textit{AddUser/Driver} ajută la trasarea traseului și adăugarea unui utilizator pe hartă.
+Orice iconiță adăugată pe hartă reprezintă un \textit{marker} cu o imagine ca și înfățișare. Pentru a pune un \textit{pin}, spre exemplu, există o metodă numită \textit{SetPinLocationAsync} ce adaugă un \textit{marker} pe hartă cu \textit{asset-ul de pin}.
+Toate asset-urile se află în \textit{wwwwroot/icons}: \textit{pin}, \textit{human}, \textit{driver} și \textit{currentCar} (ce indică că atât clientul cât și șoferul se află în aceiași mașină).
+Metodele \textit{DrawRoute} și \textit{AddUser/Driver} ajută la construirea traseului și adăugarea unui utilizator pe hartă.
 
 \begin{figure}[H]
     \centering
@@ -391,14 +396,14 @@ se folosește de \textit{PublishKey} din dashboard-ul Stripe.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/stripeMount.png}
+    \includegraphics[width=16cm]{Assets/stripeMount.png}
     \caption{Atașarea input-ului pentru card bancar de elementul cu ID-ul \textit{payment-element}.}
     \label{fig:stripeMount}
 \end{figure}
 
-Toate tranzacțiile sunt se pot vedea în platfoma, dacă au fost cu succes, ce card a fost folosit sau de către ce customer.
+Toate tranzacțiile sunt se pot vedea în platfomă, dacă au fost cu succes, ce card a fost folosit sau de către ce customer a fost plătit.
 Fiind în modul de testare, se poate folosi doar cardul cu numărul: \textit{4242 4242 4242 4242}, restul informațiilor
-trebuind doar să fie corecte, nu să și existe.
+trebuind să fie doar corecte, nu și existente.
 
 \begin{figure}[H]
     \centering
@@ -408,7 +413,106 @@ trebuind doar să fie corecte, nu să și existe.
     \label{fig:stripeSiteHistory}
 \end{figure}
 
+Pentru transmiterea live a locației curente de către utilizatori și de a reuși să se expună pe hartă
+locul exact unde se află utilizatorul, se folosește un \textit{Background Service} ce rulează în constant și face request de locație către JavaScript.
+Background Service-ul face acest tip de request din trei în trei secunde, folosind un \textit{PeriodicTimer}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/timer.png}
+    \caption{Execuția din 3 în 3 secunde a Backgroud Service-ului.}
+    \label{fig:timer}
+\end{figure}
+
+Pentru a reuși să se obțină locația curentă, codul din JavaScript nu returnează instant rezultatul, ci
+apelează un \textit{callback method}. Astfel, pentru a reuși să se aștepte acest răspuns în .NET, se folosește
+\textit{TaskCompletionSource} ce asteaptă pentru un \textit{event}, mai exact ca acesta să își schimbe state-ul și 
+să i se seteze un rezultat.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/tcs.png}
+    \caption{\textit{TaskCompletionSource} asteptând ca scriptul de JavaScript să trigger-uiască event-ul \textit{CoordinatesChanged}}
+    \label{fig:tcs}
+\end{figure}
+
+Pentru reuși să se păstreze acest tip de informații (locația curentă, status-ul curent al cursei,
+grupul din care face parte utilizatorul) se folosesc \textit{State}-urile. Un \textit{State} este un service
+care nu necesită o interfață deoarece nu este făcut să handle-uiască logică, ci doar să
+păstreze valoarea unor proprietăți pe parcursul execuției. Ele se înregistreză \textit{Scoped}
+pentru a se reseta instanța în momentul unui request nou (adică dacă alt utilizator deschide site-ul sau dă refresh), astfel
+valorile unui utilizator nu o să interfereze cu ale celorlalți.
+
+Grupul din care face parte utilizatorul, despre care s-a menționat în secțiune de Server, se calculează 
+aici deoarece Client-ul este singurul loc unde se poate detecta locația utilizatorului.
+Grupul este format din oraș, județ și țară și se poate află folosind service-ul \textit{IUserGroupService}.
+Dacă utilizatorul se află într-o cursă, atunci service-ul returnează ID-ul cursei ca și grup pentru a reuși să
+se facă o conexiune doar între client și șofer.
+
+Pentru informații precum: detectarea adresei în text, folosind geolocația, se folosește service-ul
+\textit{ILocationService} ce folosește API-ul de la \textit{OpenStreetMap}.
+
+Pe lângă componenta hărții, mai există componentele ce implementează dialog-urile pentru
+rating, acceptarea cursei, plătirea cursei și componente precum \textit{loading screen}-ul,
+afișarea status-ului cursei (dacă este există una în progres) și butoane (pentru a porni o cursă sau a deschide dialog-ul de permite acceptarea uneia).
+
+Pagina principală conține harta, un search pentru adrese, ce interoghează API-ul de la \textit{OpenStreetMap}
+cu query-ul introdus de utilizator și returnează o listă de sugestii. 
+
+Pagina \textit{History} conține
+istoricul curselor cu informații despre cursă precum prețul, data, dar și locația. 
+
+Adminii beneficiază de o pagină în plus
+unde pot vedea toți utilizatorii și le pot modifica informații precum numărul de telefon sau rolul.
+
+Infomațiile precum, numele sau imaginea sunt informații ce vin de pe contul Google al utilizatorului și acesta 
+este redirecționat către pagina Google Accounts pentru a putea actualiza ce dorește. Toate acestea reprezentând și butoanele \textit{nav-menu}-ului.
+
+Autentificarea se face prin Google, astfel utilizatorul, dacă nu este autentificat, este redirecționat către
+pagina de autentificare ce face un \textit{remote authentication}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/authenticationRemote.png}
+    \caption{Pagina de autentificare ce redirecționeză utilizatorul către Google Login.}
+    \label{fig:authenticationRemote}
+\end{figure}
+
+Pentru a putea autoriza butoane sau pagini, se folosește atributul \textit{Authorize}. Acesta se folosește de
+un \textit{AccountClaimsPrincipalFactory} și un \textit{RemoteUserAccount} pentru a știi ce roluri se află pe token-ul utilizatorului.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{Assets/registerAuthentication.png}
+    \includegraphics[width=8cm]{Assets/authorizeAttribute.png}
+    \caption{Înregistrarea autenficării și folosirea autorizării în aplicație.}
+    \label{fig:registerUseAuth}
+\end{figure}
+
+Layout-ul aplicației este cuprins dintr-un \textit{navigation bar}, dialog-ul ce afișează status-ul cursei curente, loading screen-ul
+ce ascultă la State-ul \textit{OverlayState},dar și content-ul propriu zis al paginii curente.
+
+Testarea unui asemenea proiect este dificil deoarece nimeni nu își dorește să se plimbe prin oraș pentru a îndeplini \textit{test-case}-urile.
+Schimbarea locației unui dispozitiv fără un VPN este dificilă deoarece trebuie "păcălit" mai întâi browser-ul și apoi codul.
+De aceea, se folosesc date de testare, mock-uite, astfel utilizatorii cu un anumit identificator pot fi localizați în locuri
+diferite datorită fișierului \textit{mocks.json}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/dynamicMocks.png}
+    \caption{Fișiserul JSON ce conține coordonatele mock-uite pentru utilizatori.}
+    \label{fig:dynamicMocks}
+\end{figure}
+
+Aceste date sunt preluate de către Background Service la fiecare trei secunde și sunt parcurse una câte una.
+În plus, metoda \textit{HandleGeolocationMockAsync} interacționează cu datele acestui fișier pentru a putea 
+face posibila staționarea utilizatorilor sau resetarea index-ului de iterație prin fișier.
+
+Pentru lucrarea curentă, s-a pregătit un singur set de date, astfel punctul de plecare se află 
+pe Strada Anului 1848, Craiova, iar punctul de sosire este pe Strada Târgului, Craiova.
+
 \section{Comunicarea între componente}
 diagrama de cum comunica aplicatia
-\subsection{Autentificare și autorizare}
-\subsection{Pagina admin-ului}
+- de mentionat ca sub devine guid si este name NameIdentifier
+- de mentionat de sdk 
+- de mentionat despre signalR si ce structura au eventTypes
