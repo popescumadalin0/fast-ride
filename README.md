@@ -16,6 +16,7 @@ Application for ride sharing
 - Run Docker and start the azurite
 - Run: asrs-emulator start
 
+**For ngrok**
 - Go to: cd C:\Work\FastRide\fast-ride\FastRide.Server
 - Run azure function: func start (or run from IDE)
 - Run ngrok.exe and paste the command: ngrok http http://localhost:7102

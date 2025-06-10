@@ -1,7 +1,62 @@
 \chapter{UTILIZAREA APLICAȚIEI}
-poze doar cu UI
+
 \section{Instalarea aplicației}
-ce este in readme
+
+Pentru a putea folosi aplicația trebuie să fie instalate mai multe componente:
+\begin{itemize}
+    \item \textit{Docker} - pentru storage
+    \item \textit{dotnet tool} - pentru comenzi în terminal și compilarea .NET;
+    \item \textit{Azurite} - emulatorul pentru Azure Storage;
+    \item \textit{SignalR Emulator} - emulatorul pentru server-ul SignalR;
+    \item \textit{Azure Functions Tools} - pentru pornirea proiectului Azure;
+    \item \textit{ngrok/Visual Studio sau Rider} - în caz de deployment sau doar un IDE pentru rularea codului.
+\end{itemize}
+
+Prima dată se obține codul, fie din surse, fie de pe GitHub.
+
+Trebuie instalat \textit{Docker} deoarece \textit{Azurite} vine cu foarte multe fișiere temporale și
+există riscul ca mașina să rămână fără memorie.
+
+Următorul pas reprezintă deschiderea unui \textit{Terminal}, și să se navigheze către folderul \textit{Docker} din proiect, folosind
+comanda:
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\Run\Docker
+\end{verbatim}
+Apoi trebuie rulată următoarea comadă pentru a instala \textit{Azurite}:
+\begin{verbatim}
+    docker-compose up -d
+\end{verbatim}
+Dacă există eroare privind comanda \textit{docker-compose}, atunci acesta trebuie instalat.
+Urmează să se instaleze \textit{dotnet tool} și să se instaleze \textit{SignalR Emulator}-ul prin comanda:
+\begin{verbatim}
+    dotnet tool install -g Microsoft.Azure.SignalR.Emulator
+\end{verbatim}
+
+Mai departe trebuie deschis \textit{Docker}-ul și pornit \textit{Azurite}, apoi rularea comenzii:
+
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\Run\Docker
+    asrs-emulator start
+\end{verbatim}
+
+Pentru a rula codul, fie se deschide un IDE cu ambele soluții și se rulează, fie se rulează din terminal
+cu beneficiul de a publica în rețea aplicația. Pentru terminal trebuie rulate următoarele comenzi:
+
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\FastRide.Server
+    func start
+
+    ngrok http http://localhost:7102 # pentru ngrok (din ngrok.exe)
+\end{verbatim}
+
+Dacă se folosește \textit{ngrok} atunci trebui actualizată configurația din Client pentru \textit{SDK}-ul server-ului.
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\FastRide.Client
+    dotnet run --urls "http://localhost:7028"
+    ngrok http https://localhost:7028 # pentru ngrok (din ngrok.exe)
+\end{verbatim}
+
+
 \section{Manual de utilizare}
 User-flows
 \subsection{Experiența utilizatorului}

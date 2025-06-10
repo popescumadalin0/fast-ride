@@ -35,7 +35,8 @@ builder.Services.AddSessionStorageServices();
 
 builder.Services.AddTransient<HttpAuthenticationHandler>();
 
-builder.Services.AddFastRideApiClient<HttpAuthenticationHandler>(new Uri(builder.Configuration["FastRide:BaseUrl"]!));
+builder.Services.AddFastRideApiClient<HttpAuthenticationHandler>(
+    new Uri(builder.Configuration["FastRide:BaseUrl"]!));
 
 builder.Services.AddOidcAuthentication<RemoteAuthenticationState,
         CustomUserAccount>(options => { builder.Configuration.Bind("Google", options.ProviderOptions); })
