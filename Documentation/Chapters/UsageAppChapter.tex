@@ -59,7 +59,7 @@ Dacă se folosește \textit{ngrok} atunci trebui actualizată configurația din 
 
 \section{Manual de utilizare}
 
-Aplicația Fast Ride este concepută pentru a facilita rezervarea și acceptarea curselor între
+Aplicația FastRide este concepută pentru a facilita rezervarea și acceptarea curselor între
 clienți și șoferi într-un mod rapid, sigur și intuitiv. Utilizatorul se autentifică
 cu un cont Google, își poate introduce un număr de telefon (dacă nu a fost deja 
 preluat automat) și poate începe imediat să interacționeze cu platforma.
@@ -74,11 +74,12 @@ Există trei tipuri de actori: clientul (\textit{User}), șoferul (\textit{Drive
 Clientul poate efectua acțiuni precum: 
 autentificare, rezervare cursă, vizualizare rută, urmărire în timp real și acordare de rating. 
 Șoferul, la rândul său, se autentifică, primește 
-notificări cu cereri de curse, le poate accepta, vede traseul și finalizează cursa. 
+notificări cu cereri de curse, le poate accepta, vede traseul și finalizează cursa. Iar administratorul, în plus,
+poate să asigneze roluri utilizatorilor. 
 Toate aceste interacțiuni sunt coordonate de sistemul backend, care se ocupă de procesarea 
 cererilor, actualizarea în timp real a stărilor și salvarea datelor în storage.
 
-În analiza cazurilor de utilizare, diagrama Use Case nu doar conturează 
+În analiza cazurilor de utilizare, diagrama \textit{Use Case} nu doar conturează 
 funcționalitățile sistemului, ci evidențiază și relațiile de dependență între acțiuni 
 și actori. Un aspect important vizibil în diagramă este separarea clară a 
 responsabilităților, ceea ce permite o arhitectură ușor de întreținut. 
@@ -110,8 +111,8 @@ Aplicația este \textit{responsive} și este suportată atât pe desktop cât ș
 
 Utilizatorul trebuie să se autentifice în aplicație, prin contul Google, apăsând butonul de \textit{login}. 
 Această etapă este necesară pentru a putea accesa funcționalitățile aplicației.
-Fără autentificare, utilizatorul poate doar să vadă locația curentă, să se găsească pe hartă și să
-caute diverse locații.
+Fără autentificare, utilizatorul poate doar să vadă locația curentă și să
+caute diverse locații pe hartă.
 
 \begin{figure}[H]
     \centering
@@ -121,7 +122,7 @@ caute diverse locații.
 \end{figure}
 
 După autentificare, utilizatorul își poate rezerva o cursă. Acest lucru se realizează prin
-plasarea unui \textit{pin} pe hartă ce indică locul unde dorește să fie lăsat.
+plasarea unui \textit{pin} pe hartă, ce indică locul unde dorește să fie lăsat.
 
 \begin{figure}[H]
     \centering
@@ -130,7 +131,7 @@ plasarea unui \textit{pin} pe hartă ce indică locul unde dorește să fie lăs
     \label{fig:pinMark}
 \end{figure}
 
-Pentru a realiza asta, fie se face click pe hartă, fie se folosește bara de search cu sugestii.
+Pentru a realiza acest lucru, fie se face click pe hartă, fie se folosește bara de search cu sugestii.
 
 \begin{figure}[H]
     \centering
@@ -140,7 +141,7 @@ Pentru a realiza asta, fie se face click pe hartă, fie se folosește bara de se
 \end{figure}
 
 Utilizatorul poate apăsa butonul \textit{Ride} pentru a porni cursa.
-Pe hartă se afisează și ceilalți șoferi ce sunt disponibili pentru o cursă din localitatea sa.
+Pe hartă se afisează și ceilalți șoferi ce sunt disponibili pentru a accepta o cursă din aceiași localitate.
 
 \begin{figure}[H]
     \centering
@@ -149,9 +150,9 @@ Pe hartă se afisează și ceilalți șoferi ce sunt disponibili pentru o cursă
     \label{fig:driverPin}
 \end{figure}
 
-Odată apasat butonul, utilizatorul trebui sa treacă prin trei pași: să confirme cursa,
-să ofere informații despre cardul bancar și să confirme că totul este în regulă. Un pop-up 
-cu 3 steps i se deschide și trebui completat. Dacă ceva nu este în ordine, utilizatorul primește
+Odată apăsat butonul, utilizatorul trebui sa treacă prin doi pași: să confirme cursa și să ofere informații despre cardul bancar. 
+După apăsarea butonului și pregătirea cursei în server, un pop-up 
+cu toți pașii i se deschide și trebuie completat. Dacă ceva nu este în ordine, utilizatorul primește
 feedback în legătura cu erorile.
 
 \begin{figure}[H]
@@ -180,7 +181,7 @@ Fiecare status de anulare se observă în meniul de informare, ce ține locul b�
 \end{figure}
 
 Dacă s-a găsit un șofer, atunci utilizatorului i se deschide un pop-up cu detaliile
-despre acesta și apoi este nevoie să aștepte ca șoferul să ajungă să îl preia ca mai apoi să meargă spre 
+despre acesta și apoi este nevoie să aștepte ca șoferul să ajungă să îl preia. După ce clientul se află în mașina șoferului, pot să meargă împreună spre 
 destinație.
 
 \begin{figure}[H]
@@ -205,7 +206,7 @@ La final de cursă, opțional, clientul poate lăsa o recenzie șoferului.
 \begin{figure}[H]
     \centering
     \includegraphics[width=6cm]{Assets/rateDriver.png}
-    \caption{Pop-ul ce permite oferirea unui recenzii șoferului.}
+    \caption{Dialog-ul ce permite oferirea unui recenzii șoferului.}
     \label{fig:rateDriver}
 \end{figure}
 
@@ -222,7 +223,7 @@ este să își schimbe numărul de telefon sau să navigheze către Google Accou
 
 Utilizatorii pot vedea și istoricul curselor prin apăsarea butonului din bara de navigare.
 Pentru fiecare cursă se poate vedea adresa de destinație, data și ora la care s-a completat cursa, prețul plătit
-și, în caz de anulare a cursei, motivul anulării. Folosind butonul \textit{Rebook} utilizatorul poate
+și, în cazul de anulare a cursei, motivul anulării. Folosind butonul \textit{Rebook}, utilizatorul poate
 să repună \textit{pin}-ul în același loc precum în istoric.
 
 \begin{figure}[H]
@@ -234,24 +235,23 @@ să repună \textit{pin}-ul în același loc precum în istoric.
 
 \subsection{Experiența șoferului}
 
-Șoferul nu are accesul să rezerve o cursă, poate doar să accepte una, de aceea flow-ul acestuia începe după 
-ce un client începe o cursă și primește cererea. Bineînțeles, trebuie să fie autentificat.
+Șoferul nu are accesul să rezerve o cursă, însă este asignat să accepte una, de aceea flow-ul acestuia începe după 
+ce un client începe o cursă și îi se atribuie cererea. Bineînțeles, trebuie să fie autentificat.
 
-El are un alt buton, \textit{GetRides} care deschide un pop-ul unde poate vedea cursele asignate acestuia.
+El are un alt buton, \textit{GetRides} care deschide un dialog unde poate vedea cursele asignate ce i sunt asignate.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=8cm]{Assets/driverNavBar.png}
     \includegraphics[width=10cm]{Assets/acceptRide.png}
-    \caption{Bara de navigare împreună cu pop-up-ul cu ofertele curente.}
+    \caption{Bara de navigare împreună cu dialogul-ul ce afișează ofertele curente.}
     \label{fig:driverNavBar}
 \end{figure}
 
-Singurul lor al șoferului, după ce a acceptat cursa este să meargă la client, să îl aștepte și să
-meargă împreună la destianție. În acești pași, șoferul are prima destinație către client, apoi către destinația propiu zisă, aleasă
-de utilizator.
+Singura responsabilitate a șoferului, după ce a acceptat cursa, este să meargă la client, să îl aștepte și să
+meargă împreună spre destianție. În acești pași, șoferul are prima destinație către client, apoi către destinația propiu zisă.
 
-Ca și ajutor în trafic, acesta poate să vadă ruta, actualizându-se în timp real și poate regăsi și
+Ca și ajutor în trafic, acesta poate să vadă ruta spre punctul de destinație, actualizându-se în timp real și poate regăsi și
 indicații de navigare.
 
 \begin{figure}[H]
@@ -265,12 +265,20 @@ indicații de navigare.
 \subsection{Experiența admin-ului}
 
 În plus de cele menționare la utilizatorul normal, administratorul poate schimba tipul 
-oricărui utilizator, poate actualiza numărul de telefon și .
+oricărui utilizator, iar, de asemenea, mai poate actualiza și numărul de telefon.
 Prin apăsarea butonul din bara de navigare, i se deschide un tabel unde poate vedea toate informațiile despre utilizatori.
-El poate să și filtreze utilizatorii după numărul de telefon, nume, email sau identificator.
+El poate să-și filtreze utilizatorii după numărul de telefon, nume, email sau identificator.
 \begin{figure}[H]
     \centering
     \includegraphics[width=16cm]{Assets/adminPage.png}
     \caption{Pagina administratorului.}
     \label{fig:adminPage}
 \end{figure}
+
+Aplicația FastRide oferă o experiență intuitivă și eficientă pentru utilizatorii 
+care doresc să rezerve sau să accepte curse într-un sistem de ride-sharing. 
+Printr-un proces simplificat de autentificare cu contul Google, utilizatorii pot accesa
+rapid funcționalitățile esențiale, precum vizualizarea hărții, stabilirea destinației, comunicarea în timp real și evaluarea curselor. 
+Interfața este ușor de folosit, iar integrarea serviciilor externe precum Stripe, 
+SignalR și Leaflet contribuie la o funcționare fluidă și sigură, atât pentru clienți, 
+cât și pentru șoferi.
