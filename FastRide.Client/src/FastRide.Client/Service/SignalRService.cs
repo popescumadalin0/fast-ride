@@ -185,9 +185,9 @@ public class SignalRService : ISignalRService
             });
     }
 
-    public async Task NotifyDriverArrivedAsync(string groupName)
+    public async Task NotifyDriverArrivedAsync(string groupName, Geolocation geolocation)
     {
-        await _connection.SendAsync(SignalRConstants.ClientDriverArrived, groupName);
+        await _connection.SendAsync(SignalRConstants.ClientDriverArrived, groupName, geolocation);
     }
 
     public async Task AcceptRideAsync(string instanceId, string userId, bool accepted)
