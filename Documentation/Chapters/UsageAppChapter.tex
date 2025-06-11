@@ -117,7 +117,7 @@ caute diverse locații.
     \centering
     \includegraphics[width=1cm]{Assets/human.png}
     \caption{Mark-ul \textit{human} ce indică locația actuală a utilizatorului.}
-    \label{fig:human}
+    \label{fig:humanMark}
 \end{figure}
 
 După autentificare, utilizatorul își poate rezerva o cursă. Acest lucru se realizează prin
@@ -127,16 +127,16 @@ plasarea unui \textit{pin} pe hartă ce indică locul unde dorește să fie lăs
     \centering
     \includegraphics[width=1cm]{Assets/pin.png}
     \caption{Mark-ul \textit{pin} pentru a sugera destinația.}
-    \label{fig:pin}
+    \label{fig:pinMark}
 \end{figure}
 
 Pentru a realiza asta, fie se face click pe hartă, fie se folosește bara de search cu sugestii.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=8cm]{Assets/seach.png}
+    \includegraphics[width=8cm]{Assets/search.png}
     \caption{Bara de căutare pentru adrese cu sugestii.}
-    \label{fig:search}
+    \label{fig:searchAddress}
 \end{figure}
 
 Utilizatorul poate apăsa butonul \textit{Ride} pentru a porni cursa.
@@ -146,7 +146,7 @@ Pe hartă se afisează și ceilalți șoferi ce sunt disponibili pentru o cursă
     \centering
     \includegraphics[width=1cm]{Assets/driver.png}
     \caption{Mark-ul \textit{driver} ce semnifică un utilizator de tip șofer disponibil.}
-    \label{fig:driver}
+    \label{fig:driverPin}
 \end{figure}
 
 Odată apasat butonul, utilizatorul trebui sa treacă prin trei pași: să confirme cursa,
@@ -156,15 +156,121 @@ feedback în legătura cu erorile.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm]{Assets/accept ride.png}
+    \includegraphics[width=14cm]{Assets/acceptRideUser.png}
     \includegraphics[width=14cm]{Assets/card.png}
-    \includegraphics[width=14cm]{Assets/donePayment.png}
-    \caption{Cei trei pași pe care utilizatorul trebuie să îi completeze.}
-    \label{fig:paymentSteps}
+    \caption{Pașii pe care utilizatorul trebuie să îi completeze.}
+    \label{fig:paymentStep12}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/donePayment.png}
+    \caption{Mesajul de confirmare că totul este în regulă.}
+    \label{fig:paymentStep3}
+\end{figure}
+
+Mai departe, utilizatorul așteaptă pentru ca un șofer să îi accepte cursa. În caz că nu se găsește un șofer atunci cursa este anulată.
+Fiecare status de anulare se observă în meniul de informare, ce ține locul bării de căutare.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{Assets/status.png}
+    \caption{Meniul de informare al status-ului.}
+    \label{fig:statusMenu}
+\end{figure}
+
+Dacă s-a găsit un șofer, atunci utilizatorului i se deschide un pop-up cu detaliile
+despre acesta și apoi este nevoie să aștepte ca șoferul să ajungă să îl preia ca mai apoi să meargă spre 
+destinație.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{Assets/driverDetails.png}
+    \caption{Detaliile despre șofer după ce acceptă cursa.}
+    \label{fig:driverDetails}
+\end{figure}
+
+Utilizatorul poate vedea ruta pe unde șoferul o să meargă, iar \textit{pin}-ul ce indică
+locația curentă se modifică în \textit{currentCar}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1cm]{Assets/currentCar.png}
+    \caption{Mark-ul \textit{currentCar} ce semnifică că utilizatorul călătorește cu mașina.}
+    \label{fig:currentCar}
+\end{figure}
+
+La final de cursă, opțional, clientul poate lăsa o recenzie șoferului.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=6cm]{Assets/rateDriver.png}
+    \caption{Pop-ul ce permite oferirea unui recenzii șoferului.}
+    \label{fig:rateDriver}
+\end{figure}
+
+Alte lucruri pe care le poate face clientul, dar și celelalte tipuri de utilizatori,
+este să își schimbe numărul de telefon sau să navigheze către Google Accounts pentru a își schimba numele sau imaginea de profil.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{Assets/popoverUser.png}
+    \includegraphics[width=8cm]{Assets/changePhoneNumber.png}
+    \caption{Schimbarea numărului de telefon apăsând pe imaginea de profil.}
+    \label{fig:phoneNumberChange}
+\end{figure}
+
+Utilizatorii pot vedea și istoricul curselor prin apăsarea butonului din bara de navigare.
+Pentru fiecare cursă se poate vedea adresa de destinație, data și ora la care s-a completat cursa, prețul plătit
+și, în caz de anulare a cursei, motivul anulării. Folosind butonul \textit{Rebook} utilizatorul poate
+să repună \textit{pin}-ul în același loc precum în istoric.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{Assets/history.png}
+    \caption{Istoricul curselor.}
+    \label{fig:historyRides}
+\end{figure}
 
 \subsection{Experiența șoferului}
-driver case flow
+
+Șoferul nu are accesul să rezerve o cursă, poate doar să accepte una, de aceea flow-ul acestuia începe după 
+ce un client începe o cursă și primește cererea. Bineînțeles, trebuie să fie autentificat.
+
+El are un alt buton, \textit{GetRides} care deschide un pop-ul unde poate vedea cursele asignate acestuia.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{Assets/driverNavBar.png}
+    \includegraphics[width=10cm]{Assets/acceptRide.png}
+    \caption{Bara de navigare împreună cu pop-up-ul cu ofertele curente.}
+    \label{fig:driverNavBar}
+\end{figure}
+
+Singurul lor al șoferului, după ce a acceptat cursa este să meargă la client, să îl aștepte și să
+meargă împreună la destianție. În acești pași, șoferul are prima destinație către client, apoi către destinația propiu zisă, aleasă
+de utilizator.
+
+Ca și ajutor în trafic, acesta poate să vadă ruta, actualizându-se în timp real și poate regăsi și
+indicații de navigare.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{Assets/indicates.png}
+    \includegraphics[width=10cm]{Assets/route.png}
+    \caption{Exemplu de rută și indicații de navigare.}
+    \label{fig:indicates}
+\end{figure}
+
 \subsection{Experiența admin-ului}
-admin case flow
+
+În plus de cele menționare la utilizatorul normal, administratorul poate schimba tipul 
+oricărui utilizator, poate actualiza numărul de telefon și .
+Prin apăsarea butonul din bara de navigare, i se deschide un tabel unde poate vedea toate informațiile despre utilizatori.
+El poate să și filtreze utilizatorii după numărul de telefon, nume, email sau identificator.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{Assets/adminPage.png}
+    \caption{Pagina administratorului.}
+    \label{fig:adminPage}
+\end{figure}
