@@ -82,7 +82,7 @@ public partial class UsersTable
             return true;
         if (element.Identifier.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.PhoneNumber.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.PhoneNumber?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ?? false)
             return true;
         if (element.UserName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;

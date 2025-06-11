@@ -90,7 +90,7 @@ public class CalculateCurrentGeolocationService : IDisposable
                     Math.Abs(geolocation.Longitude - _destinationState.Geolocation.Longitude) < tolerance &&
                     !_arrivedSent)
                 {
-                    await _signalRService.NotifyDriverArrivedAsync(groupName);
+                    await _signalRService.NotifyDriverArrivedAsync(groupName, geolocation);
                     _arrivedSent = true;
                 }
                 else
