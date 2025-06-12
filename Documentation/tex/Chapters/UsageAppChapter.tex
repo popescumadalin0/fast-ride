@@ -1,63 +1,4 @@
-\chapter{UTILIZAREA APLICAȚIEI}
-
-\section{Instalarea aplicației}
-
-Pentru a putea folosi aplicația trebuie să fie instalate mai multe componente:
-\begin{itemize}
-    \item \textit{Docker} - pentru storage
-    \item \textit{dotnet tool} - pentru comenzi în terminal și compilarea .NET;
-    \item \textit{Azurite} - emulatorul pentru Azure Storage;
-    \item \textit{SignalR Emulator} - emulatorul pentru server-ul SignalR;
-    \item \textit{Azure Functions Tools} - pentru pornirea proiectului Azure;
-    \item \textit{ngrok/Visual Studio sau Rider} - în caz de deployment sau doar un IDE pentru rularea codului.
-\end{itemize}
-
-Prima dată se obține codul, fie din surse, fie de pe GitHub.
-
-Trebuie instalat \textit{Docker} deoarece \textit{Azurite} vine cu foarte multe fișiere temporale și
-există riscul ca mașina să rămână fără memorie.
-
-Următorul pas reprezintă deschiderea unui \textit{Terminal}, și să se navigheze către folderul \textit{Docker} din proiect, folosind
-comanda:
-\begin{verbatim}
-    cd C:\Work\FastRide\fast-ride\Run\Docker
-\end{verbatim}
-Apoi trebuie rulată următoarea comadă pentru a instala \textit{Azurite}:
-\begin{verbatim}
-    docker-compose up -d
-\end{verbatim}
-Dacă există eroare privind comanda \textit{docker-compose}, atunci acesta trebuie instalat.
-Urmează să se instaleze \textit{dotnet tool} și să se instaleze \textit{SignalR Emulator}-ul prin comanda:
-\begin{verbatim}
-    dotnet tool install -g Microsoft.Azure.SignalR.Emulator
-\end{verbatim}
-
-Mai departe trebuie deschis \textit{Docker}-ul și pornit \textit{Azurite}, apoi rularea comenzii:
-
-\begin{verbatim}
-    cd C:\Work\FastRide\fast-ride\Run\Docker
-    asrs-emulator start
-\end{verbatim}
-
-Pentru a rula codul, fie se deschide un IDE cu ambele soluții și se rulează, fie se rulează din terminal
-cu beneficiul de a publica în rețea aplicația. Pentru terminal trebuie rulate următoarele comenzi:
-
-\begin{verbatim}
-    cd C:\Work\FastRide\fast-ride\FastRide.Server
-    func start
-
-    ngrok http http://localhost:7102 # pentru ngrok (din ngrok.exe)
-\end{verbatim}
-
-Dacă se folosește \textit{ngrok} atunci trebui actualizată configurația din Client pentru \textit{SDK}-ul server-ului.
-\begin{verbatim}
-    cd C:\Work\FastRide\fast-ride\FastRide.Client
-    dotnet run --urls "http://localhost:7028"
-    ngrok http https://localhost:7028 # pentru ngrok (din ngrok.exe)
-\end{verbatim}
-
-
-\section{Manual de utilizare}
+\chapter{FLUXUL APLICAȚIEI}
 
 Aplicația FastRide este concepută pentru a facilita rezervarea și acceptarea curselor între
 clienți și șoferi într-un mod rapid, sigur și intuitiv. Utilizatorul se autentifică
@@ -76,7 +17,7 @@ autentificare, rezervare cursă, vizualizare rută, urmărire în timp real și 
 Șoferul, la rândul său, se autentifică, primește 
 notificări cu cereri de curse, le poate accepta, vede traseul și finalizează cursa. Iar administratorul, în plus,
 poate să asigneze roluri utilizatorilor. 
-Toate aceste interacțiuni sunt coordonate de sistemul backend, care se ocupă de procesarea 
+Toate aceste interacțiuni sunt coordonate de sistemul back-end, care se ocupă de procesarea 
 cererilor, actualizarea în timp real a stărilor și salvarea datelor în storage.
 
 În analiza cazurilor de utilizare, diagrama \textit{Use Case} nu doar conturează 
@@ -97,6 +38,7 @@ hartă a funcționalităților, ci și o expresie a regulilor din spatele aplica
     \label{fig:UserCase}
 \end{figure}
 
+Interfața este una prietenoasă oferind utlizatorului toate informațiile de care are nevoie.
 Aplicația este \textit{responsive} și este suportată atât pe desktop cât și pe mobile.
 
 \begin{figure}[H]
@@ -107,10 +49,12 @@ Aplicația este \textit{responsive} și este suportată atât pe desktop cât ș
     \label{fig:responsive}
 \end{figure}
 
-\subsection{Experiența utilizatorului}
+\section{Experiența utilizatorului}
 
-Utilizatorul trebuie să se autentifice în aplicație, prin contul Google, apăsând butonul de \textit{login}. 
-Această etapă este necesară pentru a putea accesa funcționalitățile aplicației.
+Primul pas pe care toți utilizatorii trebuie să îl facă pentru a beneficia de funcționalitățile proiectului, este să 
+se autentifice.
+
+Utilizatorul se autentifice în aplicație, prin contul personal Google, apăsând butonul de \textit{login} din bara de navigare. 
 Fără autentificare, utilizatorul poate doar să vadă locația curentă și să
 caute diverse locații pe hartă.
 
@@ -233,7 +177,7 @@ să repună \textit{pin}-ul în același loc precum în istoric.
     \label{fig:historyRides}
 \end{figure}
 
-\subsection{Experiența șoferului}
+\section{Experiența șoferului}
 
 Șoferul nu are accesul să rezerve o cursă, însă este asignat să accepte una, de aceea flow-ul acestuia începe după 
 ce un client începe o cursă și îi se atribuie cererea. Bineînțeles, trebuie să fie autentificat.
@@ -262,7 +206,7 @@ indicații de navigare.
     \label{fig:indicates}
 \end{figure}
 
-\subsection{Experiența admin-ului}
+\section{Experiența admin-ului}
 
 În plus de cele menționare la utilizatorul normal, administratorul poate schimba tipul 
 oricărui utilizator, iar, de asemenea, mai poate actualiza și numărul de telefon.

@@ -1,15 +1,137 @@
-\chapter{SPECIFICAȚII ȘI REPREZENTAREA APLICAȚIEI}
-Aplicația FastRide este construită folosind o arhitectură scalabilă, bazată pe microservicii și servicii în cloud. Tehnologiile principale utilizate sunt Blazor WebAssembly pentru interfața utilizator și Azure Durable Functions pentru logica de backend. Comunicarea dintre cele două componente este realizată prin API-uri HTTP și prin WebSocket-uri cu ajutorul SignalR.
+\chapter{ARHITECTURA APLICAȚIEI}
+Aplicația FastRide este construită folosind o arhitectură scalabilă, bazată pe microservicii și servicii în cloud. 
+Tehnologiile principale utilizate sunt Blazor WebAssembly pentru interfața utilizator și Azure Durable Functions 
+pentru logica de back-end. Comunicarea dintre cele două componente este realizată prin API-uri HTTP și prin 
+WebSocket-uri cu ajutorul SignalR.
 
-\section{Arhitectura aplicației}
-Aplicația dispune de trei nivele:
+Aplicația dispune de trei componente:
 \begin{itemize}
     \item stocare - unde se păstrează informațiile;
     \item server-side - unde se prelucrează toate infomațiile;
     \item client-side - unde se afișează toate informațiile către utilizatori.
 \end{itemize}
 
-\subsection{Stocare}
+\section{Comunicarea între componente}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{Assets/componentsComunication.png}
+    \caption{Comunicarea dintre componentele proiectului.}
+    \label{fig:componentsComunication}
+\end{figure}
+
+Componentele proiectului comunică în perechi de câte două: Server-ul fiind
+cel ce gestionează atât Client-ul cât și Storage-ul.
+
+Comunicarea cu Client-ul se face prin două căi: HTTP request și SignalR.
+
+Comunicarea prin request-uri HTTP, se realizează prin librăria \textit{Refit} ce permite
+serializarea și deserializarea request-ului și response-ului într-un mod mult mai ușor de folosit,
+apelarea și autorizarea endpoint-urilor de pe back-end fără a fi nevoie de crearea unui \textit{HttpClient}
+și configurarea acestuia. Librăria doar face public un contract astfel încât, celelalte aplicații pot folosi doar ce li se dispune.
+Pentru acest lucru, s-a creat un proiect comun între cele două componente, numit \textit{SDK}.
+Acesta poate fi folosit și ca \textit{NuGet Package} pentru separarea soluțiilor în repository-uri diferite.
+
+Proiectul se folosește de o clasă abstractă intermediară și un client ce customizează interfața Refit,
+pentru a reuși să aducă toate response-urile într-un anumit format (\textit{ApiResponseMessage}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/refitAbstract.png}
+    \includegraphics[width=14cm]{Assets/userRefitAbstract.png}
+    \caption{Metoda ce obține rezultatul dorit în urma execuției endpoint-ului.}
+    \label{fig:refitAbstract}
+\end{figure}
+
+Refit are nevoie doar de o interfață pentru a reuși să inițieze request-ul, unde trebuie să se specifice ruta, tipul request-ului și eventuali parametri
+împreună cu tipul răspunsului.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{Assets/refitInterface.png}
+    \caption{Interfața Refit.}
+    \label{fig:refitInterface}
+\end{figure}
+
+Pentru a autoriza orice request, Client-ul trebuie să ofere o implemetare pentru un \textit{DelegatingHandler}, ce 
+are rolul să interferează, ca un interceptor, la orice request făcut din interiorul host-ului și să adauge
+pe request \textit{Authorization headers}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15cm]{Assets/configureDelegate1.png}
+    \includegraphics[width=15cm]{Assets/configureDelegate2.png}
+    \includegraphics[width=16cm]{Assets/configureDelegate3.png}
+    \caption{Înregistrarea DelegatingHandler-ului din Client (\textit{THttpDelegatingHandler} este \textit{HttpAuhenticationHandler})
+        și adăugarea header-urilor de autentificare și autorizare.}
+    \label{fig:configureDelegate}
+\end{figure}
+
+Comunicarea prin SignalR se realizează fără un intermediar. Server-ul tratează mesajele de intrare și de ieșire folosind
+\textit{Functions}, așa cum s-a arătat în descrierea componentei Server.
+
+Pe partea de client, toate aceste mesaje se tratează folosind un serviciu. Astfel, se instanțiază
+o conexiune cu server-ul SignalR și se crează subscripții pentru mesajele de pe Server.
+Fiecare subscripție notifică un \textit{event} din serviciu, care este, mai departe, ascultat de componente pentru
+a putea actualiza interfața.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{Assets/signalrConnect.png}
+    \includegraphics[width=16cm]{Assets/signalROn.png}
+    \caption{Conectarea la server-ul SignalR și crearea subscripției pentru notificarea noii locații a unui șofer pe hartă.}
+    \label{fig:signalR}
+\end{figure}
+
+Pentru a trimite mesaje către Server (adică un alt utilizator) trebuie doar să se specifice numele evenimentului
+și să se pună în ordine parametrii pe care îi așteaptă Server-ul.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{Assets/signalrSend.png}
+    \caption{Trimiterea notificării către utilizator că s-a ajuns la unul din checkpoint-uri.}
+    \label{fig:signalRSend}
+\end{figure}
+
+Pentru a știi ce tipuri de evenimete se folosesc, în proiectul de contracte pentru Refit s-a adăugat și o clasă
+de constante ce conține toate evenimentele existente în aplicație. Acestea au o format comun:
+\textit{\{source\}.\{action\}}. Spre exemplu \textit{client.join-user-group} este compus din sursa \textit{client} ce semnifică faptul că
+mesajul este trimis de pe Client pe Server și acțiunea \textit{join-user-group} ce reprezintă cererea de a înscrie un utilizator în grupul ce se trimite ca parametru.
+
+Comunicarea dintre Server și storage se face folosind \textit{Repository pattern}. Implentările conțin un client
+ce comunică cu Azure Storage. Acest client este o interfață \textit{ITableClient<TEntity>} ce suportă
+metode de GET, ADD/UPDATE și DELETE. Pentru acestea, se folosește \textit{TableClient} din Azure ce face HTTP request-uri
+către Azure Storage pentru a îndeplini acțiunile dorite.
+
+Pentru ca Azure să recunoască modelele ce reprezintă entități, acestea trebuie să implementeze interfața
+\textit{ITableEntity} ce conține cheile primare (\textit{PartitionKey} și \textit{RowKey}).
+
+Pentru a oferi un nume tabelului, s-a creat un atribut ce poate fi folosit pe toate entitățile:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15cm]{Assets/tableAttribute.png}
+    \caption{Atributul ce atribuie entități un nume de tabel pentru storage}
+    \label{fig:tableAttribute}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=11cm]{Assets/userEntity.png}
+    \caption{Cum se folosește atributul \textit{TableName} pe entitatea \textit{userEntity}.}
+    \label{fig:userEntity}
+\end{figure}
+
+Comunicarea dintre componentele aplicației FastRide este esențială pentru buna funcționare a întregului sistem. 
+Fiecare acțiune a utilizatorului declanșează un flux bine definit, în care front-end-ul, back-end-ul și serviciile 
+externe colaborează pentru a livra o experiență coerentă și rapidă. În continuare, se descrie modul în care aceste 
+componente interacționează între ele, punând accent pe orchestrarea proceselor și transmiterea în timp real a 
+informațiilor.
+
+\section{Stocare}
+
+Pentru a memora toate datele și informațiile, \textit{storage}-ul este esențial și una din componentele cele mai importante ale aplicației.
+Acesta este reprezentat de arhitectura Azure, folosind \textit{Azure Storage} pentru rapiditate și costuri minime.
 
 Azure Table Storage este o bază de date NoSQL, ideală pentru scenarii în care se lucrează cu volume mari de date structurate,
 dar fără relații complexe între entități. În cazul aplicației FastRide, fiecare entitate: utilizatori, curse, șoferi online și instanțele de orchestrare, este reprezentată ca o tabelă separată în Table Storage. Fiecare înregistrare (sau entitate) dintr-o tabelă este identificată în mod unic printr-o combinație de \textit{PartitionKey} și \textit{RowKey}, ceea ce asigură o distribuire eficientă și acces rapid la date.
@@ -65,13 +187,31 @@ Azure Table Storage oferă performanță, scalabilitate și costuri reduse, iar 
 de flexibil pentru a susține dezvoltări ulterioare, cum ar fi introducerea plăților reale, recenziilor textuale
 sau programării curselor în avans.
 
-\subsection{Server-side}
+\section{Server-side}
 
-Backendul aplicației este construit folosind .NET și Azure Functions, oferind o arhitectură
+Toată logica aplicației este controlată de back-end. El este responsabil pentru procesarea curselor, și salvarea tuturor
+datelor în \textit{Storage}.
+
+Back-end-ul aplicației este construit folosind .NET și Azure Functions, oferind o arhitectură
 serverless, scalabilă și eficientă pentru gestionarea întregii logici din spatele aplicației.
-Totul pornește de la faptul că aplicația este construită într-un mod în care clientul
-(Blazor WebAssembly) comunică prin HTTP și SignalR cu backendul, trimițând cereri sau
-ascultând în timp real anumite evenimente.
+
+Azure Durable Functions reprezintă o extensie a Azure Functions care permite definirea de fluxuri de lucru 
+orchestrate - adică procese formate din mai mulți pași ce pot rula pe o perioadă mai lungă de timp, păstrând în 
+același timp starea între execuții.
+
+Spre deosebire de funcțiile serverless clasice (care sunt „stateless” – nu rețin nimic după ce se termină execuția), 
+Durable Functions pot memora progresul, relua execuția exact de unde au rămas, și gestiona pași asincronici 
+(de exemplu: așteptarea unui răspuns de la un șofer sau confirmarea unei curse).
+
+Pentru a realiza asta, Azure păstrează în mod automat jurnalul execuției (event sourcing) într-un storage 
+(de regulă Azure Storage), fără ca dezvoltatorul să se ocupe de salvarea sau reîncărcarea stării manual.
+
+Prin această arhitectură, aplicația poate gestiona fluxuri complexe fără să piardă starea, 
+fără să aibă probleme de sincronizare și fără să se bazeze pe baze de date tradiționale pentru urmărirea progresului. 
+Acest lucru oferă fiabilitate, scalabilitate și claritate în logica aplicației.
+
+Funcționarea aplicației se bazează pe modul în care partea de client, realizată în Blazor WebAssembly, comunică cu back-end-ul
+prin HTTP pentru cereri standard și prin SignalR pentru recepționarea în timp real a evenimentelor.
 
 Structura proiectului Server, este cuprinsă din mai multe niveluri: function triggers, orchestrations,
 activities, services și repositories.
@@ -326,10 +466,14 @@ este necesar să se specifice ce anume să se logheze pentru a nu se ajunge la c
     \label{fig:configLogging}
 \end{figure}
 
-\subsection{Client-side}
+\section{Client-side}
 
-Client-side-ul se ocupă cu afișarea informațiilor procesate pe Server. La bază, stă
-Blazor WASM, ce funcționează fără a avea nevoie de o componentă de server sau să instanțieze
+Pentru a putea afișa toate aceste informații și a notifica utilizatorul despre toate procesele de se întâmplă în spate,
+front-end-ul stă la dispoziția utilizatorului și este singura componentă ce interacționează activ cu acesta.
+
+Client-side-ul se ocupă cu afișarea informațiilor procesate pe Server într-un mod cât mai prietenos și ușor de înțeles.
+
+La bază acestuia, stă Blazor WASM, ce funcționează ca o aplicație instalată, fără a avea nevoie de o componentă de server sau să instanțieze
 două componente de comunicare. Toate asset-urile se descarcă în browserul utilizatorului și poate funcționa fără conexiune la internet.
 
 Folderul \textit{wwwroot} este rădăcina conținutului static al aplicației Blazor WebAssembly.
@@ -505,113 +649,61 @@ face posibila staționarea utilizatorilor sau resetarea index-ului de iterație 
 Pentru lucrarea curentă, s-a pregătit un singur set de date, astfel punctul de plecare se află
 pe Strada Anului 1848, Craiova, iar punctul de sosire este pe Strada Târgului, Craiova.
 
-\section{Comunicarea între componente}
+\section{Instalarea aplicației}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{Assets/componentsComunication.png}
-    \caption{Comunicarea dintre componentele proiectului.}
-    \label{fig:componentsComunication}
-\end{figure}
+Pentru a putea folosi aplicația trebuie instalate mai multe componente:
+\begin{itemize}
+    \item \textit{Docker} - pentru storage
+    \item \textit{dotnet tool} - pentru comenzi în terminal și compilarea .NET;
+    \item \textit{Azurite} - emulatorul pentru Azure Storage;
+    \item \textit{SignalR Emulator} - emulatorul pentru server-ul SignalR;
+    \item \textit{Azure Functions Tools} - pentru pornirea proiectului Azure;
+    \item \textit{ngrok/Visual Studio sau Rider} - în caz de deployment sau doar un IDE pentru rularea codului.
+\end{itemize}
 
-Componentele proiectului comunică în perechi de câte două: Server-ul fiind
-cel ce gestionează atât Client-ul cât și Storage-ul.
+Toate acestea susțin fiecare componentă din proiect.
 
-Comunicarea cu Client-ul se face prin două căi: HTTP request și SignalR.
+Primul pas este să se obțină codul, fie din surse, fie de pe GitHub.
+Mai apoi se pot instala componentele.
 
-Comunicarea prin request-uri HTTP, se realizează prin librăria \textit{Refit} ce permite
-serializarea și deserializarea request-ului și response-ului într-un mod mult mai ușor de folosit,
-apelarea și autorizarea endpoint-urilor de pe backend fără a fi nevoie de crearea unui \textit{HttpClient}
-și configurarea acestuia. Librăria doar face public un contract astfel încât, celelalte aplicații pot folosi doar ce li se dispune.
-Pentru acest lucru, s-a creat un proiect comun între cele două componente, numit \textit{SDK}.
-Acesta poate fi folosit și ca \textit{NuGet Package} pentru separarea soluțiilor în repository-uri diferite.
+Trebuie instalat \textit{Docker} deoarece \textit{Azurite} vine cu foarte multe fișiere temporale și
+există riscul ca mașina să rămână fără memorie.
 
-Proiectul se folosește de o clasă abstractă intermediară și un client ce customizează interfața Refit,
-pentru a reuși să aducă toate response-urile într-un anumit format (\textit{ApiResponseMessage}).
+Următorul pas reprezintă deschiderea unui \textit{Terminal}, și să se navigheze către folderul \textit{Docker} din proiect, folosind
+comanda:
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\Run\Docker
+\end{verbatim}
+Apoi trebuie rulată următoarea comadă pentru a instala \textit{Azurite}:
+\begin{verbatim}
+    docker-compose up -d
+\end{verbatim}
+Dacă există eroare privind comanda \textit{docker-compose}, atunci acesta trebuie instalat.
+Urmează să se instaleze \textit{dotnet tool} și să se instaleze \textit{SignalR Emulator}-ul prin comanda:
+\begin{verbatim}
+    dotnet tool install -g Microsoft.Azure.SignalR.Emulator
+\end{verbatim}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=14cm]{Assets/refitAbstract.png}
-    \includegraphics[width=14cm]{Assets/userRefitAbstract.png}
-    \caption{Metoda ce obține rezultatul dorit în urma execuției endpoint-ului.}
-    \label{fig:refitAbstract}
-\end{figure}
+Mai departe trebuie deschis \textit{Docker}-ul și pornit \textit{Azurite}, apoi rularea comenzii:
 
-Refit are nevoie doar de o interfață pentru a reuși să inițieze request-ul, unde trebuie să se specifice ruta, tipul request-ului și eventuali parametri
-împreună cu tipul răspunsului.
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\Run\Docker
+    asrs-emulator start
+\end{verbatim}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=14cm]{Assets/refitInterface.png}
-    \caption{Interfața Refit.}
-    \label{fig:refitInterface}
-\end{figure}
+Pentru a rula codul, fie se deschide un IDE cu ambele soluții și se rulează, fie se rulează din terminal
+cu beneficiul de a publica în rețea aplicația. Pentru terminal trebuie rulate următoarele comenzi:
 
-Pentru a autoriza orice request, Client-ul trebuie să ofere o implemetare pentru un \textit{DelegatingHandler}, ce 
-are rolul să interferează, ca un interceptor, la orice request făcut din interiorul host-ului și să adauge
-pe request \textit{Authorization headers}.
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\FastRide.Server
+    func start
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15cm]{Assets/configureDelegate1.png}
-    \includegraphics[width=15cm]{Assets/configureDelegate2.png}
-    \includegraphics[width=16cm]{Assets/configureDelegate3.png}
-    \caption{Înregistrarea DelegatingHandler-ului din Client (\textit{THttpDelegatingHandler} este \textit{HttpAuhenticationHandler})
-        și adăugarea header-urilor de autentificare și autorizare.}
-    \label{fig:configureDelegate}
-\end{figure}
+    ngrok http http://localhost:7102 # pentru ngrok (din ngrok.exe)
+\end{verbatim}
 
-Comunicarea prin SignalR se realizează fără un intermediar. Server-ul tratează mesajele de intrare și de ieșire folosind
-\textit{Functions}, așa cum s-a arătat în descrierea componentei Server.
-
-Pe partea de client, toate aceste mesaje se tratează folosind un serviciu. Astfel, se instanțiază
-o conexiune cu server-ul SignalR și se crează subscripții pentru mesajele de pe Server.
-Fiecare subscripție notifică un \textit{event} din serviciu, care este, mai departe, ascultat de componente pentru
-a putea actualiza interfața.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{Assets/signalrConnect.png}
-    \includegraphics[width=16cm]{Assets/signalROn.png}
-    \caption{Conectarea la server-ul SignalR și crearea subscripției pentru notificarea noii locații a unui șofer pe hartă.}
-    \label{fig:signalR}
-\end{figure}
-
-Pentru a trimite mesaje către Server (adică un alt utilizator) trebuie doar să se specifice numele evenimentului
-și să se pună în ordine parametrii pe care îi așteaptă Server-ul.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{Assets/signalrSend.png}
-    \caption{Trimiterea notificării către utilizator că s-a ajuns la unul din checkpoint-uri.}
-    \label{fig:signalRSend}
-\end{figure}
-
-Pentru a știi ce tipuri de evenimete se folosesc, în proiectul de contracte pentru Refit s-a adăugat și o clasă
-de constante ce conține toate evenimentele existente în aplicație. Acestea au o format comun:
-\textit{\{source\}.\{action\}}. Spre exemplu \textit{client.join-user-group} este compus din sursa \textit{client} ce semnifică faptul că
-mesajul este trimis de pe Client pe Server și acțiunea \textit{join-user-group} ce reprezintă cererea de a înscrie un utilizator în grupul ce se trimite ca parametru.
-
-Comunicarea dintre Server și storage se face folosind \textit{Repository pattern}. Implentările conțin un client
-ce comunică cu Azure Storage. Acest client este o interfață \textit{ITableClient<TEntity>} ce suportă
-metode de GET, ADD/UPDATE și DELETE. Pentru acestea, se folosește \textit{TableClient} din Azure ce face HTTP request-uri
-către Azure Storage pentru a îndeplini acțiunile dorite.
-
-Pentru ca Azure să recunoască modelele ce reprezintă entități, acestea trebuie să implementeze interfața
-\textit{ITableEntity} ce conține cheile primare (\textit{PartitionKey} și \textit{RowKey}).
-
-Pentru a oferi un nume tabelului, s-a creat un atribut ce poate fi folosit pe toate entitățile:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{Assets/tableAttribute.png}
-    \caption{Atributul ce atribuie entități un nume de tabel pentru storage}
-    \label{fig:tableAttribute}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=12cm]{Assets/userEntity.png}
-    \caption{Cum se folosește atributul \textit{TableName} pe entitatea \textit{userEntity}.}
-    \label{fig:userEntity}
-\end{figure}
+Dacă se folosește \textit{ngrok} atunci trebui actualizată configurația din Client pentru \textit{SDK}-ul server-ului.
+\begin{verbatim}
+    cd C:\Work\FastRide\fast-ride\FastRide.Client
+    dotnet run --urls "http://localhost:7028"
+    ngrok http https://localhost:7028 # pentru ngrok (din ngrok.exe)
+\end{verbatim}

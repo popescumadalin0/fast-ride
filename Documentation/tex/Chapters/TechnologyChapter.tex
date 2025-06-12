@@ -287,7 +287,7 @@ SignalR este o bibliotecă dezvoltată de Microsoft care facilitează comunicare
 \end{itemize}
 \parencite{signalREmulator}
 
-SignalR Server Emulator este un instrument util în special în etapa de dezvoltare și testare a aplicațiilor web sau mobile care folosesc comunicarea în timp real prin SignalR. Scopul său este să emuleze comportamentul unui server SignalR real, astfel încât dezvoltatorii să poată testa interacțiuni în timp real (mesaje, notificări, actualizări de stare etc.) fără a depinde de un backend implementat complet sau de infrastructura Azure. \parencite{signalREmulator}
+SignalR Server Emulator este un instrument util în special în etapa de dezvoltare și testare a aplicațiilor web sau mobile care folosesc comunicarea în timp real prin SignalR. Scopul său este să emuleze comportamentul unui server SignalR real, astfel încât dezvoltatorii să poată testa interacțiuni în timp real (mesaje, notificări, actualizări de stare etc.) fără a depinde de un back-end implementat complet sau de infrastructura Azure. \parencite{signalREmulator}
 
 SignalR Server Emulator rezolvă probleme enumerate prin rularea locală, oferirea unei interfețe sau API-uri care simulează semnalarea și transmiterea mesajelor, integrarea ușoară cu aplicațiile existente care folosesc SignalR. \parencite{signalREmulator}
 
@@ -328,10 +328,10 @@ a moderniza plățile online și de a oferi soluții intuitive pentru afaceri de
 
 Stripe este o platformă populară pentru procesarea plăților online, iar în cod, interacțiunea cu Stripe se face de obicei prin intermediul unui SDK oficial (cum ar fi Stripe.net în C\#), care comunică cu API-ul Stripe. Tot fluxul pornește de la inițierea unei acțiuni de plată sau de verificare a cardului, iar implementarea în cod respectă pașii tipici ai unui flux de plată securizat și asincron. \parencite{stripe}
 
-Într-un flux obișnuit, aplicația backend creează un \textit{PaymentIntent} sau un \textit{SetupIntent}, în funcție de ceea ce se dorește, adică dacă se vrea să se încaseze o sumă sau doar să se verifice și să se salveze un card pentru o plată ulterioară. Odată ce intent-ul a fost creat, backend-ul primește un \textit{client\_secret}, care este trimis către frontend. \parencite{stripe}
+Într-un flux obișnuit, aplicația back-end creează un \textit{PaymentIntent} sau un \textit{SetupIntent}, în funcție de ceea ce se dorește, adică dacă se vrea să se încaseze o sumă sau doar să se verifice și să se salveze un card pentru o plată ulterioară. Odată ce intent-ul a fost creat, back-end-ul primește un \textit{client\_secret}, care este trimis către front-end. \parencite{stripe}
 
-Pe frontend, Stripe.js sau Stripe Elements este folosit pentru a colecta datele cardului și a le trimite către Stripe, fără ca serverul să vadă sau să stocheze datele sensibile. Cu acel \textit{client\_secret}, frontend-ul finalizează interacțiunea și Stripe se ocupă de autorizarea plății sau a cardului. \parencite{stripe}
+Pe front-end, Stripe.js sau Stripe Elements este folosit pentru a colecta datele cardului și a le trimite către Stripe, fără ca serverul să vadă sau să stocheze datele sensibile. Cu acel \textit{client\_secret}, front-end-ul finalizează interacțiunea și Stripe se ocupă de autorizarea plății sau a cardului. \parencite{stripe}
 
-După ce Stripe procesează totul, trimite un răspuns către backend prin webhook-uri (de exemplu, când o plată a fost finalizată cu succes, sau când un card a fost salvat), iar aplicația poate reacționa la aceste evenimente, de exemplu, salvând un ID de client Stripe sau marcând o comandă ca fiind plătită. \parencite{stripe}
+După ce Stripe procesează totul, trimite un răspuns către back-end prin webhook-uri (de exemplu, când o plată a fost finalizată cu succes, sau când un card a fost salvat), iar aplicația poate reacționa la aceste evenimente, de exemplu, salvând un ID de client Stripe sau marcând o comandă ca fiind plătită. \parencite{stripe}
 
 Codul doar configurează cererea, transmite comenzile către Stripe și reacționează la rezultatele oferite de Stripe prin webhook-uri. Acest model oferă securitate, scalabilitate și conformitate cu standardele precum PCI-DSS.
