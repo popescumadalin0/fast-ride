@@ -18,6 +18,7 @@ public class DriverAcceptedRideTrigger
     }
 
     [Function(nameof(DriverAcceptedRideTrigger))]
+    [SignalROutput(HubName = SignalRConstants.HubName)]
     public async Task<SignalRMessageAction> DriverAcceptedRide(
         [SignalRTrigger(SignalRConstants.HubName, "messages", SignalRConstants.ClientDriverAcceptRide, "instanceId",
             "userId", "accepted")]
