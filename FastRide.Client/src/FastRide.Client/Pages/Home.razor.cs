@@ -46,7 +46,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
     {
         SignalRService.NotifyDriverGeolocation -= NotifyDriverGeolocationAsync;
         CurrentPositionState.OnChange -= CurrentPositionStateOnChangeAsync;
-        CurrentRideState.OnChange -= CurrentRideStateOnOnChange;
+        CurrentRideState.OnChange -= CurrentRideStateOnChange;
         DestinationState.OnChange -= DestinationStateOnChangeAsync;
     }
 
@@ -56,14 +56,14 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
         CurrentPositionState.OnChange += CurrentPositionStateOnChangeAsync;
 
-        CurrentRideState.OnChange += CurrentRideStateOnOnChange;
+        CurrentRideState.OnChange += CurrentRideStateOnChange;
 
         DestinationState.OnChange += DestinationStateOnChangeAsync;
 
         StateHasChanged();
     }
 
-    private async Task CurrentRideStateOnOnChange()
+    private async Task CurrentRideStateOnChange()
     {
         if (CurrentRideState.State == RideStatus.None)
         {

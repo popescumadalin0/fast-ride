@@ -33,20 +33,20 @@ public partial class AcceptRidePopup : IDisposable
 
     public void Dispose()
     {
-        DestinationState.OnChange -= DestinationStateOnOnChange;
+        DestinationState.OnChange -= DestinationStateOnChange;
         CurrentRideState.OnChange -= CurrentRideStateOnChange;
         SignalRService.NotifyDriverTimeout += DriverTimeOut;
         SignalRService.DriverAcceptRide -= DriverNewRide;
     }
     
-    private async Task DestinationStateOnOnChange()
+    private async Task DestinationStateOnChange()
     {
         await InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        DestinationState.OnChange += DestinationStateOnOnChange;
+        DestinationState.OnChange += DestinationStateOnChange;
         
         CurrentRideState.OnChange += CurrentRideStateOnChange;
 
