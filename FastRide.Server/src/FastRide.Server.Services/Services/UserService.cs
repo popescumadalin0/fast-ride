@@ -175,11 +175,9 @@ public class UserService : IUserService
                 return new ServiceResponse(errorMessage: "User not found");
             }
 
-            var response = await _userRepository.AddOrUpdateUserAsync(new UserEntity()
-            {
-                RowKey = userId,
-                Rating = CalculateRating(actualUser.Rating, rating)
-            });
+            actualUser.Rating = CalculateRating(actualUser.Rating, rating);
+            
+            var response = await _userRepository.AddOrUpdateUserAsync(actualUser);
 
             if (response.IsError)
             {
