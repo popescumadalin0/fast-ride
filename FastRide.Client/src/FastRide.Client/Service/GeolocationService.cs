@@ -147,21 +147,7 @@ public class GeolocationService : IGeolocationService
                 {
                     _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]++;
                 }
-
-                if (_currentRideState.State is RideStatus.GoingToDestination or RideStatus.Finished
-                    or RideStatus.DriverGoingToDestination)
-                {
-                    if (_stay <= 5)
-                    {
-                        _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]--;
-                        _stay++;
-                    }
-                }
-                else
-                {
-                    _stay = 0;
-                }
-
+                
                 await OnSuccessAsync(nextGeolocation);
                 return true;
             }
