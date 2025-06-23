@@ -149,9 +149,24 @@ public class NewRideOrchestration
             UserId = input.User.NameIdentifier,
         });
 
-        var rating = await context.WaitForExternalEvent<int>(SignalRConstants.ClientSendRatingRequest);
+        var rating = context.WaitForExternalEvent<int>(SignalRConstants.ClientSendRatingRequest);
+        
+        var timeoutTask = context.CallActivityAsync<int>(nameof(DelayActivity),
+            new DelayActivityInput()
+            {
+                Seconds = 35,
+            });
 
-        return rating;
+        var completedTask = await Task.WhenAny(rating, timeoutTask);
+        
+        if (completedTask == rating)
+        {
+            return (await completedTask);
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     private static async Task<string> FindDriverAsync(TaskOrchestrationContext context, NewRideInput input)

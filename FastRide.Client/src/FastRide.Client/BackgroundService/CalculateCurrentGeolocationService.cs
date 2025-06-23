@@ -56,7 +56,7 @@ public class CalculateCurrentGeolocationService : IDisposable
 
         _running = true;
         _cts = new CancellationTokenSource();
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(3));
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
         while (await _timer.WaitForNextTickAsync(_cts.Token))
         {
             await HandleTimerAsync();

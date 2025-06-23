@@ -11,7 +11,7 @@ public class RideInformation
 
     public Geolocation DestinationLocation { get; set; }
 
-    public DateTime TimeStamp { get; set; }
+    public string TimeStamp { get; set; }
 
     public double Cost { get; set; }
     

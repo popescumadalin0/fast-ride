@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FastRide.Client.BackgroundService;
 using FastRide.Client.Contracts;
+using FastRide.Client.State;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -17,6 +18,8 @@ public partial class App : IAsyncDisposable
     [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Inject] private IUserGroupService UserGroupService { get; set; }
+    
+    [Inject] private OverlayState OverlayState { get; set; }
 
     public async ValueTask DisposeAsync()
     {
@@ -25,6 +28,7 @@ public partial class App : IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        OverlayState.DataLoading = true;
         await SignalRService.StartConnectionAsync();
         await SignalRService.InitiateSignalRSubscribersAsync();
 
@@ -38,6 +42,7 @@ public partial class App : IAsyncDisposable
 
         await SignalRService.JoinUserInGroupAsync(userId, groupName);
 
-        await CalculateCurrentGeolocationService.StartExecutingAsync();
+        CalculateCurrentGeolocationService.StartExecutingAsync();
+        OverlayState.DataLoading = false;
     }
 }

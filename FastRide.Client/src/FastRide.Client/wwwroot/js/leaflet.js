@@ -99,6 +99,17 @@ window.leafletRemoveUser = (userId) => {
     }
 }
 
+window.leafletRemoveUserExcept = (userId) => {
+    if (!map) return;
+
+    for (const id in userMarkers) {
+        if(id !== userId) {
+            map.removeLayer(userMarkers[id]);
+            delete userMarkers[id];
+        }
+    }
+};
+
 window.leafletDrawRoute = (startLat, startLng, endLat, endLng) => {
     if (map == null) {
         return;

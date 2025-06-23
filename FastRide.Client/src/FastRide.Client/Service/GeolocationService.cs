@@ -151,7 +151,7 @@ public class GeolocationService : IGeolocationService
                 if (_currentRideState.State is RideStatus.GoingToDestination or RideStatus.Finished
                     or RideStatus.DriverGoingToDestination)
                 {
-                    if (_stay <= 2)
+                    if (_stay <= 5)
                     {
                         _mockIndexes[authState.User.Claims.First(x => x.Type == "sub").Value]--;
                         _stay++;

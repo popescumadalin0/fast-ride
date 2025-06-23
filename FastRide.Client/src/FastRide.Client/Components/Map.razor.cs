@@ -82,12 +82,12 @@ public partial class Map : ComponentBase, IAsyncDisposable
     {
         if (inCar)
         {
-            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", userId, geolocation.Latitude,
+            JsRuntime.InvokeVoidAsync("window.leafletAddUser", userId, geolocation.Latitude,
                 geolocation.Longitude, _assets["currentCar"]);
         }
         else
         {
-            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", userId, geolocation.Latitude,
+            JsRuntime.InvokeVoidAsync("window.leafletAddUser", userId, geolocation.Latitude,
                 geolocation.Longitude, _assets["human"]);
         }
     }
@@ -102,7 +102,7 @@ public partial class Map : ComponentBase, IAsyncDisposable
 
         foreach (var driver in _drivers)
         {
-            await JsRuntime.InvokeVoidAsync("window.leafletAddUser", driver.Key, driver.Value.Latitude,
+            JsRuntime.InvokeVoidAsync("window.leafletAddUser", driver.Key, driver.Value.Latitude,
                 driver.Value.Longitude, _assets["driver"]);
         }
     }
@@ -120,18 +120,23 @@ public partial class Map : ComponentBase, IAsyncDisposable
                 }
             };
 
-        await JsRuntime.InvokeVoidAsync("window.leafletSetPinLocation", setValue);
+        JsRuntime.InvokeVoidAsync("window.leafletSetPinLocation", setValue);
     }
     
     public async Task DrawRouteAsync(Geolocation start, Geolocation end)
     {
-        await JsRuntime.InvokeVoidAsync("window.leafletDrawRoute", start.Latitude, start.Longitude, end.Latitude,
+        JsRuntime.InvokeVoidAsync("window.leafletDrawRoute", start.Latitude, start.Longitude, end.Latitude,
             end.Longitude);
     }
     
     public async Task RemoveRouteAsync()
     {
-        await JsRuntime.InvokeVoidAsync("window.leafletRemoveRoute");
+        JsRuntime.InvokeVoidAsync("window.leafletRemoveRoute");
+    }
+    
+    public async Task RemoveUserExcept(string userId)
+    {
+        JsRuntime.InvokeVoidAsync("window.leafletRemoveUserExcept", userId);
     }
 
     [JSInvokable]

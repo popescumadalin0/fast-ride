@@ -35,7 +35,7 @@ public partial class Home : ComponentBase, IAsyncDisposable
     private Dictionary<string, Geolocation> _locations = new();
 
     private string _destinationAddress;
-    
+
     private string _destinationAddressText;
 
     private Map _map = new();
@@ -69,6 +69,13 @@ public partial class Home : ComponentBase, IAsyncDisposable
         {
             await _map.RemoveRouteAsync();
             DestinationState.Geolocation = null;
+        }
+
+        if (CurrentRideState.State is RideStatus.GoingToDestination or RideStatus.DriverGoingToUser)
+        {
+            var auth = await AuthenticationState;
+            var userId = auth.User.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
+            await _map.RemoveUserExcept(userId);
         }
 
         StateHasChanged();
@@ -172,13 +179,13 @@ public partial class Home : ComponentBase, IAsyncDisposable
 
         _destinationAddress = null;
     }
-    
+
     private void ValueHasChanged(string obj)
     {
         DestinationState.Geolocation = _locations[obj];
         _destinationAddress = obj;
     }
-    
+
     private void TextHasChanged(string obj)
     {
         _destinationAddressText = obj;
