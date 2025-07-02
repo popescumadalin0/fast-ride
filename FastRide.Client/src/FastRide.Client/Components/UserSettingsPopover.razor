@@ -1,5 +1,5 @@
 ﻿<img class="nav-link profile-image"
-     src="@Context.User.Claims.Single(c => c.Type == "picture").Value"
+     src="@_profileImage"
      alt="@Context.User.Identity!.Name"
      onclick="@OpenAccountMenu"/>
 <MudPopover Open="@_openProfileSettings" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FastRide.Server.Contracts.Models;
 using FastRide.Server.Sdk.Contracts;
@@ -29,6 +31,31 @@ public partial class UsersTable
             return;
         }
 
+        foreach (var user in users.Response)
+        {
+            var pictureUrl = "default-image.png";
+            var httpClient = new HttpClient();
+
+            var url = user.PictureUrl;
+
+            using var requestMessage =
+                new HttpRequestMessage(HttpMethod.Get, url);
+            requestMessage.Headers.Accept.ParseAdd("*/*");
+            requestMessage.Headers.AcceptEncoding.ParseAdd("gzip, deflate, br");
+            requestMessage.Headers.UserAgent.ParseAdd("PostmanRuntime/7.44.1");
+
+            var response = await httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var bytes = await response.Content.ReadAsByteArrayAsync();
+                pictureUrl =
+                    $"data:image/jpg;base64, {Convert.ToBase64String(bytes)}";
+            }
+
+            user.PictureUrl = pictureUrl;
+        }
+        
         _users = users.Response;
     }
 
